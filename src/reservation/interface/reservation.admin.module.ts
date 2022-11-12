@@ -5,6 +5,8 @@ import { ReservationAdminService } from '../application/reservation.admin.servic
 import { ReservationAdminServiceLogic } from '../application/reservation.admin.service.logic';
 import { ReservationAdminController } from '../presentation/reservation.admin.controller';
 import { ReservationRepository } from '../infrastructure/repository/reservation.repository';
+import { CommunityClubValidator } from '../infrastructure/validator/communityClub.validator';
+import { CommunityClubRepository } from '../infrastructure/repository/communityClub.repository';
 
 @Module({
   controllers: [ReservationAdminController],
@@ -12,7 +14,9 @@ import { ReservationRepository } from '../infrastructure/repository/reservation.
     ReservationAdminService,
     ReservationAdminServiceLogic,
     PrismaService,
+    CommunityClubValidator,
     ReservationRepository,
+    CommunityClubRepository,
   ],
 })
 export class AdminReservationModule {}

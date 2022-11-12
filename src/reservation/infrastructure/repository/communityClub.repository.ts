@@ -1,0 +1,16 @@
+import { Injectable } from '@nestjs/common';
+import { PrismaService } from 'src/providers/prisma.service';
+import { CommunityClubValidator } from '../validator/communityClub.validator';
+
+@Injectable()
+export class CommunityClubRepository {
+  constructor(private prisma: PrismaService) {}
+
+  create(
+    communityClubCreateInput: ReturnType<
+      CommunityClubValidator['registerCommunityClubValidator']
+    >,
+  ) {
+    return this.prisma.communityClub.create(communityClubCreateInput);
+  }
+}

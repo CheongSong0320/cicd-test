@@ -66,8 +66,8 @@ enum CommunityClubRestCycle {
 model CommunityClubPerson {
   id                        Int           @id @default(autoincrement())
   max_count                 Int?
-  reservation_open_date     DateTime
-  reservation_time_interval Int
+  reservation_open_date     Int
+  reservation_time_interval CommunityClubTimeInterval
   community_club_id         Int           @unique
   CommunityClub             CommunityClub @relation(fields: [community_club_id], references: [id])
 }
@@ -75,10 +75,16 @@ model CommunityClubPerson {
 model CommunityClubSeat {
   id                        Int           @id @default(autoincrement())
   max_count                 Int?
-  reservation_open_date     DateTime
-  reservation_time_interval Int
+  reservation_open_date     Int
+  reservation_time_interval CommunityClubTimeInterval
   community_club_id         Int           @unique
   CommunityClub             CommunityClub @relation(fields: [community_club_id], references: [id])
+}
+
+enum CommunityClubTimeInterval {
+  YEAR
+  MONTH
+  DAY
 }
 
 model CommunityClubTimeLimit {
