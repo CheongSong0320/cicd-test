@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { ReservationServiceLogic } from './reservation.user.service.logic';
+import { ReservationUserServiceLogic } from './reservation.user.service.logic';
 
 @Injectable()
-export class ReservationService {
-  constructor(private reservationServiceLogic: ReservationServiceLogic) {}
+export class ReservationUserService {
+  constructor(private reservationServiceLogic: ReservationUserServiceLogic) {}
 
   helloReservation() {
     return this.reservationServiceLogic.helloReservation();
