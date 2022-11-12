@@ -12,5 +12,82 @@ datasource db {
 }
 
 model Reservation {
-  id      Int     @id @default(autoincrement())
+  id                Int               @id @default(autoincrement())
+  start_date        DateTime
+  end_date          DateTime
+  status            ReservationStatus
+  community_club_id Int
+  user_id           Int
+  CommunityClub     CommunityClub     @relation(fields: [community_club_id], references: [id])
+}
+
+enum ReservationStatus {
+  PENDING
+  READY
+  CANCELLED
+}
+
+model CommunityClub {
+  id                     Int                     @id @default(autoincrement())
+  name                   String
+  target                 CommunityClubTarget
+  type                   CommunityClubType
+  free_count_per_house   Int                     @default(0)
+  max_count_per_house    Int?
+  reset_cycle            CommunityClubRestCycle
+  sign_off_on            Boolean
+  is_wating              Boolean
+  memo                   String
+  apartment_id           Int
+  CommunityClubPerson    CommunityClubPerson?
+  CommunityClubSeat      CommunityClubSeat?
+  CommunityClubTimeLimit CommunityClubTimeLimit?
+  Reservation            Reservation[]
+}
+
+enum CommunityClubTarget {
+  ALL
+  INDIVIDUAL
+  HOUSE
+}
+
+enum CommunityClubType {
+  PERSON
+  SEAT
+  SEAT_TIME_LMIT
+}
+
+enum CommunityClubRestCycle {
+  YEAR
+  MONTH
+  DAY
+}
+
+model CommunityClubPerson {
+  id                        Int           @id @default(autoincrement())
+  max_count                 Int?
+  reservation_open_date     DateTime
+  reservation_time_interval Int
+  community_club_id         Int           @unique
+  CommunityClub             CommunityClub @relation(fields: [community_club_id], references: [id])
+}
+
+model CommunityClubSeat {
+  id                        Int           @id @default(autoincrement())
+  max_count                 Int?
+  reservation_open_date     DateTime
+  reservation_time_interval Int
+  community_club_id         Int           @unique
+  CommunityClub             CommunityClub @relation(fields: [community_club_id], references: [id])
+}
+
+model CommunityClubTimeLimit {
+  id                        Int           @id @default(autoincrement())
+  max_count                 Int?
+  reservation_time_interval Int
+  open_time                 DateTime
+  closed_time               DateTime
+  max_time_interval         Int
+  community_club_id         Int           @unique
+  CommunityClub             CommunityClub @relation(fields: [community_club_id], references: [id])
 }
