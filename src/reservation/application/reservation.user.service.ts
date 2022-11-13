@@ -8,4 +8,8 @@ export class ReservationUserService {
   helloReservation() {
     return this.reservationServiceLogic.helloReservation();
   }
+
+  getTodayReservation(userId: number) {
+    return this.reservationServiceLogic.getTodayReservation(userId);
+  }
 }

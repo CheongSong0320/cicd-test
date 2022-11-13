@@ -5,7 +5,12 @@ import { ReservationValidator } from '../validator/reservation.validator';
 
 @Injectable()
 export class ReservationRepository {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) {
+    prisma.$on<any>('query', (event: Prisma.QueryEvent) => {
+      console.log('Query: ' + event.params);
+      console.log('Duration: ' + event.duration + 'ms');
+    });
+  }
 
   findMany() {
     return this.prisma.reservation.findMany();
@@ -25,6 +30,12 @@ export class ReservationRepository {
 
   findWithCommunityClub(
     args: ReturnType<ReservationValidator['findWithCommunityClub']>,
+  ) {
+    return this.prisma.reservation.findMany(args);
+  }
+
+  findTodayReservation(
+    args: ReturnType<ReservationValidator['findTodayReservation']>,
   ) {
     return this.prisma.reservation.findMany(args);
   }

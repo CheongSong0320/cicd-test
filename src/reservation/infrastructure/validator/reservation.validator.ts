@@ -1,6 +1,7 @@
 // Prisma.validator<Prisma.ReservationGroupByArgs>;
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
+import { getDayCalculas } from '../util/dateUtil';
 
 @Injectable()
 export class ReservationValidator {
@@ -52,6 +53,30 @@ export class ReservationValidator {
         },
       },
       include: {
+        CommunityClub: {
+          select: {
+            name: true,
+          },
+        },
+      },
+    });
+  }
+
+  findTodayReservation(userId: number) {
+    return Prisma.validator<Prisma.ReservationFindManyArgs>()({
+      where: {
+        userId,
+        startDate: {
+          gte: getDayCalculas(0),
+        },
+        endDate: {
+          lt: getDayCalculas(1),
+        },
+      },
+      select: {
+        id: true,
+        startDate: true,
+        endDate: true,
         CommunityClub: {
           select: {
             name: true,
