@@ -52,7 +52,13 @@ export class ReservationValidator {
           in: ids,
         },
       },
-      include: {
+      select: {
+        id: true,
+        startDate: true,
+        endDate: true,
+        userName: true,
+        userType: true,
+        userPhone: true,
         CommunityClub: {
           select: {
             name: true,

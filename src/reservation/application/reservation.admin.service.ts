@@ -3,6 +3,7 @@ import {
   GetCommunityUsageStatusDetailParam,
   GetCommunityUsageStatusParam,
   RegisterCommunityBody,
+  GetReservationDetailParam,
 } from '../interface/community.interface';
 import { ReservationAdminServiceLogic } from './reservation.admin.service.logic';
 
@@ -24,5 +25,9 @@ export class ReservationAdminService {
 
   getCommunityUsageStatusDetail(param: GetCommunityUsageStatusDetailParam) {
     return this.reservationServiceLogic.getCommunityUsageStatusDetail(param);
+  }
+
+  getTimeLimitReservationDetail(param: GetReservationDetailParam) {
+    return this.reservationServiceLogic.getTimeLimitReservationDetail(param);
   }
 }

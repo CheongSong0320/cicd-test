@@ -4,6 +4,7 @@ import {
   Auth,
   JwtPayload,
   UserTokenPayload,
+  AdminTokenPayload,
 } from '@hanwha-sbi/nestjs-authorization';
 import { ReservationUserService } from '../application/reservation.user.service';
 

@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CommunityClubRepository } from '../infrastructure/repository/communityClub.repository';
 import { ReservationRepository } from '../infrastructure/repository/reservation.repository';
 import { applicationGroupBy } from '../infrastructure/util/applicationGroupBy';
+import { calculateUsageTimeString } from '../infrastructure/util/dateUtil';
 import { CommunityClubValidator } from '../infrastructure/validator/communityClub.validator';
 import { ReservationValidator } from '../infrastructure/validator/reservation.validator';
 import {
@@ -9,6 +10,7 @@ import {
   GetCommunityUsageStatusDetailParam,
   GetCommunityUsageStatusParam,
   RegisterCommunityBody,
+  GetReservationDetailParam,
 } from '../interface/community.interface';
 
 @Injectable()
@@ -112,23 +114,40 @@ export class ReservationAdminServiceLogic {
       this.communityClubValidator.findByApartmentIdValidator(param),
     );
 
-    return this.reservationRepository.findWithCommunityClub(
-      this.reservationValidator.findWithCommunityClub(
-        communities.map((value) => value.id),
+    const usageByUser = (
+      await this.reservationRepository.findWithCommunityClub(
+        this.reservationValidator.findWithCommunityClub(
+          communities.map((value) => value.id),
+        ),
+      )
+    ).map((value) => ({
+      id: value.id,
+      startDate: value.startDate,
+      endDate: value.endDate,
+      userName: value.userName,
+      userType: value.userType,
+      userPhone: value.userPhone,
+      communityName: value.CommunityClub.name,
+      usageTime: calculateUsageTimeString(value.startDate, value.endDate),
+    }));
+
+    return { usageByUser };
+  }
+
+  async getTimeLimitReservationDetail(param: GetReservationDetailParam) {
+    const reservationDetail =
+      await this.communityClubRepository.findCommunityClubWithReservation(
+        this.communityClubValidator.findCommunityClubWithReservation(param),
+      );
+
+    return reservationDetail.map((value) => ({
+      id: value.id,
+      name: value.name,
+      CommunityClubTimeLimit: value.CommunityClubTimeLimit,
+      reservation: applicationGroupBy(
+        value.Reservation,
+        (value) => value.startDate.toISOString().split('T')[0],
       ),
-    );
+    }));
   }
 }
-
-// {
-//   dong,
-//     ho,
-//     [
-//       {
-//         communityClubId: 5,
-//         usage: true,
-//         communityName: '독서실',
-//         additionalUsage: false,
-//       },
-//     ];
-// }

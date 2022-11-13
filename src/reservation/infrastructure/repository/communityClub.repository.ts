@@ -21,4 +21,12 @@ export class CommunityClubRepository {
   ) {
     return this.prisma.communityClub.findMany(communityClubFindManyInput);
   }
+
+  findCommunityClubWithReservation(
+    args: ReturnType<
+      CommunityClubValidator['findCommunityClubWithReservation']
+    >,
+  ) {
+    return this.prisma.communityClub.findMany(args);
+  }
 }

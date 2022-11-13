@@ -47,3 +47,7 @@ export interface CommunityUsageStatusType {
   usageTime: number;
   viewProperty: 'usageCount' | 'usageTime';
 }
+
+export interface GetReservationDetailParam {
+  apartmentId: string;
+}

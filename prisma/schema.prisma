@@ -22,8 +22,17 @@ model Reservation {
   communityClubId Int
   userId          Int
   membershipId    Int?
+  userName        String
+  userType        UserType
+  userPhone       String
   CommunityClub   CommunityClub     @relation(fields: [communityClubId], references: [id])
   Membership      Membership?       @relation(fields: [membershipId], references: [id])
+}
+
+enum UserType {
+  HOUSEHOLDER
+  MEMBER
+  ETC
 }
 
 enum ReservationStatus {
@@ -97,8 +106,8 @@ model CommunityClubTimeLimit {
   id                      Int           @id @default(autoincrement())
   maxCount                Int?
   reservationTimeInterval Int
-  openTime                DateTime
-  closedTime              DateTime
+  openTime                Int
+  closedTime              Int
   maxTimeInterval         Int
   communityClubId         Int           @unique
   CommunityClub           CommunityClub @relation(fields: [communityClubId], references: [id])

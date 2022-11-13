@@ -4,6 +4,7 @@ import {
   GetCommunityUsageStatusParam,
   GetCommunityUsageStatusDetailParam,
   RegisterCommunityBody,
+  GetReservationDetailParam,
 } from '../interface/community.interface';
 
 @Controller('reservation')
@@ -30,5 +31,10 @@ export class ReservationAdminController {
     @Param() param: GetCommunityUsageStatusDetailParam,
   ) {
     return this.reservationService.getCommunityUsageStatusDetail(param);
+  }
+
+  @Get(':apartmentId/timeLimit/detail')
+  getTimeLimitReservationDetail(@Param() param: GetReservationDetailParam) {
+    return this.reservationService.getTimeLimitReservationDetail(param);
   }
 }

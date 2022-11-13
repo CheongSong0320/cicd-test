@@ -3,6 +3,7 @@ import { Prisma } from '@prisma/client';
 import {
   GetCommunityUsageStatusDetailParam,
   GetCommunityUsageStatusParam,
+  GetReservationDetailParam,
   RegisterCommunityBody,
 } from 'src/reservation/interface/community.interface';
 
@@ -29,12 +30,31 @@ export class CommunityClubValidator {
   findByApartmentIdValidator(
     param: GetCommunityUsageStatusParam | GetCommunityUsageStatusDetailParam,
   ) {
-    console.log(param.apartmentId);
-    console.log(param);
-    console.log(parseInt(param.apartmentId, 10));
     return Prisma.validator<Prisma.CommunityClubFindManyArgs>()({
       where: {
         apartmentId: parseInt(param.apartmentId, 10),
+      },
+    });
+  }
+
+  findCommunityClubWithReservation(param: GetReservationDetailParam) {
+    return Prisma.validator<Prisma.CommunityClubFindManyArgs>()({
+      where: {
+        apartmentId: parseInt(param.apartmentId, 10),
+        type: 'SEAT_TIME_LMIT',
+      },
+
+      select: {
+        id: true,
+        name: true,
+        Reservation: true,
+        CommunityClubTimeLimit: {
+          select: {
+            openTime: true,
+            closedTime: true,
+            reservationTimeInterval: true,
+          },
+        },
       },
     });
   }
