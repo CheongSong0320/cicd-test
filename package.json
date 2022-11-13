@@ -1,6 +1,6 @@
 {
   "name": "@hanwha-sbi/reservation-service",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "",
   "author": "",
   "license": "UNLICENSED",
@@ -90,7 +90,7 @@
     "type": "git",
     "url": "https://github.com/hanwha-sbi/reservation-service"
   },
-  "main": "src/api/functional/index.ts",
+  "main": "src/api",
   "publishConfig": {
     "registry": "https://npm.pkg.github.com/"
   }
