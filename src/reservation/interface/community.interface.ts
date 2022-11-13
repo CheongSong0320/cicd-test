@@ -39,3 +39,11 @@ export interface GetCommunityUsageStatusParam {
 export interface GetCommunityUsageStatusDetailParam {
   apartmentId: string;
 }
+
+export interface CommunityUsageStatusType {
+  communityClubId: number;
+  communityName: string;
+  usageCount: number;
+  usageTime: number;
+  viewProperty: 'usageCount' | 'usageTime';
+}

@@ -4,21 +4,37 @@ import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class ReservationValidator {
+  findByCommunityClubIds(ids: number[]) {
+    const now = new Date();
+    return Prisma.validator<Prisma.ReservationFindManyArgs>()({
+      where: {
+        communityClubId: {
+          in: ids,
+        },
+        status: 'READY',
+        startDate: {
+          gte: new Date(now.getFullYear(), now.getMonth(), 1),
+        },
+        endDate: {
+          lt: new Date(now.getFullYear(), now.getMonth() + 1, 1),
+        },
+      },
+    });
+  }
+
   findByCommunityClubIdsAndGroupBy(ids: number[]) {
     const now = new Date();
     return Prisma.validator<Prisma.ReservationGroupByArgs>()({
-      by: ['community_club_id', 'user_id'],
-      orderBy: {
-        user_id: 'asc',
-      },
+      by: ['communityClubId'],
       where: {
-        community_club_id: {
+        communityClubId: {
           in: ids,
         },
-        start_date: {
+        status: 'READY',
+        startDate: {
           gte: new Date(now.getFullYear(), now.getMonth(), 1),
         },
-        end_date: {
+        endDate: {
           lt: new Date(now.getFullYear(), now.getMonth() + 1, 1),
         },
       },
@@ -31,7 +47,7 @@ export class ReservationValidator {
   findWithCommunityClub(ids: number[]) {
     return Prisma.validator<Prisma.ReservationFindManyArgs>()({
       where: {
-        community_club_id: {
+        communityClubId: {
           in: ids,
         },
       },

@@ -11,6 +11,12 @@ export class ReservationRepository {
     return this.prisma.reservation.findMany();
   }
 
+  findByCommunityClubIds(
+    args: ReturnType<ReservationValidator['findByCommunityClubIds']>,
+  ) {
+    return this.prisma.reservation.findMany(args);
+  }
+
   findByCommunityClubIdsAndGroupBy(
     args: ReturnType<ReservationValidator['findByCommunityClubIdsAndGroupBy']>,
   ) {

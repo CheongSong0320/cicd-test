@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma, PrismaClient } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import {
   GetCommunityUsageStatusDetailParam,
   GetCommunityUsageStatusParam,
@@ -34,7 +34,7 @@ export class CommunityClubValidator {
     console.log(parseInt(param.apartmentId, 10));
     return Prisma.validator<Prisma.CommunityClubFindManyArgs>()({
       where: {
-        apartment_id: parseInt(param.apartmentId, 10),
+        apartmentId: parseInt(param.apartmentId, 10),
       },
     });
   }
