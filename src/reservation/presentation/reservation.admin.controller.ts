@@ -1,6 +1,10 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { ReservationAdminService } from '../application/reservation.admin.service';
-import { RegisterCommunityBody } from '../interface/community.interface';
+import {
+  GetCommunityUsageStatusParam,
+  GetCommunityUsageStatusDetailParam,
+  RegisterCommunityBody,
+} from '../interface/community.interface';
 
 @Controller('reservation')
 export class ReservationAdminController {
@@ -14,5 +18,17 @@ export class ReservationAdminController {
   @Post('/community')
   registerCommunity(@Body() body: RegisterCommunityBody) {
     return this.reservationService.registerCommunity(body);
+  }
+
+  @Get('community/usage/status/:apartmentId')
+  getCommunityUsageStatus(@Param() param: GetCommunityUsageStatusParam) {
+    return this.reservationService.getCommunityUsageStatus(param);
+  }
+
+  @Get('community/usage/status/:apartmentId/detail')
+  getCommunityUsageStatusDetail(
+    @Param() param: GetCommunityUsageStatusDetailParam,
+  ) {
+    return this.reservationService.getCommunityUsageStatusDetail(param);
   }
 }

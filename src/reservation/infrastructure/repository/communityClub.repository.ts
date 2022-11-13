@@ -13,4 +13,12 @@ export class CommunityClubRepository {
   ) {
     return this.prisma.communityClub.create(communityClubCreateInput);
   }
+
+  findByApartmentId(
+    communityClubFindManyInput: ReturnType<
+      CommunityClubValidator['findByApartmentIdValidator']
+    >,
+  ) {
+    return this.prisma.communityClub.findMany(communityClubFindManyInput);
+  }
 }

@@ -6,6 +6,6 @@ export class ReservationUserServiceLogic {
   constructor(private reservationRepository: ReservationRepository) {}
 
   helloReservation() {
-    return this.reservationRepository.find();
+    return this.reservationRepository.findMany();
   }
 }

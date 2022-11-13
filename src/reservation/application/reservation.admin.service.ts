@@ -1,5 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { RegisterCommunityBody } from '../interface/community.interface';
+import {
+  GetCommunityUsageStatusDetailParam,
+  GetCommunityUsageStatusParam,
+  RegisterCommunityBody,
+} from '../interface/community.interface';
 import { ReservationAdminServiceLogic } from './reservation.admin.service.logic';
 
 @Injectable()
@@ -12,5 +16,13 @@ export class ReservationAdminService {
 
   registerCommunity(body: RegisterCommunityBody) {
     return this.reservationServiceLogic.registerCommunity(body);
+  }
+
+  getCommunityUsageStatus(param: GetCommunityUsageStatusParam) {
+    return this.reservationServiceLogic.getCommunityUsageStatus(param);
+  }
+
+  getCommunityUsageStatusDetail(param: GetCommunityUsageStatusDetailParam) {
+    return this.reservationServiceLogic.getCommunityUsageStatusDetail(param);
   }
 }

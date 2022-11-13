@@ -1,14 +1,25 @@
 import { Injectable } from '@nestjs/common';
-import { Reservation } from '@prisma/client';
+import { Prisma, Reservation } from '@prisma/client';
 import { PrismaService } from 'src/providers/prisma.service';
-
-import type { IReservationRepository } from '../../domain/repository/reservation.repository.interface';
+import { ReservationValidator } from '../validator/reservation.validator';
 
 @Injectable()
-export class ReservationRepository implements IReservationRepository {
+export class ReservationRepository {
   constructor(private prisma: PrismaService) {}
 
-  find() {
+  findMany() {
     return this.prisma.reservation.findMany();
+  }
+
+  findByCommunityClubIdsAndGroupBy(
+    args: ReturnType<ReservationValidator['findByCommunityClubIdsAndGroupBy']>,
+  ) {
+    return this.prisma.reservation.groupBy(args);
+  }
+
+  findWithCommunityClub(
+    args: ReturnType<ReservationValidator['findWithCommunityClub']>,
+  ) {
+    return this.prisma.reservation.findMany(args);
   }
 }

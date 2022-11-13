@@ -31,3 +31,11 @@ export interface IRegisterCommunityTimeLimitSeatType {
   >;
   type: typeof CommunityClubType['SEAT_TIME_LMIT'];
 }
+
+export interface GetCommunityUsageStatusParam {
+  apartmentId: string;
+}
+
+export interface GetCommunityUsageStatusDetailParam {
+  apartmentId: string;
+}
