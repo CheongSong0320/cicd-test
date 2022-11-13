@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { ReservationAdminService } from '../application/reservation.admin.service';
 import {
   GetCommunityUsageStatusParam,
@@ -29,8 +29,14 @@ export class ReservationAdminController {
   @Get('community/usage/status/:apartmentId/detail')
   getCommunityUsageStatusDetail(
     @Param() param: GetCommunityUsageStatusDetailParam,
+    @Query('dong') dong: string,
+    @Query('ho') ho: string,
   ) {
-    return this.reservationService.getCommunityUsageStatusDetail(param);
+    return this.reservationService.getCommunityUsageStatusDetail(
+      param,
+      dong,
+      ho,
+    );
   }
 
   @Get(':apartmentId/timeLimit/detail')

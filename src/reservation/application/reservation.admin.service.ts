@@ -23,8 +23,16 @@ export class ReservationAdminService {
     return this.reservationServiceLogic.getCommunityUsageStatus(param);
   }
 
-  getCommunityUsageStatusDetail(param: GetCommunityUsageStatusDetailParam) {
-    return this.reservationServiceLogic.getCommunityUsageStatusDetail(param);
+  getCommunityUsageStatusDetail(
+    param: GetCommunityUsageStatusDetailParam,
+    dong: string,
+    ho: string,
+  ) {
+    return this.reservationServiceLogic.getCommunityUsageStatusDetail(
+      param,
+      dong,
+      ho,
+    );
   }
 
   getTimeLimitReservationDetail(param: GetReservationDetailParam) {

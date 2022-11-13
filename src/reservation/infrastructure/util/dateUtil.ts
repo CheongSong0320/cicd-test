@@ -1,4 +1,5 @@
 import * as dayjs from 'dayjs';
+import e from 'express';
 
 export const getDayCalculas = (day: number) => {
   return dayjs()
@@ -11,8 +12,11 @@ export const getDayCalculas = (day: number) => {
     .toDate();
 };
 
-export const calculateUsageTimeString = (start: Date, end: Date) => {
-  const nowMinute = (end.getTime() - start.getTime()) / 60000;
+export const calculateUsageMinute = (start: Date, end: Date) =>
+  (end.getTime() - start.getTime()) / 60000;
 
-  return `${nowMinute / 60}시간 ${nowMinute % 60}분`;
-};
+export const createTimeString = (nowMinute: number) =>
+  `${nowMinute / 60}시간 ${nowMinute % 60}분`;
+
+export const calculateUsageTimeString = (start: Date, end: Date) =>
+  createTimeString(calculateUsageMinute(start, end));

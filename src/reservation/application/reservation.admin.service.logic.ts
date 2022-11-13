@@ -1,8 +1,13 @@
 import { Injectable } from '@nestjs/common';
+import { UserType } from '@prisma/client';
 import { CommunityClubRepository } from '../infrastructure/repository/communityClub.repository';
 import { ReservationRepository } from '../infrastructure/repository/reservation.repository';
 import { applicationGroupBy } from '../infrastructure/util/applicationGroupBy';
-import { calculateUsageTimeString } from '../infrastructure/util/dateUtil';
+import {
+  calculateUsageMinute,
+  calculateUsageTimeString,
+  createTimeString,
+} from '../infrastructure/util/dateUtil';
 import { CommunityClubValidator } from '../infrastructure/validator/communityClub.validator';
 import { ReservationValidator } from '../infrastructure/validator/reservation.validator';
 import {
@@ -66,10 +71,10 @@ export class ReservationAdminServiceLogic {
                   usageCount: innerCurr.usageCount + 1,
                   usageTime:
                     innerCurr.usageTime +
-                    (innerPrev.endDate.getTime() -
-                      innerPrev.startDate.getTime()) /
-                      1000 /
-                      60,
+                    calculateUsageMinute(
+                      innerPrev.startDate,
+                      innerPrev.endDate,
+                    ),
                 };
               },
               { usageTime: 0, usageCount: 0 },
@@ -85,7 +90,7 @@ export class ReservationAdminServiceLogic {
                     communityClubId: Number(communityClubId),
                     communityName: nowCommunity.name,
                     usageCount,
-                    usageTime: `${usageTime / 60}시간 ${usageTime % 60}분`,
+                    usageTime: createTimeString(usageTime),
                     viewProperty:
                       nowCommunity.resetCycle === 'DAY'
                         ? 'usageTime'
@@ -109,29 +114,86 @@ export class ReservationAdminServiceLogic {
 
   async getCommunityUsageStatusDetail(
     param: GetCommunityUsageStatusDetailParam,
+    dong: string,
+    ho: string,
   ) {
-    const communities = await this.communityClubRepository.findByApartmentId(
-      this.communityClubValidator.findByApartmentIdValidator(param),
+    const communities = applicationGroupBy(
+      await this.communityClubRepository.findByApartmentId(
+        this.communityClubValidator.findByApartmentIdValidator(param),
+      ),
+      'id',
     );
 
-    const usageByUser = (
-      await this.reservationRepository.findWithCommunityClub(
-        this.reservationValidator.findWithCommunityClub(
-          communities.map((value) => value.id),
-        ),
-      )
-    ).map((value) => ({
-      id: value.id,
-      startDate: value.startDate,
-      endDate: value.endDate,
-      userName: value.userName,
-      userType: value.userType,
-      userPhone: value.userPhone,
-      communityName: value.CommunityClub.name,
-      usageTime: calculateUsageTimeString(value.startDate, value.endDate),
-    }));
+    const usageByUser = await this.reservationRepository.findWithCommunityClub(
+      this.reservationValidator.findWithCommunityClub(
+        Object.keys(communities).map(Number),
+        dong,
+        ho,
+      ),
+    );
 
-    return { usageByUser };
+    const groupBy1depth = Object.entries(
+      applicationGroupBy(
+        usageByUser,
+        (value) =>
+          `${value.dong}-${value.ho}-${value.userId}-${value.communityClubId}`,
+      ),
+    ).map(([key, value]) => {
+      const { userName, userType, userPhone } = value[0];
+      const v = value.reduce(
+        (innerCurr, innerPrev) => {
+          const nowCommunity = communities[innerPrev.communityClubId][0];
+
+          return {
+            communityName: nowCommunity.name,
+            usageCount: innerCurr.usageCount + 1,
+            usageTime:
+              innerCurr.usageTime +
+              calculateUsageMinute(innerPrev.startDate, innerPrev.endDate),
+          };
+        },
+        { usageTime: 0, usageCount: 0, communityName: '' },
+      );
+
+      return {
+        ...v,
+        key,
+        userName,
+        userType,
+        userPhone,
+        usageTimeString: createTimeString(v.usageTime),
+      };
+    });
+
+    const groupBy2depth = Object.entries(
+      applicationGroupBy(groupBy1depth, (value) => {
+        const [dong, ho, userId] = value.key.split('-');
+        return `${dong}-${ho}-${userId}`;
+      }),
+    ).map(([key, value]) => {
+      const { userName, userType, userPhone } = value[0];
+      return {
+        key: key,
+        userName,
+        userType,
+        userPhone,
+        usageStatus: value.map(
+          ({ communityName, usageCount, usageTime, usageTimeString }) => {
+            return {
+              communityName,
+              usageCount,
+              usageTime,
+              usageTimeString,
+            };
+          },
+        ),
+      };
+    });
+
+    return {
+      usageByUser,
+      usageByHouseHold: groupBy2depth,
+    };
   }
 
   async getTimeLimitReservationDetail(param: GetReservationDetailParam) {
@@ -150,4 +212,24 @@ export class ReservationAdminServiceLogic {
       ),
     }));
   }
+}
+
+interface usageStatusDetail {
+  dong: number;
+  ho: number;
+  usageUser: [
+    {
+      userName: string;
+      userType: UserType;
+      phoneNumber: string;
+      usageStatus: [
+        {
+          communityName: string;
+          usageCount: string;
+          usageTime: string;
+          usageTimeString: string;
+        },
+      ];
+    },
+  ];
 }

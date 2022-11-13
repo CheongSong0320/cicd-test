@@ -45,12 +45,14 @@ export class ReservationValidator {
     });
   }
 
-  findWithCommunityClub(ids: number[]) {
+  findWithCommunityClub(ids: number[], dong: string, ho: string) {
     return Prisma.validator<Prisma.ReservationFindManyArgs>()({
       where: {
         communityClubId: {
           in: ids,
         },
+        dong,
+        ho,
       },
       select: {
         id: true,
@@ -59,6 +61,10 @@ export class ReservationValidator {
         userName: true,
         userType: true,
         userPhone: true,
+        userId: true,
+        dong: true,
+        ho: true,
+        communityClubId: true,
         CommunityClub: {
           select: {
             name: true,
