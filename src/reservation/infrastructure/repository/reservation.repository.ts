@@ -3,7 +3,7 @@ import { Prisma, Reservation } from '@prisma/client';
 import * as dayjs from 'dayjs';
 import { PrismaService } from 'src/providers/prisma.service';
 import { GetUnavailableDateQuery } from 'src/reservation/interface/reservation.interface';
-import { setYearMonthDbDate } from '../util/dateUtil';
+import { getDayCalculas, setYearMonthDbDate } from '../util/dateUtil';
 import { ReservationValidator } from '../validator/reservation.validator';
 
 @Injectable()
@@ -149,6 +149,20 @@ export class ReservationRepository {
     return this.prisma.reservation.findMany({
       where: {
         communityClubId,
+      },
+    });
+  }
+
+  getTodayReservationCount(communityClubId: number) {
+    return this.prisma.reservation.findMany({
+      where: {
+        communityClubId,
+        startDate: {
+          gte: getDayCalculas(0),
+        },
+        endDate: {
+          lt: getDayCalculas(1),
+        },
       },
     });
   }

@@ -35,6 +35,11 @@ export class CommunityClubRepository {
       where: {
         id,
       },
+      include: {
+        CommunityClubPerson: true,
+        CommunityClubSeat: true,
+        CommunityClubTimeLimit: true,
+      },
     });
   }
 

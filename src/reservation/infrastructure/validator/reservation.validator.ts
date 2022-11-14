@@ -1,7 +1,7 @@
 // Prisma.validator<Prisma.ReservationGroupByArgs>;
 import { UserTokenPayload } from '@hanwha-sbi/nestjs-authorization';
 import { Injectable } from '@nestjs/common';
-import { CommunityClub, Prisma } from '@prisma/client';
+import { CommunityClub, Prisma, ReservationStatus } from '@prisma/client';
 import {
   MakeReservationBody,
   UpdateReservationBody,
@@ -159,6 +159,7 @@ export class ReservationValidator {
     payload: UserTokenPayload,
     { startDate, endDate, seatNumber, communityClubId }: MakeReservationBody,
     community: CommunityClub,
+    status: ReservationStatus,
   ) {
     return Prisma.validator<Prisma.ReservationCreateArgs>()({
       data: {
@@ -171,7 +172,7 @@ export class ReservationValidator {
         userName: payload.user.name,
         userType: payload.apartment!.resident.type,
         userPhone: payload.user.phone,
-        status: 'READY',
+        status,
         communityClubId,
       },
     });

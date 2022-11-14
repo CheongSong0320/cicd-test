@@ -114,8 +114,27 @@ export class ReservationUserServiceLogic {
       body.communityClubId,
     );
 
+    const maxCount =
+      community.CommunityClubPerson?.maxCount ??
+      community.CommunityClubSeat?.maxCount ??
+      community.CommunityClubTimeLimit?.maxCount ??
+      0;
+
+    const todayReservationCount = (
+      await this.reservationRepository.getTodayReservationCount(community.id)
+    ).reduce((prev, curr) => {
+      return prev + (curr.status === 'CANCELLED' ? 0 : 1);
+    }, 0);
+
     return this.reservationRepository.makeReservation(
-      this.reservationValidator.makeReservation(payload, body, community),
+      this.reservationValidator.makeReservation(
+        payload,
+        body,
+        community,
+        community.signOffOn || maxCount <= todayReservationCount
+          ? 'PENDING'
+          : 'READY',
+      ),
     );
   }
 
@@ -143,10 +162,11 @@ export class ReservationUserServiceLogic {
       community.CommunityClubTimeLimit?.maxCount ??
       100000;
 
-    const reservationCount = await this.reservationRepository.groupByAndCount(
-      community.id,
-      query,
-    );
+    const reservationCount =
+      await this.reservationRepository.countTodayReservation(
+        community.id,
+        query,
+      );
 
     return {
       unavailableDate: reservationCount
