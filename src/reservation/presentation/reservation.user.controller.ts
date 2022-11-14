@@ -19,10 +19,13 @@ import {
 import { ReservationUserService } from '../application/reservation.user.service';
 import {
   DeleteReservationQuery,
+  GetAvailableDateParam,
+  GetUnavailableDateQuery,
   GetHistoryBySearchType,
   MakeReservationBody,
   UpdateReservationBody,
   UpdateReservationQuery,
+  GetUnavailableDateByTimePriorityQuery,
 } from '../interface/reservation.interface';
 
 @Controller('reservation')
@@ -87,5 +90,29 @@ export class ReservationUserController {
     @Body() body: UpdateReservationBody,
   ) {
     return this.reservationService.updateReservation(query, body);
+  }
+
+  @Get('/community/:id/unavailable-date')
+  @Auth(API_USER)
+  getUnavailableDate(
+    @Param() param: GetAvailableDateParam,
+    @Query() query: GetUnavailableDateQuery,
+  ) {
+    return this.reservationService.getunAvailableDate(
+      parseInt(param.id, 10),
+      query,
+    );
+  }
+
+  @Get('/community/:id/time-priority')
+  @Auth(API_USER)
+  getUnavailableDateByTimePriority(
+    @Param() param: GetAvailableDateParam,
+    @Query() query: GetUnavailableDateByTimePriorityQuery,
+  ) {
+    return this.reservationService.getUnavailableDateByTimePriority(
+      +param.id,
+      query,
+    );
   }
 }

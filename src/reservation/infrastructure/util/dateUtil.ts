@@ -20,3 +20,23 @@ export const createTimeString = (nowMinute: number) =>
 
 export const calculateUsageTimeString = (start: Date, end: Date) =>
   createTimeString(calculateUsageMinute(start, end));
+
+export const setYearMonthDbDate = (
+  year: number,
+  month: number,
+  addMonth: number,
+  date?: number,
+  hour?: number,
+  minute?: number,
+) =>
+  dayjs()
+    .year(year)
+    .month(month)
+    .date(date ?? 1)
+    .hour(hour ?? 0)
+    .minute(minute ?? 0)
+    .second(0)
+    .millisecond(0)
+    .add(addMonth, 'month')
+    .add(9, 'hour')
+    .toDate();

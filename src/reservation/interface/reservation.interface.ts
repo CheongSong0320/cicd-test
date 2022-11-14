@@ -20,3 +20,20 @@ export interface UpdateReservationBody {
 export interface UpdateReservationQuery {
   id: string;
 }
+
+export interface GetAvailableDateParam {
+  id: string;
+}
+
+export interface GetUnavailableDateQuery {
+  year: string;
+  month: string;
+}
+
+export interface GetUnavailableDateByTimePriorityQuery {
+  year: string;
+  month: string;
+  day: string;
+  startTime: string;
+  endTime: string;
+}

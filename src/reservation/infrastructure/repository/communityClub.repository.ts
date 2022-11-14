@@ -37,4 +37,17 @@ export class CommunityClubRepository {
       },
     });
   }
+
+  findUniqueRelationType(id: number) {
+    return this.prisma.communityClub.findUniqueOrThrow({
+      where: {
+        id,
+      },
+      include: {
+        CommunityClubPerson: true,
+        CommunityClubSeat: true,
+        CommunityClubTimeLimit: true,
+      },
+    });
+  }
 }

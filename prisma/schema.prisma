@@ -81,7 +81,7 @@ enum CommunityClubRestCycle {
 
 model CommunityClubPerson {
   id                      Int                       @id @default(autoincrement())
-  maxCount                Int?
+  maxCount                Int
   reservationOpenDate     Int
   reservationTimeInterval CommunityClubTimeInterval
   communityClubId         Int                       @unique
@@ -90,7 +90,7 @@ model CommunityClubPerson {
 
 model CommunityClubSeat {
   id                      Int                       @id @default(autoincrement())
-  maxCount                Int?
+  maxCount                Int
   reservationOpenDate     Int
   reservationTimeInterval CommunityClubTimeInterval
   communityClubId         Int                       @unique
@@ -105,7 +105,7 @@ enum CommunityClubTimeInterval {
 
 model CommunityClubTimeLimit {
   id                      Int           @id @default(autoincrement())
-  maxCount                Int?
+  maxCount                Int
   reservationTimeInterval Int
   openTime                Int
   closedTime              Int

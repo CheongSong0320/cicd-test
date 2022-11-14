@@ -5,10 +5,13 @@ import { ReservationRepository } from '../infrastructure/repository/reservation.
 import { applicationGroupBy } from '../infrastructure/util/applicationGroupBy';
 import { ReservationValidator } from '../infrastructure/validator/reservation.validator';
 import {
+  GetUnavailableDateQuery,
   GetHistoryBySearchType,
   MakeReservationBody,
   UpdateReservationBody,
   UpdateReservationQuery,
+  GetAvailableDateParam,
+  GetUnavailableDateByTimePriorityQuery,
 } from '../interface/reservation.interface';
 
 @Injectable()
@@ -129,5 +132,59 @@ export class ReservationUserServiceLogic {
     return this.reservationRepository.updateReservation(
       this.reservationValidator.updateReservation(parseInt(query.id, 10), body),
     );
+  }
+
+  async getUnavailableDate(id: number, query: GetUnavailableDateQuery) {
+    const community = await this.communityRepository.findUniqueRelationType(id);
+
+    const maxCount =
+      community.CommunityClubPerson?.maxCount ??
+      community.CommunityClubSeat?.maxCount ??
+      community.CommunityClubTimeLimit?.maxCount ??
+      100000;
+
+    const reservationCount = await this.reservationRepository.groupByAndCount(
+      community.id,
+      query,
+    );
+
+    return {
+      unavailableDate: reservationCount
+        .filter((value) => value._count._all >= maxCount)
+        .map((value) => ({
+          date: value.startDate,
+          seatNumber: value.seatNumber,
+        })),
+    };
+  }
+
+  async getUnavailableDateByTimePriority(
+    id: number,
+    query: {
+      year: number;
+      month: number;
+      day: number;
+      startTime: string;
+      endTime: string;
+    },
+  ) {
+    const community = await this.communityRepository.findUniqueRelationType(id);
+
+    const maxCount = community.CommunityClubTimeLimit?.maxCount ?? 100000;
+
+    const reservationCount = applicationGroupBy(
+      await this.reservationRepository.getUnavailableDateByTimePriority(
+        id,
+        query,
+      ),
+      'seatNumber',
+    );
+
+    return {
+      isAvailableList: [...Array(maxCount)].map((value, index) => ({
+        seatNumber: index + 1,
+        isAvailable: reservationCount[index + 1] ? true : false,
+      })),
+    };
   }
 }
