@@ -89,6 +89,7 @@ export class ReservationValidator {
         id: true,
         startDate: true,
         endDate: true,
+        seatNumber: true,
         CommunityClub: {
           select: {
             name: true,

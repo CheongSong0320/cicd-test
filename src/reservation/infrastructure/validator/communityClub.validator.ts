@@ -1,11 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-import {
-  GetCommunityUsageStatusDetailParam,
-  GetCommunityUsageStatusParam,
-  GetReservationDetailParam,
-  RegisterCommunityBody,
-} from 'src/reservation/interface/community.interface';
+import { RegisterCommunityBody } from 'src/reservation/interface/community.interface';
 
 @Injectable()
 export class CommunityClubValidator {
@@ -27,20 +22,18 @@ export class CommunityClubValidator {
     });
   }
 
-  findByApartmentIdValidator(
-    param: GetCommunityUsageStatusParam | GetCommunityUsageStatusDetailParam,
-  ) {
+  findByApartmentIdValidator(apartmentId: number) {
     return Prisma.validator<Prisma.CommunityClubFindManyArgs>()({
       where: {
-        apartmentId: parseInt(param.apartmentId, 10),
+        apartmentId: apartmentId,
       },
     });
   }
 
-  findCommunityClubWithReservation(param: GetReservationDetailParam) {
+  findCommunityClubWithReservation(apartmentId: number) {
     return Prisma.validator<Prisma.CommunityClubFindManyArgs>()({
       where: {
-        apartmentId: parseInt(param.apartmentId, 10),
+        apartmentId,
         type: 'SEAT_TIME_LMIT',
       },
 

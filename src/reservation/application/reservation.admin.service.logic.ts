@@ -1,3 +1,4 @@
+import { AdminTokenPayload } from '@hanwha-sbi/nestjs-authorization';
 import { Injectable } from '@nestjs/common';
 import { UserType } from '@prisma/client';
 import { CommunityClubRepository } from '../infrastructure/repository/communityClub.repository';
@@ -5,17 +6,13 @@ import { ReservationRepository } from '../infrastructure/repository/reservation.
 import { applicationGroupBy } from '../infrastructure/util/applicationGroupBy';
 import {
   calculateUsageMinute,
-  calculateUsageTimeString,
   createTimeString,
 } from '../infrastructure/util/dateUtil';
 import { CommunityClubValidator } from '../infrastructure/validator/communityClub.validator';
 import { ReservationValidator } from '../infrastructure/validator/reservation.validator';
 import {
   CommunityUsageStatusType,
-  GetCommunityUsageStatusDetailParam,
-  GetCommunityUsageStatusParam,
   RegisterCommunityBody,
-  GetReservationDetailParam,
 } from '../interface/community.interface';
 
 @Injectable()
@@ -40,10 +37,12 @@ export class ReservationAdminServiceLogic {
     );
   }
 
-  async getCommunityUsageStatus(param: GetCommunityUsageStatusParam) {
+  async getCommunityUsageStatus(payload: AdminTokenPayload) {
     const communities = applicationGroupBy(
       await this.communityClubRepository.findByApartmentId(
-        this.communityClubValidator.findByApartmentIdValidator(param),
+        this.communityClubValidator.findByApartmentIdValidator(
+          payload.apartmentId,
+        ),
       ),
       'id',
     );
@@ -113,13 +112,15 @@ export class ReservationAdminServiceLogic {
   }
 
   async getCommunityUsageStatusDetail(
-    param: GetCommunityUsageStatusDetailParam,
+    payload: AdminTokenPayload,
     dong: string,
     ho: string,
   ) {
     const communities = applicationGroupBy(
       await this.communityClubRepository.findByApartmentId(
-        this.communityClubValidator.findByApartmentIdValidator(param),
+        this.communityClubValidator.findByApartmentIdValidator(
+          payload.apartmentId,
+        ),
       ),
       'id',
     );
@@ -196,10 +197,12 @@ export class ReservationAdminServiceLogic {
     };
   }
 
-  async getTimeLimitReservationDetail(param: GetReservationDetailParam) {
+  async getTimeLimitReservationDetail(payload: AdminTokenPayload) {
     const reservationDetail =
       await this.communityClubRepository.findCommunityClubWithReservation(
-        this.communityClubValidator.findCommunityClubWithReservation(param),
+        this.communityClubValidator.findCommunityClubWithReservation(
+          payload.apartmentId,
+        ),
       );
 
     return reservationDetail.map((value) => ({
@@ -212,24 +215,4 @@ export class ReservationAdminServiceLogic {
       ),
     }));
   }
-}
-
-interface usageStatusDetail {
-  dong: number;
-  ho: number;
-  usageUser: [
-    {
-      userName: string;
-      userType: UserType;
-      phoneNumber: string;
-      usageStatus: [
-        {
-          communityName: string;
-          usageCount: string;
-          usageTime: string;
-          usageTimeString: string;
-        },
-      ];
-    },
-  ];
 }

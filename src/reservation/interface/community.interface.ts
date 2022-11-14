@@ -32,22 +32,10 @@ export interface IRegisterCommunityTimeLimitSeatType {
   type: typeof CommunityClubType['SEAT_TIME_LMIT'];
 }
 
-export interface GetCommunityUsageStatusParam {
-  apartmentId: string;
-}
-
-export interface GetCommunityUsageStatusDetailParam {
-  apartmentId: string;
-}
-
 export interface CommunityUsageStatusType {
   communityClubId: number;
   communityName: string;
   usageCount: number;
   usageTime: number;
   viewProperty: 'usageCount' | 'usageTime';
-}
-
-export interface GetReservationDetailParam {
-  apartmentId: string;
 }

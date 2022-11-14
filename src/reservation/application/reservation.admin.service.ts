@@ -1,10 +1,6 @@
+import { AdminTokenPayload } from '@hanwha-sbi/nestjs-authorization';
 import { Injectable } from '@nestjs/common';
-import {
-  GetCommunityUsageStatusDetailParam,
-  GetCommunityUsageStatusParam,
-  RegisterCommunityBody,
-  GetReservationDetailParam,
-} from '../interface/community.interface';
+import { RegisterCommunityBody } from '../interface/community.interface';
 import { ReservationAdminServiceLogic } from './reservation.admin.service.logic';
 
 @Injectable()
@@ -19,23 +15,23 @@ export class ReservationAdminService {
     return this.reservationServiceLogic.registerCommunity(body);
   }
 
-  getCommunityUsageStatus(param: GetCommunityUsageStatusParam) {
-    return this.reservationServiceLogic.getCommunityUsageStatus(param);
+  getCommunityUsageStatus(payload: AdminTokenPayload) {
+    return this.reservationServiceLogic.getCommunityUsageStatus(payload);
   }
 
   getCommunityUsageStatusDetail(
-    param: GetCommunityUsageStatusDetailParam,
+    payload: AdminTokenPayload,
     dong: string,
     ho: string,
   ) {
     return this.reservationServiceLogic.getCommunityUsageStatusDetail(
-      param,
+      payload,
       dong,
       ho,
     );
   }
 
-  getTimeLimitReservationDetail(param: GetReservationDetailParam) {
-    return this.reservationServiceLogic.getTimeLimitReservationDetail(param);
+  getTimeLimitReservationDetail(payload: AdminTokenPayload) {
+    return this.reservationServiceLogic.getTimeLimitReservationDetail(payload);
   }
 }

@@ -18,12 +18,10 @@ export class ReservationUserController {
   }
 
   @Get('/today')
-  // @Auth(API_USER)
-  getTodayReservation() {
-    // @JwtPayload() payload: UserTokenPayload
+  @Auth(API_USER)
+  getTodayReservation(@JwtPayload() payload: UserTokenPayload) {
     return this.reservationService.getTodayReservation(
-      // parseInt(payload.id, 10),
-      1,
+      parseInt(payload.user, 10),
     );
   }
 }
