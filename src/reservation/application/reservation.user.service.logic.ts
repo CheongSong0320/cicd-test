@@ -1,14 +1,20 @@
+import { UserTokenPayload } from '@hanwha-sbi/nestjs-authorization';
 import { Injectable } from '@nestjs/common';
+import { CommunityClubRepository } from '../infrastructure/repository/communityClub.repository';
 import { ReservationRepository } from '../infrastructure/repository/reservation.repository';
 import { applicationGroupBy } from '../infrastructure/util/applicationGroupBy';
 import { ReservationValidator } from '../infrastructure/validator/reservation.validator';
-import { GetHistoryBySearchType } from '../interface/reservation.interface';
+import {
+  GetHistoryBySearchType,
+  MakeReservationBody,
+} from '../interface/reservation.interface';
 
 @Injectable()
 export class ReservationUserServiceLogic {
   constructor(
     private reservationRepository: ReservationRepository,
     private reservationValidator: ReservationValidator,
+    private communityRepository: CommunityClubRepository,
   ) {}
 
   helloReservation() {
@@ -88,5 +94,23 @@ export class ReservationUserServiceLogic {
         }),
       ),
     };
+  }
+
+  async getCommunityClub(apartmentId: number) {
+    return {
+      community: await this.reservationRepository.getCommunityClub(
+        this.reservationValidator.getCommunityClub(apartmentId),
+      ),
+    };
+  }
+
+  async makeReservation(payload: UserTokenPayload, body: MakeReservationBody) {
+    const community = await this.communityRepository.findUniqueOrThrow(
+      body.communityClubId,
+    );
+
+    return this.reservationRepository.makeReservation(
+      this.reservationValidator.makeReservation(payload, body, community),
+    );
   }
 }

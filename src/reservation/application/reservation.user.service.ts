@@ -1,5 +1,9 @@
+import { UserTokenPayload } from '@hanwha-sbi/nestjs-authorization';
 import { Injectable } from '@nestjs/common';
-import { GetHistoryBySearchType } from '../interface/reservation.interface';
+import {
+  GetHistoryBySearchType,
+  MakeReservationBody,
+} from '../interface/reservation.interface';
 import { ReservationUserServiceLogic } from './reservation.user.service.logic';
 
 @Injectable()
@@ -23,5 +27,13 @@ export class ReservationUserService {
       userId,
       searchType,
     );
+  }
+
+  getCommunityClub(apartmentId: number) {
+    return this.reservationServiceLogic.getCommunityClub(apartmentId);
+  }
+
+  makeReservation(payload: UserTokenPayload, body: MakeReservationBody) {
+    return this.reservationServiceLogic.makeReservation(payload, body);
   }
 }

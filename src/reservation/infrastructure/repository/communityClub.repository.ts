@@ -29,4 +29,12 @@ export class CommunityClubRepository {
   ) {
     return this.prisma.communityClub.findMany(args);
   }
+
+  findUniqueOrThrow(id: number) {
+    return this.prisma.communityClub.findUniqueOrThrow({
+      where: {
+        id,
+      },
+    });
+  }
 }

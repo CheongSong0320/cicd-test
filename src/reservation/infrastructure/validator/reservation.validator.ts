@@ -1,6 +1,8 @@
 // Prisma.validator<Prisma.ReservationGroupByArgs>;
+import { UserTokenPayload } from '@hanwha-sbi/nestjs-authorization';
 import { Injectable } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
+import { CommunityClub, Prisma } from '@prisma/client';
+import { MakeReservationBody } from 'src/reservation/interface/reservation.interface';
 import { getDayCalculas } from '../util/dateUtil';
 
 @Injectable()
@@ -138,6 +140,36 @@ export class ReservationValidator {
       },
       include: {
         CommunityClub: true,
+      },
+    });
+  }
+
+  getCommunityClub(apartmentId: number) {
+    return Prisma.validator<Prisma.CommunityClubFindManyArgs>()({
+      where: {
+        apartmentId,
+      },
+    });
+  }
+
+  makeReservation(
+    payload: UserTokenPayload,
+    { startDate, endDate, seatNumber, communityClubId }: MakeReservationBody,
+    community: CommunityClub,
+  ) {
+    return Prisma.validator<Prisma.ReservationCreateArgs>()({
+      data: {
+        startDate,
+        endDate,
+        seatNumber,
+        userId: parseInt(payload.id, 10),
+        dong: payload.apartment!.resident.dong,
+        ho: payload.apartment!.resident.ho,
+        userName: payload.user.name,
+        userType: payload.apartment!.resident.type,
+        userPhone: payload.user.phone,
+        status: 'READY',
+        communityClubId,
       },
     });
   }

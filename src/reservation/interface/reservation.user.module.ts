@@ -6,6 +6,8 @@ import { ReservationUserServiceLogic } from '../application/reservation.user.ser
 import { ReservationUserController } from '../presentation/reservation.user.controller';
 import { ReservationRepository } from '../infrastructure/repository/reservation.repository';
 import { ReservationValidator } from '../infrastructure/validator/reservation.validator';
+import { CommunityClubRepository } from '../infrastructure/repository/communityClub.repository';
+import { CommunityClubValidator } from '../infrastructure/validator/communityClub.validator';
 
 @Module({
   controllers: [ReservationUserController],
@@ -15,6 +17,8 @@ import { ReservationValidator } from '../infrastructure/validator/reservation.va
     PrismaService,
     ReservationRepository,
     ReservationValidator,
+    CommunityClubRepository,
+    CommunityClubValidator,
   ],
 })
 export class UserReservationModule {}

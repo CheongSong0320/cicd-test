@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import {
   API_USER,
   Auth,
@@ -7,7 +7,10 @@ import {
   AdminTokenPayload,
 } from '@hanwha-sbi/nestjs-authorization';
 import { ReservationUserService } from '../application/reservation.user.service';
-import { GetHistoryBySearchType } from '../interface/reservation.interface';
+import {
+  GetHistoryBySearchType,
+  MakeReservationBody,
+} from '../interface/reservation.interface';
 
 @Controller('reservation')
 export class ReservationUserController {
@@ -39,5 +42,22 @@ export class ReservationUserController {
       parseInt(payload.id, 10),
       searchType,
     );
+  }
+
+  @Get('/community')
+  @Auth(API_USER)
+  getCommunityClub(@JwtPayload() payload: UserTokenPayload) {
+    return this.reservationService.getCommunityClub(
+      payload?.apartment?.id ?? 1,
+    );
+  }
+
+  @Post()
+  // @Auth(API_USER)
+  makeReservation(
+    @JwtPayload() payload: UserTokenPayload,
+    @Body() body: MakeReservationBody,
+  ) {
+    return this.reservationService.makeReservation(payload, body);
   }
 }

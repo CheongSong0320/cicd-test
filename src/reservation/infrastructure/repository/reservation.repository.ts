@@ -51,4 +51,12 @@ export class ReservationRepository {
   ) {
     return this.prisma.reservation.findMany(args);
   }
+
+  getCommunityClub(args: ReturnType<ReservationValidator['getCommunityClub']>) {
+    return this.prisma.communityClub.findMany(args);
+  }
+
+  makeReservation(args: ReturnType<ReservationValidator['makeReservation']>) {
+    return this.prisma.reservation.create(args);
+  }
 }
