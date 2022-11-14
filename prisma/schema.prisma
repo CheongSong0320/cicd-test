@@ -20,7 +20,7 @@ model Reservation {
   isMemberShip    Boolean?
   status          ReservationStatus
   communityClubId Int
-  userId          Int
+  userId          String
   membershipId    Int?
   userName        String
   userType        UserType

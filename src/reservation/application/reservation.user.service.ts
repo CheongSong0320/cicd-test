@@ -16,15 +16,15 @@ export class ReservationUserService {
     return this.reservationServiceLogic.helloReservation();
   }
 
-  getTodayReservation(userId: number) {
+  getTodayReservation(userId: string) {
     return this.reservationServiceLogic.getTodayReservation(userId);
   }
 
-  findReservationByCommunity(userId: number) {
+  findReservationByCommunity(userId: string) {
     return this.reservationServiceLogic.findReservationByCommunity(userId);
   }
 
-  getHistoryByQueryType(userId: number, searchType: GetHistoryBySearchType) {
+  getHistoryByQueryType(userId: string, searchType: GetHistoryBySearchType) {
     return this.reservationServiceLogic.getHistoryByQueryType(
       userId,
       searchType,

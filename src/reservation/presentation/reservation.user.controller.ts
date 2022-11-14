@@ -6,7 +6,8 @@ import {
   Param,
   Post,
   Query,
-  Update,
+  Put,
+  Patch,
 } from '@nestjs/common';
 import {
   API_USER,
@@ -31,17 +32,13 @@ export class ReservationUserController {
   @Get()
   @Auth(API_USER)
   findReservationByCommunity(@JwtPayload() payload: UserTokenPayload) {
-    return this.reservationService.findReservationByCommunity(
-      parseInt(payload.id, 10),
-    );
+    return this.reservationService.findReservationByCommunity(payload.id);
   }
 
   @Get('/today')
   @Auth(API_USER)
   getTodayReservation(@JwtPayload() payload: UserTokenPayload) {
-    return this.reservationService.getTodayReservation(
-      parseInt(payload.id, 10),
-    );
+    return this.reservationService.getTodayReservation(payload.id);
   }
 
   @Get('history')
@@ -51,7 +48,7 @@ export class ReservationUserController {
     @Query('searchType') searchType: GetHistoryBySearchType,
   ) {
     return this.reservationService.getHistoryByQueryType(
-      parseInt(payload.id, 10),
+      payload.id,
       searchType,
     );
   }
@@ -82,7 +79,7 @@ export class ReservationUserController {
     return this.reservationService.deleteReservation(parseInt(query.id, 10));
   }
 
-  @Update(':id')
+  @Patch(':id')
   @Auth(API_USER)
   updateReservation(
     @JwtPayload() payload: UserTokenPayload,

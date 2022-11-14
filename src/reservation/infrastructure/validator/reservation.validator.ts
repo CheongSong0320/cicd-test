@@ -79,7 +79,7 @@ export class ReservationValidator {
     });
   }
 
-  findTodayReservation(userId: number) {
+  findTodayReservation(userId: string) {
     return Prisma.validator<Prisma.ReservationFindManyArgs>()({
       where: {
         userId,
@@ -107,7 +107,7 @@ export class ReservationValidator {
     });
   }
 
-  findReservationByCommunity(userId: number) {
+  findReservationByCommunity(userId: string) {
     return Prisma.validator<Prisma.ReservationFindManyArgs>()({
       where: {
         startDate: {
@@ -130,7 +130,7 @@ export class ReservationValidator {
     });
   }
 
-  getHistoryByQueryType(userId: number) {
+  getHistoryByQueryType(userId: string) {
     return Prisma.validator<Prisma.ReservationFindManyArgs>()({
       where: {
         userId,
@@ -165,7 +165,7 @@ export class ReservationValidator {
         startDate,
         endDate,
         seatNumber,
-        userId: parseInt(payload.id, 10),
+        userId: payload.id,
         dong: payload.apartment!.resident.dong,
         ho: payload.apartment!.resident.ho,
         userName: payload.user.name,

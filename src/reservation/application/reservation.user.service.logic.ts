@@ -23,7 +23,7 @@ export class ReservationUserServiceLogic {
     return this.reservationRepository.findMany();
   }
 
-  async getTodayReservation(userId: number) {
+  async getTodayReservation(userId: string) {
     const todayReservations =
       await this.reservationRepository.findTodayReservation(
         this.reservationValidator.findTodayReservation(userId),
@@ -37,7 +37,7 @@ export class ReservationUserServiceLogic {
     }));
   }
 
-  async findReservationByCommunity(userId: number) {
+  async findReservationByCommunity(userId: string) {
     const reservationGroupByCommunity = applicationGroupBy(
       await this.reservationRepository.findReservationByCommunity(
         this.reservationValidator.findReservationByCommunity(userId),
@@ -63,7 +63,7 @@ export class ReservationUserServiceLogic {
   }
 
   async getHistoryByQueryType(
-    userId: number,
+    userId: string,
     searchType: GetHistoryBySearchType,
   ) {
     const groupByDateReservationHistory = applicationGroupBy(
