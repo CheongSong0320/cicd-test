@@ -34,4 +34,17 @@ export class ReservationAdminService {
   getTimeLimitReservationDetail(payload: AdminTokenPayload) {
     return this.reservationServiceLogic.getTimeLimitReservationDetail(payload);
   }
+
+  getCommunityClubs(payload: AdminTokenPayload) {
+    return this.reservationServiceLogic.getCommunityClubs(payload);
+  }
+
+  getReservationByCommunityClub(
+    payload: AdminTokenPayload,
+    communityClubId: number,
+  ) {
+    return this.reservationServiceLogic.getReservationByCommunityClub(
+      communityClubId,
+    );
+  }
 }

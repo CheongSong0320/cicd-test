@@ -144,4 +144,12 @@ export class ReservationRepository {
       },
     });
   }
+
+  getReservationByCommunityClub(communityClubId: number) {
+    return this.prisma.reservation.findMany({
+      where: {
+        communityClubId,
+      },
+    });
+  }
 }

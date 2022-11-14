@@ -47,4 +47,22 @@ export class ReservationAdminController {
   getTimeLimitReservationDetail(@JwtPayload() payload: AdminTokenPayload) {
     return this.reservationService.getTimeLimitReservationDetail(payload);
   }
+
+  @Get('/community')
+  @Auth(API_ADMIN)
+  getCommunityClubs(@JwtPayload() payload: AdminTokenPayload) {
+    return this.reservationService.getCommunityClubs(payload);
+  }
+
+  @Get('/:communityClubId')
+  @Auth(API_ADMIN)
+  getReservationByCommunityClub(
+    @JwtPayload() payload: AdminTokenPayload,
+    @Param('communityClubId') communityClubId: string,
+  ) {
+    return this.reservationService.getReservationByCommunityClub(
+      payload,
+      +communityClubId,
+    );
+  }
 }

@@ -50,4 +50,19 @@ export class CommunityClubRepository {
       },
     });
   }
+
+  getCommunityClubsAdmin(apartmentId: number) {
+    return this.prisma.communityClub.findMany({
+      where: {
+        apartmentId,
+      },
+      select: {
+        id: true,
+        name: true,
+        CommunityClubPerson: true,
+        CommunityClubSeat: true,
+        CommunityClubTimeLimit: true,
+      },
+    });
+  }
 }

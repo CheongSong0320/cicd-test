@@ -215,4 +215,16 @@ export class ReservationAdminServiceLogic {
       ),
     }));
   }
+
+  async getCommunityClubs(payload: AdminTokenPayload) {
+    return this.communityClubRepository.getCommunityClubsAdmin(
+      payload.apartmentId,
+    );
+  }
+
+  async getReservationByCommunityClub(communityClubId: number) {
+    return this.reservationRepository.getReservationByCommunityClub(
+      communityClubId,
+    );
+  }
 }
