@@ -84,6 +84,9 @@ export class ReservationValidator {
         endDate: {
           lt: getDayCalculas(1),
         },
+        status: {
+          in: ['READY', 'PENDING'],
+        },
       },
       select: {
         id: true,
@@ -95,6 +98,46 @@ export class ReservationValidator {
             name: true,
           },
         },
+      },
+    });
+  }
+
+  findReservationByCommunity(userId: number) {
+    return Prisma.validator<Prisma.ReservationFindManyArgs>()({
+      where: {
+        startDate: {
+          gte: getDayCalculas(0),
+        },
+        userId,
+      },
+      select: {
+        id: true,
+        startDate: true,
+        endDate: true,
+        seatNumber: true,
+        communityClubId: true,
+        CommunityClub: {
+          select: {
+            name: true,
+          },
+        },
+      },
+    });
+  }
+
+  getHistoryByQueryType(userId: number) {
+    return Prisma.validator<Prisma.ReservationFindManyArgs>()({
+      where: {
+        userId,
+        startDate: {
+          gte: getDayCalculas(-31),
+        },
+        endDate: {
+          lt: getDayCalculas(0),
+        },
+      },
+      include: {
+        CommunityClub: true,
       },
     });
   }

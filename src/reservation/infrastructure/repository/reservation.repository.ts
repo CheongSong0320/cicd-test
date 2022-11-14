@@ -39,4 +39,16 @@ export class ReservationRepository {
   ) {
     return this.prisma.reservation.findMany(args);
   }
+
+  findReservationByCommunity(
+    args: ReturnType<ReservationValidator['findReservationByCommunity']>,
+  ) {
+    return this.prisma.reservation.findMany(args);
+  }
+
+  getHistoryByQueryType(
+    args: ReturnType<ReservationValidator['getHistoryByQueryType']>,
+  ) {
+    return this.prisma.reservation.findMany(args);
+  }
 }

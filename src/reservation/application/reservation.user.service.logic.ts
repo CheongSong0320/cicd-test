@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { ReservationRepository } from '../infrastructure/repository/reservation.repository';
+import { applicationGroupBy } from '../infrastructure/util/applicationGroupBy';
 import { ReservationValidator } from '../infrastructure/validator/reservation.validator';
+import { GetHistoryBySearchType } from '../interface/reservation.interface';
 
 @Injectable()
 export class ReservationUserServiceLogic {
@@ -25,5 +27,66 @@ export class ReservationUserServiceLogic {
       endDate: value.endDate,
       communityClubName: value.CommunityClub.name,
     }));
+  }
+
+  async findReservationByCommunity(userId: number) {
+    const reservationGroupByCommunity = applicationGroupBy(
+      await this.reservationRepository.findReservationByCommunity(
+        this.reservationValidator.findReservationByCommunity(userId),
+      ),
+      'communityClubId',
+    );
+
+    return {
+      reservation: Object.entries(reservationGroupByCommunity).map(
+        ([_, value]) => {
+          return {
+            communityName: value[0].CommunityClub.name,
+            reservation: value.flatMap((value) => ({
+              id: value.id,
+              startDate: value.startDate,
+              endDate: value.endDate,
+              seatNumber: value.seatNumber,
+            })),
+          };
+        },
+      ),
+    };
+  }
+
+  async getHistoryByQueryType(
+    userId: number,
+    searchType: GetHistoryBySearchType,
+  ) {
+    const groupByDateReservationHistory = applicationGroupBy(
+      await this.reservationRepository.getHistoryByQueryType(
+        this.reservationValidator.getHistoryByQueryType(userId),
+      ),
+      (args) =>
+        searchType === 'date'
+          ? args.startDate.toISOString().split('T')[0]
+          : args.communityClubId,
+    );
+
+    return {
+      reservation: Object.entries(groupByDateReservationHistory).map(
+        ([key, value]) => ({
+          date: searchType === 'date' ? key : undefined,
+          communityClubId: searchType === 'community' ? key : undefined,
+          communityName:
+            searchType === 'community'
+              ? value[0].CommunityClub.name
+              : undefined,
+          reservation: value.flatMap((value) => ({
+            id: value.id,
+            startDate: value.startDate,
+            endDate: value.endDate,
+            seatNumber: value.seatNumber,
+            communityName:
+              searchType === 'date' ? value.CommunityClub.name : undefined,
+          })),
+        }),
+      ),
+    };
   }
 }
