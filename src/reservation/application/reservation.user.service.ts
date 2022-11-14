@@ -3,6 +3,8 @@ import { Injectable } from '@nestjs/common';
 import {
   GetHistoryBySearchType,
   MakeReservationBody,
+  UpdateReservationBody,
+  UpdateReservationQuery,
 } from '../interface/reservation.interface';
 import { ReservationUserServiceLogic } from './reservation.user.service.logic';
 
@@ -35,5 +37,16 @@ export class ReservationUserService {
 
   makeReservation(payload: UserTokenPayload, body: MakeReservationBody) {
     return this.reservationServiceLogic.makeReservation(payload, body);
+  }
+
+  deleteReservation(id: number) {
+    return this.reservationServiceLogic.deleteReservation(id);
+  }
+
+  updateReservation(
+    query: UpdateReservationQuery,
+    body: UpdateReservationBody,
+  ) {
+    return this.reservationServiceLogic.updateReservation(query, body);
   }
 }

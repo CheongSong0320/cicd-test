@@ -7,6 +7,8 @@ import { ReservationValidator } from '../infrastructure/validator/reservation.va
 import {
   GetHistoryBySearchType,
   MakeReservationBody,
+  UpdateReservationBody,
+  UpdateReservationQuery,
 } from '../interface/reservation.interface';
 
 @Injectable()
@@ -111,6 +113,21 @@ export class ReservationUserServiceLogic {
 
     return this.reservationRepository.makeReservation(
       this.reservationValidator.makeReservation(payload, body, community),
+    );
+  }
+
+  deleteReservation(id: number) {
+    return this.reservationRepository.deleteReservation(
+      this.reservationValidator.deleteReservation(id),
+    );
+  }
+
+  updateReservation(
+    query: UpdateReservationQuery,
+    body: UpdateReservationBody,
+  ) {
+    return this.reservationRepository.updateReservation(
+      this.reservationValidator.updateReservation(parseInt(query.id, 10), body),
     );
   }
 }

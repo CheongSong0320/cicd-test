@@ -59,4 +59,16 @@ export class ReservationRepository {
   makeReservation(args: ReturnType<ReservationValidator['makeReservation']>) {
     return this.prisma.reservation.create(args);
   }
+
+  deleteReservation(
+    args: ReturnType<ReservationValidator['deleteReservation']>,
+  ) {
+    return this.prisma.reservation.update(args);
+  }
+
+  updateReservation(
+    args: ReturnType<ReservationValidator['updateReservation']>,
+  ) {
+    return this.prisma.reservation.update(args);
+  }
 }

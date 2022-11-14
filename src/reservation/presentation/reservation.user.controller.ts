@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Query,
+  Update,
+} from '@nestjs/common';
 import {
   API_USER,
   Auth,
@@ -8,8 +17,11 @@ import {
 } from '@hanwha-sbi/nestjs-authorization';
 import { ReservationUserService } from '../application/reservation.user.service';
 import {
+  DeleteReservationQuery,
   GetHistoryBySearchType,
   MakeReservationBody,
+  UpdateReservationBody,
+  UpdateReservationQuery,
 } from '../interface/reservation.interface';
 
 @Controller('reservation')
@@ -53,11 +65,30 @@ export class ReservationUserController {
   }
 
   @Post()
-  // @Auth(API_USER)
+  @Auth(API_USER)
   makeReservation(
     @JwtPayload() payload: UserTokenPayload,
     @Body() body: MakeReservationBody,
   ) {
     return this.reservationService.makeReservation(payload, body);
+  }
+
+  @Delete(':id')
+  @Auth(API_USER)
+  deleteReservation(
+    @JwtPayload() payload: UserTokenPayload,
+    @Query() query: DeleteReservationQuery,
+  ) {
+    return this.reservationService.deleteReservation(parseInt(query.id, 10));
+  }
+
+  @Update(':id')
+  @Auth(API_USER)
+  updateReservation(
+    @JwtPayload() payload: UserTokenPayload,
+    @Query() query: UpdateReservationQuery,
+    @Body() body: UpdateReservationBody,
+  ) {
+    return this.reservationService.updateReservation(query, body);
   }
 }

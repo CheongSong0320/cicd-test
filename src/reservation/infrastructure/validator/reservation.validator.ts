@@ -2,7 +2,10 @@
 import { UserTokenPayload } from '@hanwha-sbi/nestjs-authorization';
 import { Injectable } from '@nestjs/common';
 import { CommunityClub, Prisma } from '@prisma/client';
-import { MakeReservationBody } from 'src/reservation/interface/reservation.interface';
+import {
+  MakeReservationBody,
+  UpdateReservationBody,
+} from 'src/reservation/interface/reservation.interface';
 import { getDayCalculas } from '../util/dateUtil';
 
 @Injectable()
@@ -170,6 +173,28 @@ export class ReservationValidator {
         userPhone: payload.user.phone,
         status: 'READY',
         communityClubId,
+      },
+    });
+  }
+
+  deleteReservation(id: number) {
+    return Prisma.validator<Prisma.ReservationUpdateArgs>()({
+      data: {
+        status: 'CANCELLED',
+      },
+      where: {
+        id,
+      },
+    });
+  }
+
+  updateReservation(id: number, body: UpdateReservationBody) {
+    return Prisma.validator<Prisma.ReservationUpdateArgs>()({
+      data: {
+        ...body,
+      },
+      where: {
+        id,
       },
     });
   }
