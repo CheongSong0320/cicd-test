@@ -38,3 +38,4 @@ lerna-debug.log*
 .npmrc
 
 *.key
+reset_fk.ts

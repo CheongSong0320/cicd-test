@@ -61,9 +61,7 @@ export class CommunityClubRepository {
       where: {
         apartmentId,
       },
-      select: {
-        id: true,
-        name: true,
+      include: {
         CommunityClubPerson: true,
         CommunityClubSeat: true,
         CommunityClubTimeLimit: true,
