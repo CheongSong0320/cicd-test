@@ -15,9 +15,14 @@ export class CommunityClubValidator {
         CommunityClubSeat:
           body.type === 'SEAT' ? { create: body.communityClubSeat } : undefined,
         CommunityClubTimeLimit:
-          body.type === 'SEAT_TIME_LMIT'
+          body.type === 'SEAT_TIME_LMIT' || body.type === 'PERSON_TIME_LIMIT'
             ? { create: body.communityClubTimeLimit }
             : undefined,
+      },
+      include: {
+        CommunityClubPerson: true,
+        CommunityClubSeat: true,
+        CommunityClubTimeLimit: true,
       },
     });
   }

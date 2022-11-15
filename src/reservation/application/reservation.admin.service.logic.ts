@@ -38,31 +38,30 @@ export class ReservationAdminServiceLogic {
   }
 
   async getCommunityUsageStatus(payload: AdminTokenPayload) {
-    const communities = applicationGroupBy(
-      await this.communityClubRepository.findByApartmentId(
-        this.communityClubValidator.findByApartmentIdValidator(
-          payload.apartmentId,
-        ),
+    const communities = await this.communityClubRepository.findByApartmentId(
+      this.communityClubValidator.findByApartmentIdValidator(
+        payload.apartmentId,
       ),
-      'id',
     );
+    const communityMap = applicationGroupBy(communities, 'id');
 
     const reservationList = applicationGroupBy(
       await this.reservationRepository.findByCommunityClubIds(
         this.reservationValidator.findByCommunityClubIds(
-          Object.keys(communities).map(Number),
+          Object.keys(communityMap).map(Number),
         ),
       ),
       (args) => `${args.dong}_${args.ho}_${args.communityClubId}`,
     );
 
     return {
+      communities: communities.map((value) => value.name),
       usageStatus: Object.values(
         Object.entries(reservationList).reduce(
           (curr, [key, value]) => {
             const [dong, ho, communityClubId] = key.split('_');
             const now = curr[dong + ho] ?? { dong, ho, usageStatus: [] };
-            const nowCommunity = communities[communityClubId][0];
+            const nowCommunity = communityMap[communityClubId][0];
 
             const { usageCount, usageTime } = value.reduce(
               (innerCurr, innerPrev) => {
@@ -116,18 +115,17 @@ export class ReservationAdminServiceLogic {
     dong: string,
     ho: string,
   ) {
-    const communities = applicationGroupBy(
-      await this.communityClubRepository.findByApartmentId(
-        this.communityClubValidator.findByApartmentIdValidator(
-          payload.apartmentId,
-        ),
+    const communities = await this.communityClubRepository.findByApartmentId(
+      this.communityClubValidator.findByApartmentIdValidator(
+        payload.apartmentId,
       ),
-      'id',
     );
+
+    const communityMap = applicationGroupBy(communities, 'id');
 
     const usageByUser = await this.reservationRepository.findWithCommunityClub(
       this.reservationValidator.findWithCommunityClub(
-        Object.keys(communities).map(Number),
+        Object.keys(communityMap).map(Number),
         dong,
         ho,
       ),
@@ -143,7 +141,7 @@ export class ReservationAdminServiceLogic {
       const { userName, userType, userPhone } = value[0];
       const v = value.reduce(
         (innerCurr, innerPrev) => {
-          const nowCommunity = communities[innerPrev.communityClubId][0];
+          const nowCommunity = communityMap[innerPrev.communityClubId][0];
 
           return {
             communityName: nowCommunity.name,
@@ -192,6 +190,7 @@ export class ReservationAdminServiceLogic {
     });
 
     return {
+      communities: communities.map((value) => value.name),
       usageByUser,
       usageByHouseHold: groupBy2depth,
     };

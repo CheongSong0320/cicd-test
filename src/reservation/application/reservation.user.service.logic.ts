@@ -162,11 +162,10 @@ export class ReservationUserServiceLogic {
       community.CommunityClubTimeLimit?.maxCount ??
       100000;
 
-    const reservationCount =
-      await this.reservationRepository.countTodayReservation(
-        community.id,
-        query,
-      );
+    const reservationCount = await this.reservationRepository.groupByAndCount(
+      community.id,
+      query,
+    );
 
     return {
       unavailableDate: reservationCount

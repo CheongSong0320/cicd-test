@@ -152,6 +152,11 @@ export class ReservationValidator {
       where: {
         apartmentId,
       },
+      include: {
+        CommunityClubPerson: true,
+        CommunityClubSeat: true,
+        CommunityClubTimeLimit: true,
+      },
     });
   }
 

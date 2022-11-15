@@ -13,6 +13,7 @@ datasource db {
 
 model Reservation {
   id              Int               @id @default(autoincrement())
+  createdAt     DateTime  @default(now())
   startDate       DateTime
   endDate         DateTime
   dong            String
@@ -43,22 +44,22 @@ enum ReservationStatus {
 }
 
 model CommunityClub {
-  id                     Int                     @id @default(autoincrement())
-  name                   String
-  target                 CommunityClubTarget
-  type                   CommunityClubType
-  freeCountPerHouse      Int                     @default(0)
-  maxCountPerHouse       Int?
-  resetCycle             CommunityClubRestCycle
-  signOffOn              Boolean
-  isWating               Boolean
-  memo                   String
-  apartmentId            Int
-  CommunityClubPerson    CommunityClubPerson?
-  CommunityClubSeat      CommunityClubSeat?
-  CommunityClubTimeLimit CommunityClubTimeLimit?
-  Reservation            Reservation[]
-  Membership             Membership[]
+  id                           Int                           @id @default(autoincrement())
+  name                         String
+  target                       CommunityClubTarget
+  type                         CommunityClubType
+  freeCountPerHouse            Int                           @default(0)
+  maxCountPerHouse             Int?
+  resetCycle                   CommunityClubRestCycle
+  signOffOn                    Boolean
+  isWating                     Boolean
+  memo                         String
+  apartmentId                  Int
+  CommunityClubPerson          CommunityClubPerson?
+  CommunityClubSeat            CommunityClubSeat?
+  CommunityClubTimeLimit       CommunityClubTimeLimit?
+  Reservation                  Reservation[]
+  Membership                   Membership[]
 }
 
 enum CommunityClubTarget {
@@ -69,6 +70,7 @@ enum CommunityClubTarget {
 
 enum CommunityClubType {
   PERSON
+  PERSON_TIME_LIMIT
   SEAT
   SEAT_TIME_LMIT
 }

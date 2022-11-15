@@ -29,7 +29,9 @@ export interface IRegisterCommunityTimeLimitSeatType {
     CommunityClubTimeLimit,
     'id' | 'community_club_id'
   >;
-  type: typeof CommunityClubType['SEAT_TIME_LMIT'];
+  type:
+    | typeof CommunityClubType['SEAT_TIME_LMIT']
+    | typeof CommunityClubType['PERSON_TIME_LIMIT'];
 }
 
 export interface CommunityUsageStatusType {
