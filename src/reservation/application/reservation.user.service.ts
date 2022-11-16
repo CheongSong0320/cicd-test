@@ -10,6 +10,7 @@ import {
   GetUnavailableDateByTimePriorityQuery,
   GetTimeTableQuery,
   GetAvailableDateQuery,
+  GetAvailableSlotQuery,
 } from '../interface/reservation.interface';
 import { ReservationUserServiceLogic } from './reservation.user.service.logic';
 
@@ -84,5 +85,9 @@ export class ReservationUserService {
 
   getAvailableDate(id: number, query: GetAvailableDateQuery) {
     return this.reservationServiceLogic.getAvailableDate(id, query);
+  }
+
+  getAvailableSlot(id: number, query: GetAvailableSlotQuery) {
+    return this.reservationServiceLogic.getAvailableSlot(id, query);
   }
 }

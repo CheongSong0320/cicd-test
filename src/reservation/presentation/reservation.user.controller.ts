@@ -29,6 +29,7 @@ import {
   GetTimeTableParam,
   GetTimeTableQuery,
   GetAvailableDateQuery,
+  GetAvailableSlotQuery,
 } from '../interface/reservation.interface';
 
 @Controller('reservation')
@@ -138,12 +139,12 @@ export class ReservationUserController {
     return this.reservationService.getTimeTable(+param.id, query);
   }
 
-  @Get('community/:id/reservation-available/slot')
+  @Get('community/:id/reservation-available/slots')
   @Auth(API_USER)
   getAvailableSlot(
     @Param() param: GetAvailableDateParam,
-    @Query() query: GetAvailableDateQuery,
+    @Query() query: GetAvailableSlotQuery,
   ) {
-    return this.reservationService.getAvailableDate(+param.id, query);
+    return this.reservationService.getAvailableSlot(+param.id, query);
   }
 }

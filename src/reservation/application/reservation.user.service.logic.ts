@@ -14,6 +14,7 @@ import {
   UpdateReservationQuery,
   GetTimeTableQuery,
   GetAvailableDateQuery,
+  GetAvailableSlotQuery,
 } from '../interface/reservation.interface';
 
 @Injectable()
@@ -228,13 +229,16 @@ export class ReservationUserServiceLogic {
     return { startDate, endDate };
   }
 
-  async getAvailableDate(id: number, query: GetAvailableDateQuery) {
+  async getAvailableDate(id: number, { month, seat }: GetAvailableDateQuery) {
+    const nowYear = new Date().getFullYear();
+
     const community = await this.communityRepository.findUniqueRelationType(id);
 
     const reservations = await this.reservationRepository.getAvailableDate(
       id,
-      +query.month,
-      query?.seat,
+      setYearMonthDbDate(nowYear, +month, -1),
+      setYearMonthDbDate(nowYear, +month, -1),
+      seat,
     );
 
     const val = (() => {
@@ -286,7 +290,7 @@ export class ReservationUserServiceLogic {
           const nowSlotMaxCount =
             (timeLimit.closedTime - timeLimit.openTime) *
             (60 / timeLimit.reservationTimeInterval) *
-            (query.seat ? 1 : timeLimit.maxCount);
+            (seat ? 1 : timeLimit.maxCount);
 
           const val = Object.entries(
             applicationGroupBy(
@@ -316,9 +320,9 @@ export class ReservationUserServiceLogic {
           const nowSlotMaxCount =
             (timeLimit.closedTime - timeLimit.openTime) *
             (60 / timeLimit.reservationTimeInterval) *
-            (query.seat ? 1 : timeLimit.maxCount);
+            (seat ? 1 : timeLimit.maxCount);
 
-          const nowSeatMaxCount = query.seat ? 1 : timeLimit.maxCount;
+          const nowSeatMaxCount = seat ? 1 : timeLimit.maxCount;
 
           console.log({ nowSlotMaxCount, nowSeatMaxCount });
 
@@ -376,12 +380,12 @@ export class ReservationUserServiceLogic {
     const dates = Array.from(
       {
         length: dayjs()
-          .month(query.month - 1)
+          .month(month - 1)
           .daysInMonth(),
       },
       (v, i) => ({
         date: dayjs()
-          .month(query.month - 1)
+          .month(month - 1)
           .date(i + 1)
           .hour(9)
           .minute(0)
@@ -400,6 +404,75 @@ export class ReservationUserServiceLogic {
 
     return {
       dates: dates.map((value) => valDict[value.date]?.[0] ?? value),
+    };
+  }
+
+  async getAvailableSlot(id: number, { date, seat }: GetAvailableSlotQuery) {
+    const [year, month, day] = date.split('T')[0].split('-');
+    const community = await this.communityRepository.findUniqueRelationType(id);
+
+    const timeLimit = community.CommunityClubTimeLimit!;
+
+    const { openTime, closedTime, maxCount, reservationTimeInterval } =
+      timeLimit;
+
+    const reservations = await this.reservationRepository.getAvailableDate(
+      id,
+      setYearMonthDbDate(+year, +month, -1, +day),
+      setYearMonthDbDate(+year, +month, -1, +day + 1),
+      seat,
+    );
+
+    const slotPerTime = 60 / reservationTimeInterval;
+
+    const slots = Array(24 * slotPerTime)
+      .fill(0)
+      .map((_, i) => {
+        return {
+          time: (
+            '0' +
+            ~~(i / slotPerTime) +
+            ':0' +
+            60 * ((i / slotPerTime) % 1)
+          ).replace(/\d(\d\d)/g, '$1'),
+        };
+      })
+      .reduce(
+        (prev, curr) =>
+          Object.assign(
+            { ...prev },
+            (() => {
+              const thisTime = +curr.time.split(':')[0];
+              return thisTime >= openTime && thisTime < closedTime
+                ? { [curr.time]: 0 }
+                : {};
+            })(),
+          ),
+        {} as { [key: string]: number },
+      );
+
+    reservations.map((value) => {
+      const [startHour] = value.startDate
+        .toISOString()
+        .split('T')[1]
+        .split(':');
+      const [endHour] = value.endDate.toISOString().split('T')[1].split(':');
+
+      for (let i = +startHour; i < +endHour; i++)
+        for (let j = 0; j < slotPerTime; j++) {
+          const textDate = `${i < 10 ? `0${i}` : i}:${
+            j * reservationTimeInterval || '00'
+          }`;
+
+          slots[textDate]++;
+        }
+    });
+
+    return {
+      slots: Object.entries(slots).map(([key, value]) => ({
+        slotId: key,
+        isAvailable: value < (seat ? 1 : maxCount) ? true : false,
+      })),
     };
   }
 }

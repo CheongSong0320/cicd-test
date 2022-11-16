@@ -183,8 +183,12 @@ export class ReservationRepository {
     });
   }
 
-  getAvailableDate(communityClubId: number, month: number, seat?: number) {
-    const nowYear = new Date().getFullYear();
+  getAvailableDate(
+    communityClubId: number,
+    startDate: Date,
+    endDate: Date,
+    seat?: number,
+  ) {
     return this.prisma.reservation.findMany({
       where: {
         communityClubId,
@@ -193,10 +197,10 @@ export class ReservationRepository {
           not: 'CANCELLED',
         },
         startDate: {
-          gte: setYearMonthDbDate(nowYear, +month, -1),
+          gte: startDate,
         },
         endDate: {
-          lt: setYearMonthDbDate(nowYear, +month, 0),
+          lt: endDate,
         },
       },
     });

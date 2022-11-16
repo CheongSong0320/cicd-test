@@ -56,16 +56,7 @@ export interface GetAvailableDateQuery {
   seat?: number;
 }
 
-// export interface GetAvailableDateSlotType {
-//   seat: number;
-//   type: 'SLOT';
-// }
-
-// export interface GetAvailableDateSeatType {
-//   date: Date;
-//   type: 'SEAT';
-// }
-
-// export type GetAvailableDateQuery =
-//   | GetAvailableDateSeatType
-//   | GetAvailableDateSlotType;
+export interface GetAvailableSlotQuery {
+  date: string;
+  seat?: number;
+}
