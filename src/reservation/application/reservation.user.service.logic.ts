@@ -286,7 +286,7 @@ export class ReservationUserServiceLogic {
           const nowSlotMaxCount =
             (timeLimit.closedTime - timeLimit.openTime) *
             (60 / timeLimit.reservationTimeInterval) *
-            timeLimit.maxCount;
+            (query.seat ? 1 : timeLimit.maxCount);
 
           const val = Object.entries(
             applicationGroupBy(
@@ -298,7 +298,7 @@ export class ReservationUserServiceLogic {
               (prev, curr) =>
                 prev +
                 (curr.endDate.getTime() - curr.startDate.getTime()) /
-                  (60 * 60 * 1000),
+                  ((60 / timeLimit.reservationTimeInterval) * 60 * 1000),
               0,
             );
             return {
@@ -316,9 +316,9 @@ export class ReservationUserServiceLogic {
           const nowSlotMaxCount =
             (timeLimit.closedTime - timeLimit.openTime) *
             (60 / timeLimit.reservationTimeInterval) *
-            timeLimit.maxCount;
+            (query.seat ? 1 : timeLimit.maxCount);
 
-          const nowSeatMaxCount = timeLimit.maxCount;
+          const nowSeatMaxCount = query.seat ? 1 : timeLimit.maxCount;
 
           console.log({ nowSlotMaxCount, nowSeatMaxCount });
 
@@ -336,7 +336,7 @@ export class ReservationUserServiceLogic {
 
                 const slots =
                   (curr.endDate.getTime() - curr.startDate.getTime()) /
-                  (60 * 60 * 1000);
+                  ((60 / timeLimit.reservationTimeInterval) * 60 * 1000);
 
                 return {
                   ...prev,
@@ -388,7 +388,7 @@ export class ReservationUserServiceLogic {
           .second(0)
           .millisecond(0)
           .toISOString(),
-        isAvailableDay: true,
+        isAvailableDay: community.type === 'PERSON' ? true : undefined,
         availableSlotsCount: val.nowSlotMaxCount,
         availableSeatsCount: val.nowSeatMaxCount,
       }),

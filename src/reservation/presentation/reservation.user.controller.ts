@@ -137,4 +137,13 @@ export class ReservationUserController {
   ) {
     return this.reservationService.getTimeTable(+param.id, query);
   }
+
+  @Get('community/:id/reservation-available/slot')
+  @Auth(API_USER)
+  getAvailableSlot(
+    @Param() param: GetAvailableDateParam,
+    @Query() query: GetAvailableDateQuery,
+  ) {
+    return this.reservationService.getAvailableDate(+param.id, query);
+  }
 }

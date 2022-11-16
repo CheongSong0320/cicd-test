@@ -188,7 +188,7 @@ export class ReservationRepository {
     return this.prisma.reservation.findMany({
       where: {
         communityClubId,
-        seatNumber: seat,
+        seatNumber: seat ? +seat : seat,
         status: {
           not: 'CANCELLED',
         },
