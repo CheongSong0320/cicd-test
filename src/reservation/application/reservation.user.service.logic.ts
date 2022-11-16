@@ -237,8 +237,6 @@ export class ReservationUserServiceLogic {
       query?.seat,
     );
 
-    const year = new Date().getFullYear();
-
     const val = (() => {
       switch (community.type) {
         case 'PERSON': {
@@ -390,6 +388,7 @@ export class ReservationUserServiceLogic {
           .second(0)
           .millisecond(0)
           .toISOString(),
+        isAvailableDay: true,
         availableSlotsCount: val.nowSlotMaxCount,
         availableSeatsCount: val.nowSeatMaxCount,
       }),
