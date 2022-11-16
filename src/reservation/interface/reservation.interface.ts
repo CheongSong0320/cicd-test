@@ -37,3 +37,35 @@ export interface GetUnavailableDateByTimePriorityQuery {
   startTime: string;
   endTime: string;
 }
+
+export interface GetTimeTableParam {
+  id: string;
+}
+
+export interface GetTimeTableQuery {
+  year: string;
+  month: string;
+  day: string;
+}
+
+export type TimeType = 'SLOT' | 'ALLDAY';
+export type SeatType = 'SEAT' | 'NUM_PERSON';
+
+export interface GetAvailableDateQuery {
+  month: number;
+  seat?: number;
+}
+
+// export interface GetAvailableDateSlotType {
+//   seat: number;
+//   type: 'SLOT';
+// }
+
+// export interface GetAvailableDateSeatType {
+//   date: Date;
+//   type: 'SEAT';
+// }
+
+// export type GetAvailableDateQuery =
+//   | GetAvailableDateSeatType
+//   | GetAvailableDateSlotType;

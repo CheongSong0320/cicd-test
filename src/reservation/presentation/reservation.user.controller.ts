@@ -26,10 +26,14 @@ import {
   UpdateReservationBody,
   UpdateReservationQuery,
   GetUnavailableDateByTimePriorityQuery,
+  GetTimeTableParam,
+  GetTimeTableQuery,
+  GetAvailableDateQuery,
 } from '../interface/reservation.interface';
 
 @Controller('reservation')
 export class ReservationUserController {
+  Body;
   constructor(private readonly reservationService: ReservationUserService) {}
 
   @Get()
@@ -114,5 +118,23 @@ export class ReservationUserController {
       +param.id,
       query,
     );
+  }
+
+  @Get('community/:id/reservation-available/dates')
+  @Auth(API_USER)
+  getAvailableDate(
+    @Param() param: GetAvailableDateParam,
+    @Query() query: GetAvailableDateQuery,
+  ) {
+    return this.reservationService.getAvailableDate(+param.id, query);
+  }
+
+  @Get('community/:id/time-priority/time-table')
+  @Auth(API_USER)
+  getTimeTable(
+    @Param() param: GetTimeTableParam,
+    @Query() query: GetTimeTableQuery,
+  ) {
+    return this.reservationService.getTimeTable(+param.id, query);
   }
 }

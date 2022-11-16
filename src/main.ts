@@ -7,6 +7,7 @@ import { UserModule } from './user.module';
 import { InternalModule } from './internal.module';
 
 async function bootstrap() {
+  console.log('!!!');
   await bootstrapAdmin();
   await bootstrapUser();
   await bootstrapInternal();

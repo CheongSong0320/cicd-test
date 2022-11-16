@@ -166,4 +166,39 @@ export class ReservationRepository {
       },
     });
   }
+
+  findReservationByDate(startDate: Date, endDate: Date) {
+    return this.prisma.reservation.findMany({
+      where: {
+        status: {
+          not: 'CANCELLED',
+        },
+        startDate: {
+          gte: startDate,
+        },
+        endDate: {
+          lt: endDate,
+        },
+      },
+    });
+  }
+
+  getAvailableDate(communityClubId: number, month: number, seat?: number) {
+    const nowYear = new Date().getFullYear();
+    return this.prisma.reservation.findMany({
+      where: {
+        communityClubId,
+        seatNumber: seat,
+        status: {
+          not: 'CANCELLED',
+        },
+        startDate: {
+          gte: setYearMonthDbDate(nowYear, +month, -1),
+        },
+        endDate: {
+          lt: setYearMonthDbDate(nowYear, +month, 0),
+        },
+      },
+    });
+  }
 }

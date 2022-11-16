@@ -8,6 +8,8 @@ import {
   UpdateReservationQuery,
   GetAvailableDateParam,
   GetUnavailableDateByTimePriorityQuery,
+  GetTimeTableQuery,
+  GetAvailableDateQuery,
 } from '../interface/reservation.interface';
 import { ReservationUserServiceLogic } from './reservation.user.service.logic';
 
@@ -74,5 +76,13 @@ export class ReservationUserService {
       startTime,
       endTime,
     });
+  }
+
+  getTimeTable(id: number, query: GetTimeTableQuery) {
+    return this.reservationServiceLogic.getTimeTable(id, query);
+  }
+
+  getAvailableDate(id: number, query: GetAvailableDateQuery) {
+    return this.reservationServiceLogic.getAvailableDate(id, query);
   }
 }

@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { CommunityClubRepository } from '../infrastructure/repository/communityClub.repository';
 import { ReservationRepository } from '../infrastructure/repository/reservation.repository';
 import { applicationGroupBy } from '../infrastructure/util/applicationGroupBy';
+import { setYearMonthDbDate } from '../infrastructure/util/dateUtil';
 import { ReservationValidator } from '../infrastructure/validator/reservation.validator';
 import {
   GetUnavailableDateQuery,
@@ -10,8 +11,8 @@ import {
   MakeReservationBody,
   UpdateReservationBody,
   UpdateReservationQuery,
-  GetAvailableDateParam,
-  GetUnavailableDateByTimePriorityQuery,
+  GetTimeTableQuery,
+  GetAvailableDateQuery,
 } from '../interface/reservation.interface';
 
 @Injectable()
@@ -103,9 +104,19 @@ export class ReservationUserServiceLogic {
 
   async getCommunityClub(apartmentId: number) {
     return {
-      community: await this.reservationRepository.getCommunityClub(
-        this.reservationValidator.getCommunityClub(apartmentId),
-      ),
+      community: (
+        await this.reservationRepository.getCommunityClub(
+          this.reservationValidator.getCommunityClub(apartmentId),
+        )
+      ).map((value) => ({
+        ...value,
+        timeType:
+          value.type === 'PERSON' || value.type === 'SEAT' ? 'ALLDAY' : 'SLOT',
+        seatType:
+          value.type === 'SEAT' || value.type === 'SEAT_TIME_LMIT'
+            ? 'SEAT'
+            : 'NUM_PERSON',
+      })),
     };
   }
 
@@ -205,5 +216,149 @@ export class ReservationUserServiceLogic {
         isAvailable: reservationCount[index + 1] ? true : false,
       })),
     };
+  }
+
+  async getTimeTable(id: number, { year, month, day }: GetTimeTableQuery) {
+    const community = await this.communityRepository.findUniqueRelationType(id);
+
+    const startDate = setYearMonthDbDate(+year, +month - 1, 0, +day);
+    const endDate = setYearMonthDbDate(+year, +month - 1, 0, +day + 1);
+
+    return { startDate, endDate };
+  }
+
+  async getAvailableDate(id: number, query: GetAvailableDateQuery) {
+    const community = await this.communityRepository.findUniqueRelationType(id);
+
+    const reservations = await this.reservationRepository.getAvailableDate(
+      id,
+      +query.month,
+      query?.seat,
+    );
+
+    switch (community.type) {
+      case 'PERSON': {
+        return Object.entries(
+          applicationGroupBy(
+            reservations,
+            (args) => args.startDate.toISOString().split('T')[0],
+          ),
+        ).map(([key, value]) => {
+          return {
+            date: new Date(key),
+            isAvailableDay:
+              value.length < community.CommunityClubPerson!.maxCount
+                ? true
+                : false,
+          };
+        });
+      }
+
+      case 'SEAT': {
+        return Object.entries(
+          applicationGroupBy(
+            reservations,
+            (args) =>
+              `${args.startDate.toISOString().split('T')[0]}_${
+                args.seatNumber
+              }`,
+          ),
+        ).map(([key, value]) => {
+          return {
+            date: new Date(key),
+            availableSeatsCount: Math.max(
+              0,
+              community.CommunityClubPerson!.maxCount - value.length,
+            ),
+          };
+        });
+      }
+
+      case 'PERSON_TIME_LIMIT': {
+        const timeLimit = community.CommunityClubTimeLimit!;
+
+        const nowMaxCount =
+          (timeLimit.closedTime - timeLimit.openTime) *
+          (60 / timeLimit.reservationTimeInterval) *
+          timeLimit.maxCount;
+        return Object.entries(
+          applicationGroupBy(
+            reservations,
+            (args) => args.startDate.toISOString().split('T')[0],
+          ),
+        ).map(([key, value]) => {
+          const nowSlotCount = value.reduce(
+            (prev, curr) =>
+              prev +
+              (curr.endDate.getTime() - curr.startDate.getTime()) /
+                (60 * 60 * 1000),
+            0,
+          );
+          return {
+            date: new Date(key),
+            availableSlotsCount: Math.max(nowMaxCount - nowSlotCount),
+          };
+        });
+      }
+
+      case 'SEAT_TIME_LMIT': {
+        const timeLimit = community.CommunityClubTimeLimit!;
+
+        const nowSlotMaxCount =
+          (timeLimit.closedTime - timeLimit.openTime) *
+          (60 / timeLimit.reservationTimeInterval) *
+          timeLimit.maxCount;
+
+        const nowSeatMaxCount = timeLimit.maxCount;
+
+        console.log({ nowSlotMaxCount, nowSeatMaxCount });
+
+        return Object.entries(
+          applicationGroupBy(
+            reservations,
+            (args) => args.startDate.toISOString().split('T')[0],
+          ),
+        ).map(([key, value]) => {
+          const nowCount = value.reduce(
+            (prev, curr) => {
+              const now = prev[curr.seatNumber!] ?? {
+                slotCount: 0,
+              };
+
+              const slots =
+                (curr.endDate.getTime() - curr.startDate.getTime()) /
+                (60 * 60 * 1000);
+
+              return {
+                ...prev,
+                [curr.seatNumber!]: {
+                  slotCount: now.slotCount + slots,
+                },
+              };
+            },
+            {} as {
+              [key: number]: { slotCount: number };
+            },
+          );
+
+          const summary = Object.values(nowCount);
+
+          return {
+            date: new Date(key),
+            availableSlotsCount: Math.max(
+              0,
+              nowSlotMaxCount -
+                summary.reduce((prev, curr) => prev + curr.slotCount, 0),
+            ),
+            availableSeatsCount: Math.max(
+              0,
+              nowSeatMaxCount -
+                summary.filter((value) => value.slotCount >= nowSeatMaxCount)
+                  .length,
+            ),
+          };
+        });
+      }
+    }
   }
 }

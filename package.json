@@ -87,13 +87,5 @@
   "jest": {
     "rootDir": "src",
     "preset": "@hanwha-sbi/jest-config-nestjs"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/hanwha-sbi/reservation-service"
-  },
-  "main": "src/api",
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com/"
   }
 }
