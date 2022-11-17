@@ -163,13 +163,8 @@ export class ReservationUserServiceLogic {
     );
   }
 
-  updateReservation(
-    query: UpdateReservationQuery,
-    body: UpdateReservationBody,
-  ) {
-    return this.reservationRepository.updateReservation(
-      this.reservationValidator.updateReservation(parseInt(query.id, 10), body),
-    );
+  updateReservation(id: number, body: MakeReservationBody) {
+    return this.reservationRepository.updateReservation(id, body);
   }
 
   async getUnavailableDate(id: number, query: GetUnavailableDateQuery) {

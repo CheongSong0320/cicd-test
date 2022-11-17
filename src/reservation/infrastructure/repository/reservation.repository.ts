@@ -2,7 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { Prisma, Reservation } from '@prisma/client';
 import * as dayjs from 'dayjs';
 import { PrismaService } from 'src/providers/prisma.service';
-import { GetUnavailableDateQuery } from 'src/reservation/interface/reservation.interface';
+import {
+  GetUnavailableDateQuery,
+  MakeReservationBody,
+} from 'src/reservation/interface/reservation.interface';
 import { getDayCalculas, setYearMonthDbDate } from '../util/dateUtil';
 import { ReservationValidator } from '../validator/reservation.validator';
 
@@ -69,10 +72,17 @@ export class ReservationRepository {
     return this.prisma.reservation.update(args);
   }
 
-  updateReservation(
-    args: ReturnType<ReservationValidator['updateReservation']>,
-  ) {
-    return this.prisma.reservation.update(args);
+  updateReservation(id: number, body: MakeReservationBody) {
+    return this.prisma.reservation.update({
+      where: {
+        id,
+      },
+      data: {
+        startDate: body.startDate,
+        endDate: body.endDate,
+        seatNumber: body.seatNumber,
+      },
+    });
   }
 
   groupByAndCount(

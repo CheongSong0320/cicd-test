@@ -92,10 +92,10 @@ export class ReservationUserController {
   @Auth(API_USER)
   updateReservation(
     @JwtPayload() payload: UserTokenPayload,
-    @Query() query: UpdateReservationQuery,
-    @Body() body: UpdateReservationBody,
+    @Param('id') id: number,
+    @Body() body: MakeReservationBody,
   ) {
-    return this.reservationService.updateReservation(query, body);
+    return this.reservationService.updateReservation(+id, body);
   }
 
   @Get('/community/:id/unavailable-date')

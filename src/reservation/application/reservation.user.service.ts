@@ -50,11 +50,8 @@ export class ReservationUserService {
     return this.reservationServiceLogic.deleteReservation(id);
   }
 
-  updateReservation(
-    query: UpdateReservationQuery,
-    body: UpdateReservationBody,
-  ) {
-    return this.reservationServiceLogic.updateReservation(query, body);
+  updateReservation(id: number, body: MakeReservationBody) {
+    return this.reservationServiceLogic.updateReservation(id, body);
   }
 
   getunAvailableDate(id: number, query: GetUnavailableDateQuery) {
