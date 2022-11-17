@@ -83,9 +83,9 @@ export class ReservationUserController {
   @Auth(API_USER)
   deleteReservation(
     @JwtPayload() payload: UserTokenPayload,
-    @Query() query: DeleteReservationQuery,
+    @Param('id') id: string,
   ) {
-    return this.reservationService.deleteReservation(parseInt(query.id, 10));
+    return this.reservationService.deleteReservation(+id);
   }
 
   @Patch(':id')
