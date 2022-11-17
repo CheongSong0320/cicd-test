@@ -505,7 +505,7 @@ export class ReservationUserServiceLogic {
       isAvailable: true,
     }));
 
-    if ((!date && !slot) || (!date && slot)) return seats;
+    if ((!date && !slot) || (!date && slot)) return { seats };
 
     const [year, month, day] = date!.split('T')[0].split('-');
     const [hour, minute] = date!.split('T')[1].split(':');
