@@ -42,6 +42,7 @@ export class ReservationUserServiceLogic {
       startDate: value.startDate,
       endDate: value.endDate,
       communityClubName: value.CommunityClub.name,
+      seatNumber: value.seatNumber,
     }));
   }
 

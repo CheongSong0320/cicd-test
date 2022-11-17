@@ -14,8 +14,8 @@ export class ReservationAdminService {
     return this.reservationServiceLogic.helloReservation();
   }
 
-  registerCommunity(body: RegisterCommunityBody) {
-    return this.reservationServiceLogic.registerCommunity(body);
+  registerCommunity(body: RegisterCommunityBody, paylaoad: AdminTokenPayload) {
+    return this.reservationServiceLogic.registerCommunity(body, paylaoad);
   }
 
   getCommunityUsageStatus(payload: AdminTokenPayload) {

@@ -44,4 +44,5 @@ export interface CommunityUsageStatusType {
 
 export interface UpdateCommunityBody {
   memo: string;
+  name: string;
 }

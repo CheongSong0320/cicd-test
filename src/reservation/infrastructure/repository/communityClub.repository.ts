@@ -91,7 +91,7 @@ export class CommunityClubRepository {
         id,
       },
       data: {
-        memo: body.memo,
+        ...body,
       },
       include: {
         CommunityClubPerson: true,

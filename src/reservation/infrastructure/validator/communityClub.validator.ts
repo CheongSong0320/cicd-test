@@ -4,10 +4,14 @@ import { RegisterCommunityBody } from 'src/reservation/interface/community.inter
 
 @Injectable()
 export class CommunityClubValidator {
-  registerCommunityClubValidator(body: RegisterCommunityBody) {
+  registerCommunityClubValidator(
+    body: RegisterCommunityBody,
+    apartmentId: number,
+  ) {
     return Prisma.validator<Prisma.CommunityClubCreateArgs>()({
       data: {
         ...body.communityClub,
+        apartmentId,
         CommunityClubPerson:
           body.type === 'PERSON'
             ? { create: body.communityClubPerson }

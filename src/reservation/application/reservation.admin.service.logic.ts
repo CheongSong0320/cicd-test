@@ -29,12 +29,16 @@ export class ReservationAdminServiceLogic {
     return this.reservationRepository.findMany();
   }
 
-  registerCommunity(body: RegisterCommunityBody) {
+  paylaoad: AdminTokenPayload;
+  registerCommunity(body: RegisterCommunityBody, paylaoad: AdminTokenPayload) {
     return this.communityClubRepository.create(
-      this.communityClubValidator.registerCommunityClubValidator({
-        ...body,
-        type: body.communityClub.type,
-      } as RegisterCommunityBody),
+      this.communityClubValidator.registerCommunityClubValidator(
+        {
+          ...body,
+          type: body.communityClub.type,
+        } as RegisterCommunityBody,
+        paylaoad.apartmentId,
+      ),
     );
   }
 

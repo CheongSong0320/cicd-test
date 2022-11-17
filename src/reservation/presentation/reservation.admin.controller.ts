@@ -30,16 +30,22 @@ export class ReservationAdminController {
   }
 
   @Post('community')
-  registerCommunity(@Body() body: RegisterCommunityBody) {
-    return this.reservationService.registerCommunity(body);
+  @Auth(API_ADMIN)
+  registerCommunity(
+    @Body() body: RegisterCommunityBody,
+    @JwtPayload() payload: AdminTokenPayload,
+  ) {
+    return this.reservationService.registerCommunity(body, payload);
   }
 
   @Delete('community/:id')
+  @Auth(API_ADMIN)
   deleteCommunity(@Param('id') id: string) {
     return this.reservationService.deleteCommunity(+id);
   }
 
   @Patch('community/:id')
+  @Auth(API_ADMIN)
   updateCommunity(@Param('id') id: string, @Body() body: UpdateCommunityBody) {
     return this.reservationService.updateCommunity(+id, body);
   }
