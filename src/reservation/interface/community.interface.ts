@@ -41,3 +41,7 @@ export interface CommunityUsageStatusType {
   usageTime: number;
   viewProperty: 'usageCount' | 'usageTime';
 }
+
+export interface UpdateCommunityBody {
+  memo: string;
+}

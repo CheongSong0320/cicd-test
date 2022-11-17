@@ -30,6 +30,7 @@ import {
   GetTimeTableQuery,
   GetAvailableDateQuery,
   GetAvailableSlotQuery,
+  GetAvailableSeatQuery,
 } from '../interface/reservation.interface';
 
 @Controller('reservation')
@@ -146,5 +147,14 @@ export class ReservationUserController {
     @Query() query: GetAvailableSlotQuery,
   ) {
     return this.reservationService.getAvailableSlot(+param.id, query);
+  }
+
+  @Get('community/:id/reservation-available/seats')
+  @Auth(API_USER)
+  getAvailableSeat(
+    @Param() param: GetAvailableDateParam,
+    @Query() query: GetAvailableSeatQuery,
+  ) {
+    return this.reservationService.getAvailableSeat(+param.id, query);
   }
 }

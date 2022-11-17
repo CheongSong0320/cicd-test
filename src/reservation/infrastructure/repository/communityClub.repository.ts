@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/providers/prisma.service';
+import { UpdateCommunityBody } from 'src/reservation/interface/community.interface';
 import { CommunityClubValidator } from '../validator/communityClub.validator';
 
 @Injectable()
@@ -60,6 +61,37 @@ export class CommunityClubRepository {
     return this.prisma.communityClub.findMany({
       where: {
         apartmentId,
+      },
+      include: {
+        CommunityClubPerson: true,
+        CommunityClubSeat: true,
+        CommunityClubTimeLimit: true,
+      },
+    });
+  }
+
+  deleteCommunity(id: number) {
+    return this.prisma.communityClub.update({
+      where: {
+        id,
+      },
+      data: {
+        active: false,
+      },
+      select: {
+        id: true,
+      },
+    });
+  }
+
+  updateCommunity(id: number, body: UpdateCommunityBody) {
+    console.log(body);
+    return this.prisma.communityClub.update({
+      where: {
+        id,
+      },
+      data: {
+        memo: body.memo,
       },
       include: {
         CommunityClubPerson: true,

@@ -11,6 +11,7 @@ import {
   GetTimeTableQuery,
   GetAvailableDateQuery,
   GetAvailableSlotQuery,
+  GetAvailableSeatQuery,
 } from '../interface/reservation.interface';
 import { ReservationUserServiceLogic } from './reservation.user.service.logic';
 
@@ -89,5 +90,9 @@ export class ReservationUserService {
 
   getAvailableSlot(id: number, query: GetAvailableSlotQuery) {
     return this.reservationServiceLogic.getAvailableSlot(id, query);
+  }
+
+  getAvailableSeat(id: number, query: GetAvailableSeatQuery) {
+    return this.reservationServiceLogic.getAvailableSeat(id, query);
   }
 }

@@ -60,6 +60,7 @@ model CommunityClub {
   CommunityClubTimeLimit       CommunityClubTimeLimit?
   Reservation                  Reservation[]
   Membership                   Membership[]
+  active Boolean @default(true)
 }
 
 enum CommunityClubTarget {

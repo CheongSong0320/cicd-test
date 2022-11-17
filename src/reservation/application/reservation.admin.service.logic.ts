@@ -13,6 +13,7 @@ import { ReservationValidator } from '../infrastructure/validator/reservation.va
 import {
   CommunityUsageStatusType,
   RegisterCommunityBody,
+  UpdateCommunityBody,
 } from '../interface/community.interface';
 
 @Injectable()
@@ -225,5 +226,13 @@ export class ReservationAdminServiceLogic {
     return this.reservationRepository.getReservationByCommunityClub(
       communityClubId,
     );
+  }
+
+  deleteCommunity(id: number) {
+    return this.communityClubRepository.deleteCommunity(id);
+  }
+
+  updateCommunity(id: number, body: UpdateCommunityBody) {
+    return this.communityClubRepository.updateCommunity(id, body);
   }
 }

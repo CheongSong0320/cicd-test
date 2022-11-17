@@ -15,6 +15,8 @@ import {
   GetTimeTableQuery,
   GetAvailableDateQuery,
   GetAvailableSlotQuery,
+  GetAvailableDateParam,
+  GetAvailableSeatQuery,
 } from '../interface/reservation.interface';
 
 @Injectable()
@@ -237,7 +239,7 @@ export class ReservationUserServiceLogic {
     const reservations = await this.reservationRepository.getAvailableDate(
       id,
       setYearMonthDbDate(nowYear, +month, -1),
-      setYearMonthDbDate(nowYear, +month, -1),
+      setYearMonthDbDate(nowYear, +month + 1, -1),
       seat,
     );
 
@@ -301,8 +303,10 @@ export class ReservationUserServiceLogic {
             const nowSlotCount = value.reduce(
               (prev, curr) =>
                 prev +
-                (curr.endDate.getTime() - curr.startDate.getTime()) /
-                  ((60 / timeLimit.reservationTimeInterval) * 60 * 1000),
+                ((curr.endDate.getTime() - curr.startDate.getTime()) /
+                  1000 /
+                  3600) *
+                  (60 / timeLimit.reservationTimeInterval),
               0,
             );
             return {
@@ -338,9 +342,18 @@ export class ReservationUserServiceLogic {
                   slotCount: 0,
                 };
 
+                console.log(
+                  ((curr.endDate.getTime() - curr.startDate.getTime()) /
+                    1000 /
+                    3600) *
+                    (60 / timeLimit.reservationTimeInterval),
+                );
+
                 const slots =
-                  (curr.endDate.getTime() - curr.startDate.getTime()) /
-                  ((60 / timeLimit.reservationTimeInterval) * 60 * 1000);
+                  ((curr.endDate.getTime() - curr.startDate.getTime()) /
+                    1000 /
+                    3600) *
+                  (60 / timeLimit.reservationTimeInterval);
 
                 return {
                   ...prev,
@@ -355,6 +368,8 @@ export class ReservationUserServiceLogic {
             );
 
             const summary = Object.values(nowCount);
+
+            console.log(summary);
 
             return {
               date: new Date(key),
@@ -474,5 +489,48 @@ export class ReservationUserServiceLogic {
         isAvailable: value < (seat ? 1 : maxCount) ? true : false,
       })),
     };
+  }
+
+  async getAvailableSeat(id: number, { date, slot }: GetAvailableSeatQuery) {
+    const community = await this.communityRepository.findUniqueRelationType(id);
+
+    const maxCount =
+      community.type === 'PERSON'
+        ? community.CommunityClubPerson!.maxCount
+        : community.type === 'SEAT'
+        ? community.CommunityClubSeat!.maxCount
+        : community.CommunityClubTimeLimit!.maxCount;
+
+    const seats = Array.from({ length: maxCount }, (v, i) => ({
+      seatId: i + 1,
+      isAvailable: true,
+    }));
+
+    if ((!date && !slot) || (!date && slot)) return seats;
+
+    const [year, month, day] = date!.split('T')[0].split('-');
+    const slots = slot?.split(':');
+
+    if (date && !slot) {
+      const reservations = applicationGroupBy(
+        await this.reservationRepository.getAvailableDate(
+          id,
+          setYearMonthDbDate(+year, +month, -1, +day),
+          setYearMonthDbDate(+year, +month, -1, +day + 1),
+        ),
+        'seatNumber',
+      );
+
+      return {
+        seats: [
+          seats.map((value) => ({
+            ...value,
+            isAvailable: reservations[value.seatId]?.length ? false : true,
+          })),
+        ],
+      };
+    }
+
+    return 'Hello';
   }
 }

@@ -60,3 +60,8 @@ export interface GetAvailableSlotQuery {
   date: string;
   seat?: number;
 }
+
+export interface GetAvailableSeatQuery {
+  date?: string;
+  slot?: string;
+}

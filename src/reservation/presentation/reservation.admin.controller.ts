@@ -4,9 +4,21 @@ import {
   Auth,
   JwtPayload,
 } from '@hanwha-sbi/nestjs-authorization';
-import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { ReservationAdminService } from '../application/reservation.admin.service';
-import { RegisterCommunityBody } from '../interface/community.interface';
+import {
+  RegisterCommunityBody,
+  UpdateCommunityBody,
+} from '../interface/community.interface';
 
 @Controller('reservation')
 export class ReservationAdminController {
@@ -17,9 +29,19 @@ export class ReservationAdminController {
     return this.reservationService.helloReservation();
   }
 
-  @Post('/community')
+  @Post('community')
   registerCommunity(@Body() body: RegisterCommunityBody) {
     return this.reservationService.registerCommunity(body);
+  }
+
+  @Delete('community/:id')
+  deleteCommunity(@Param('id') id: string) {
+    return this.reservationService.deleteCommunity(+id);
+  }
+
+  @Patch('community/:id')
+  updateCommunity(@Param('id') id: string, @Body() body: UpdateCommunityBody) {
+    return this.reservationService.updateCommunity(+id, body);
   }
 
   @Get('community/usage-status')
@@ -42,19 +64,19 @@ export class ReservationAdminController {
     );
   }
 
-  @Get('/community/time-limit/detail')
+  @Get('community/time-limit/detail')
   @Auth(API_ADMIN)
   getTimeLimitReservationDetail(@JwtPayload() payload: AdminTokenPayload) {
     return this.reservationService.getTimeLimitReservationDetail(payload);
   }
 
-  @Get('/community')
+  @Get('community')
   @Auth(API_ADMIN)
   getCommunityClubs(@JwtPayload() payload: AdminTokenPayload) {
     return this.reservationService.getCommunityClubs(payload);
   }
 
-  @Get('/:communityClubId')
+  @Get(':communityClubId')
   @Auth(API_ADMIN)
   getReservationByCommunityClub(
     @JwtPayload() payload: AdminTokenPayload,
