@@ -1,6 +1,7 @@
 import { UserTokenPayload } from '@hanwha-sbi/nestjs-authorization';
 import { Injectable } from '@nestjs/common';
 import * as dayjs from 'dayjs';
+import * as isBetween from 'dayjs/plugin/isBetween';
 import { CommunityClubRepository } from '../infrastructure/repository/communityClub.repository';
 import { ReservationRepository } from '../infrastructure/repository/reservation.repository';
 import { applicationGroupBy } from '../infrastructure/util/applicationGroupBy';
@@ -18,6 +19,8 @@ import {
   GetAvailableDateParam,
   GetAvailableSeatQuery,
 } from '../interface/reservation.interface';
+
+dayjs.extend(isBetween);
 
 @Injectable()
 export class ReservationUserServiceLogic {
@@ -510,28 +513,73 @@ export class ReservationUserServiceLogic {
     if ((!date && !slot) || (!date && slot)) return seats;
 
     const [year, month, day] = date!.split('T')[0].split('-');
-    const slots = slot?.split(':');
+    const [hour, minute] = date!.split('T')[1].split(':');
 
     if (date && !slot) {
-      const reservations = applicationGroupBy(
-        await this.reservationRepository.getAvailableDate(
-          id,
-          setYearMonthDbDate(+year, +month, -1, +day),
-          setYearMonthDbDate(+year, +month, -1, +day + 1),
-        ),
-        'seatNumber',
-      );
+      switch (community.type) {
+        case 'SEAT': {
+          const reservations = applicationGroupBy(
+            await this.reservationRepository.getAvailableDate(
+              id,
+              setYearMonthDbDate(+year, +month, -1, +day),
+              setYearMonthDbDate(+year, +month, -1, +day + 1),
+            ),
+            'seatNumber',
+          );
 
-      return {
-        seats: [
-          seats.map((value) => ({
-            ...value,
-            isAvailable: reservations[value.seatId]?.length ? false : true,
-          })),
-        ],
-      };
+          return {
+            seats: seats.map((value) => ({
+              ...value,
+              isAvailable: reservations[value.seatId]?.length ? false : true,
+            })),
+          };
+        }
+      }
     }
 
-    return 'Hello';
+    if (date && slot) {
+      switch (community.type) {
+        case 'SEAT_TIME_LMIT': {
+          const timeLimit = community.CommunityClubTimeLimit!;
+          const endDate = dayjs(date)
+            .add(timeLimit.reservationTimeInterval * +slot, 'minute')
+            .toISOString();
+
+          console.log({ date, endDate });
+
+          const { openTime, closedTime, maxCount, reservationTimeInterval } =
+            timeLimit;
+
+          const reservations = Object.entries(
+            applicationGroupBy(
+              await this.reservationRepository.getAvailableDate(
+                id,
+                setYearMonthDbDate(+year, +month, -1, +day),
+                setYearMonthDbDate(+year, +month, -1, +day + 1),
+              ),
+              'seatNumber',
+            ),
+          ).reduce((prev, [key, value]) => {
+            return {
+              ...prev,
+              [key]: {
+                seatId: key,
+                isAvailable: value.some(
+                  (value) =>
+                    !(
+                      dayjs(date).isBetween(value.startDate, value.endDate) ||
+                      dayjs(endDate).isBetween(value.startDate, value.endDate)
+                    ),
+                ),
+              },
+            };
+          }, {} as { [key: number]: { seatId: number; isAvailable: boolean } });
+
+          return {
+            seats: seats.map((value) => reservations[value.seatId] ?? value),
+          };
+        }
+      }
+    }
   }
 }
