@@ -36,6 +36,9 @@ export class CommunityClubValidator {
       where: {
         apartmentId: apartmentId,
       },
+      orderBy: {
+        id: 'asc',
+      },
     });
   }
 
@@ -57,6 +60,10 @@ export class CommunityClubValidator {
             reservationTimeInterval: true,
           },
         },
+      },
+
+      orderBy: {
+        id: 'asc',
       },
     });
   }

@@ -68,6 +68,9 @@ export class CommunityClubRepository {
         CommunityClubSeat: true,
         CommunityClubTimeLimit: true,
       },
+      orderBy: {
+        id: 'asc',
+      },
     });
   }
 

@@ -17,13 +17,15 @@ export class ReservationValidator {
         communityClubId: {
           in: ids,
         },
-        status: 'READY',
         startDate: {
           gte: new Date(now.getFullYear(), now.getMonth(), 1),
         },
         endDate: {
           lt: new Date(now.getFullYear(), now.getMonth() + 1, 1),
         },
+      },
+      orderBy: {
+        id: 'asc',
       },
     });
   }
@@ -76,6 +78,9 @@ export class ReservationValidator {
           },
         },
       },
+      orderBy: {
+        id: 'asc',
+      },
     });
   }
 
@@ -103,6 +108,9 @@ export class ReservationValidator {
             name: true,
           },
         },
+      },
+      orderBy: {
+        id: 'asc',
       },
     });
   }
