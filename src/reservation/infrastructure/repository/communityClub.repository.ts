@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { ReservationStatus } from '@prisma/client';
 import { PrismaService } from 'src/providers/prisma.service';
 import { UpdateCommunityBody } from 'src/reservation/interface/community.interface';
 import { CommunityClubValidator } from '../validator/communityClub.validator';
@@ -97,6 +98,26 @@ export class CommunityClubRepository {
         CommunityClubPerson: true,
         CommunityClubSeat: true,
         CommunityClubTimeLimit: true,
+      },
+    });
+  }
+
+  approveReservation(id: number, status: ReservationStatus) {
+    return this.prisma.reservation.update({
+      where: { id },
+      data: {
+        status,
+      },
+    });
+  }
+
+  findUniqueOrFail(id: number) {
+    return this.prisma.reservation.findUniqueOrThrow({
+      where: {
+        id,
+      },
+      select: {
+        status: true,
       },
     });
   }

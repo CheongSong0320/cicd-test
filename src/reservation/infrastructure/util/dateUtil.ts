@@ -16,7 +16,7 @@ export const calculateUsageMinute = (start: Date, end: Date) =>
   (end.getTime() - start.getTime()) / 60000;
 
 export const createTimeString = (nowMinute: number) =>
-  `${nowMinute / 60}시간 ${nowMinute % 60}분`;
+  `${Math.floor(nowMinute / 60)}시간 ${nowMinute % 60}분`;
 
 export const calculateUsageTimeString = (start: Date, end: Date) =>
   createTimeString(calculateUsageMinute(start, end));

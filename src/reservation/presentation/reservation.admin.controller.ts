@@ -93,4 +93,10 @@ export class ReservationAdminController {
       +communityClubId,
     );
   }
+
+  @Patch(':id/approve')
+  @Auth(API_ADMIN)
+  approveReservation(@Param('id') id: string) {
+    return this.reservationService.approveReservation(+id);
+  }
 }

@@ -58,4 +58,8 @@ export class ReservationAdminService {
   updateCommunity(id: number, body: UpdateCommunityBody) {
     return this.reservationServiceLogic.updateCommunity(id, body);
   }
+
+  approveReservation(id: number) {
+    return this.reservationServiceLogic.approveReservation(id);
+  }
 }
