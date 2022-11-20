@@ -121,6 +121,9 @@ export class ReservationValidator {
         startDate: {
           gte: getDayCalculas(0),
         },
+        status: {
+          not: 'CANCELLED',
+        },
         userId,
       },
       select: {

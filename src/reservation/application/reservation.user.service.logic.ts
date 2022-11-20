@@ -456,10 +456,8 @@ export class ReservationUserServiceLogic {
           Object.assign(
             { ...prev },
             (() => {
-              const thisTime = +curr.time.split(':')[0];
-              return thisTime >= openTime && thisTime < closedTime
-                ? { [curr.time]: 0 }
-                : {};
+              const [thisTime, thisMinute] = curr.time.split(':');
+              return +thisTime >= openTime ? { [curr.time]: 0 } : {};
             })(),
           ),
         {} as { [key: string]: number },
@@ -483,10 +481,18 @@ export class ReservationUserServiceLogic {
     });
 
     return {
-      slots: Object.entries(slots).map(([key, value]) => ({
-        slotId: key,
-        isAvailable: value < (seat ? 1 : maxCount) ? true : false,
-      })),
+      slots: Object.entries(slots).map(([key, value]) => {
+        const [hour, minute] = key.split(':');
+        return {
+          slotId: key,
+          isAvailable:
+            +hour * 60 + +minute >
+              dayjs().get('hour') * 60 + dayjs().get('minute') &&
+            value < (seat ? 1 : maxCount)
+              ? true
+              : false,
+        };
+      }),
     };
   }
 
