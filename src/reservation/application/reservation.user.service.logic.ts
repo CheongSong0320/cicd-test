@@ -8,6 +8,7 @@ import { applicationGroupBy } from '../infrastructure/util/applicationGroupBy';
 import { setYearMonthDbDate } from '../infrastructure/util/dateUtil';
 import { getSeatAndTimeType } from '../infrastructure/util/typeUtil';
 import { ReservationValidator } from '../infrastructure/validator/reservation.validator';
+import { FindReservationByCommunityDto } from '../interface/findReservationByCommunity.dto';
 import {
   GetHistoryBySearchType,
   MakeReservationBody,
@@ -54,7 +55,9 @@ export class ReservationUserServiceLogic {
     }));
   }
 
-  async findReservationByCommunity(userId: string) {
+  async findReservationByCommunity(
+    userId: string,
+  ): Promise<FindReservationByCommunityDto> {
     const reservationGroupByCommunity = applicationGroupBy(
       await this.reservationRepository.findReservationByCommunity(
         this.reservationValidator.findReservationByCommunity(userId),

@@ -1,27 +1,25 @@
-export class FindReservationByCommunityDto {
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+
+class InnerReservation {
+  @ApiProperty()
   id: number;
+  @ApiProperty()
   startDate: Date;
+  @ApiProperty()
   endDate: Date;
-  seatNumber: number;
+  @ApiPropertyOptional({ type: 'number' })
+  seatNumber: number | null;
+}
+
+class InnerValueDto {
+  @ApiProperty()
   communityName: string;
 
-  constructor({
-    id,
-    startDate,
-    endDate,
-    seatNumber,
-    communityName,
-  }: {
-    id: number;
-    startDate: Date;
-    endDate: Date;
-    seatNumber: number;
-    communityName: string;
-  }) {
-    this.id = id;
-    this.startDate = startDate;
-    this.endDate = endDate;
-    this.seatNumber = seatNumber;
-    this.communityName = communityName;
-  }
+  @ApiProperty({ type: [InnerReservation] })
+  reservation: InnerReservation[];
+}
+
+export class FindReservationByCommunityDto {
+  @ApiProperty({ type: [InnerValueDto] })
+  reservation: InnerValueDto[];
 }
