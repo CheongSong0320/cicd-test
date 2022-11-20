@@ -452,7 +452,7 @@ export class ReservationUserServiceLogic {
 
   async getAvailableSeat(
     id: number,
-    { startDate: date, slot }: GetAvailableSeatQuery,
+    { startDate: date, slotCount: slot }: GetAvailableSeatQuery,
   ) {
     const community = await this.communityRepository.findUniqueRelationType(id);
 
