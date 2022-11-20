@@ -65,5 +65,5 @@ export class GetAvailableSlotQuery {
 
 export class GetAvailableSeatQuery {
   startDate?: string;
-  slot?: string;
+  slotCount?: string;
 }
