@@ -19,7 +19,7 @@ class InnerValueDto {
   reservation: InnerReservation[];
 }
 
-export class FindReservationByCommunityDto {
+export class FindReservationByCommunityResponse {
   @ApiProperty({ type: [InnerValueDto] })
   reservation: InnerValueDto[];
 }

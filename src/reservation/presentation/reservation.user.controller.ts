@@ -31,6 +31,8 @@ import {
   RegisterReservationBody,
 } from '../interface/reservation.interface';
 import { RegisterCommunityBody } from '../interface/community.interface';
+import { ApiCreatedResponse, ApiResponse } from '@nestjs/swagger';
+import { RegisterReservationResponse } from '../interface/registerReservation.dto';
 
 @Controller('reservation')
 export class ReservationUserController {

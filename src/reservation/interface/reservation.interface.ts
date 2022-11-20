@@ -10,7 +10,7 @@ export class GetReservationHistoryQuery {
 }
 
 export class RegisterReservationBody {
-  startdate: Date;
+  startDate: Date;
   slotCount?: string;
   seatId?: string;
 }

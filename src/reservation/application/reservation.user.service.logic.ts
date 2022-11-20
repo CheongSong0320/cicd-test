@@ -8,7 +8,9 @@ import { applicationGroupBy } from '../infrastructure/util/applicationGroupBy';
 import { setYearMonthDbDate } from '../infrastructure/util/dateUtil';
 import { getSeatAndTimeType } from '../infrastructure/util/typeUtil';
 import { ReservationValidator } from '../infrastructure/validator/reservation.validator';
-import { FindReservationByCommunityDto } from '../interface/findReservationByCommunity.dto';
+import { FindReservationByCommunityResponse } from '../interface/findReservationByCommunity.dto';
+import { GetReservationHistoryResponse } from '../interface/getReservationHistroy.dto';
+import { RegisterReservationResponse } from '../interface/registerReservation.dto';
 import {
   GetHistoryBySearchType,
   MakeReservationBody,
@@ -21,6 +23,7 @@ import {
   GetReservationHistoryQuery,
   RegisterReservationBody,
 } from '../interface/reservation.interface';
+import { TodayReservationRespone } from '../interface/todayReservation.dto';
 
 dayjs.extend(isBetween);
 
@@ -40,7 +43,9 @@ export class ReservationUserServiceLogic {
     return this.reservationRepository.findUniqueReservation(+id);
   }
 
-  async getTodayReservation(userId: string) {
+  async getTodayReservation(
+    userId: string,
+  ): Promise<TodayReservationRespone[]> {
     const todayReservations =
       await this.reservationRepository.findTodayReservation(
         this.reservationValidator.findTodayReservation(userId),
@@ -57,7 +62,7 @@ export class ReservationUserServiceLogic {
 
   async findReservationByCommunity(
     userId: string,
-  ): Promise<FindReservationByCommunityDto> {
+  ): Promise<FindReservationByCommunityResponse> {
     const reservationGroupByCommunity = applicationGroupBy(
       await this.reservationRepository.findReservationByCommunity(
         this.reservationValidator.findReservationByCommunity(userId),
@@ -89,7 +94,7 @@ export class ReservationUserServiceLogic {
       date,
       communityClubId: communityId,
     }: GetReservationHistoryQuery,
-  ) {
+  ): Promise<GetReservationHistoryResponse> {
     const groupByDateReservationHistory = applicationGroupBy(
       await this.reservationRepository.getHistoryByQueryType(
         this.reservationValidator.getHistoryByQueryType(
@@ -379,6 +384,7 @@ export class ReservationUserServiceLogic {
   }
 
   async getAvailableSlot(id: number, { date, seat }: GetAvailableSlotQuery) {
+    console.log({ date });
     const [year, month, day] = date.split('T')[0].split('-');
     const community = await this.communityRepository.findUniqueRelationType(id);
 
@@ -414,11 +420,14 @@ export class ReservationUserServiceLogic {
             { ...prev },
             (() => {
               const [thisTime, thisMinute] = curr.time.split(':');
+              console.log({ thisTime, openTime });
               return +thisTime >= openTime ? { [curr.time]: 0 } : {};
             })(),
           ),
         {} as { [key: string]: number },
       );
+
+    console.log({ slots });
 
     reservations.map((value) => {
       const [startHour] = value.startDate
@@ -426,6 +435,8 @@ export class ReservationUserServiceLogic {
         .split('T')[1]
         .split(':');
       const [endHour] = value.endDate.toISOString().split('T')[1].split(':');
+
+      console.log(value.startDate, value.endDate);
 
       for (let i = +startHour; i < +endHour; i++)
         for (let j = 0; j < slotPerTime; j++) {
@@ -553,7 +564,7 @@ export class ReservationUserServiceLogic {
     id: number,
     body: RegisterReservationBody,
     payload: UserTokenPayload,
-  ) {
+  ): Promise<RegisterReservationResponse> {
     const community = await this.communityRepository.findUniqueRelationType(id);
     const timeLimit = community?.CommunityClubTimeLimit;
 
@@ -571,13 +582,13 @@ export class ReservationUserServiceLogic {
       return prev + (curr.status === 'CANCELLED' ? 0 : 1);
     }, 0);
 
-    const startDate = dayjs(body.startdate).toDate();
+    const startDate = dayjs(body.startDate).toDate();
 
     const endDate = body.slotCount
-      ? dayjs(body.startdate)
+      ? dayjs(body.startDate)
           .add(+body.slotCount * timeLimit!.reservationTimeInterval, 'minute')
           .toDate()
-      : dayjs(body.startdate).add(1, 'day').toDate();
+      : dayjs(body.startDate).add(1, 'day').toDate();
 
     return this.reservationRepository.makeReservation(
       this.reservationValidator.makeReservation(
