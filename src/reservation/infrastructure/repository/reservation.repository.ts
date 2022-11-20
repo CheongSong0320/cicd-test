@@ -222,6 +222,7 @@ export class ReservationRepository {
         id,
       },
       select: {
+        id: true,
         startDate: true,
         endDate: true,
         seatNumber: true,
