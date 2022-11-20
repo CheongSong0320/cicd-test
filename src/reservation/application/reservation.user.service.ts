@@ -19,6 +19,10 @@ import { ReservationUserServiceLogic } from './reservation.user.service.logic';
 export class ReservationUserService {
   constructor(private reservationServiceLogic: ReservationUserServiceLogic) {}
 
+  findUniqueReservation(id: number) {
+    return this.reservationServiceLogic.findUniqueReservation(+id);
+  }
+
   helloReservation() {
     return this.reservationServiceLogic.helloReservation();
   }

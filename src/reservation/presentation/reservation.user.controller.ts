@@ -35,8 +35,13 @@ import {
 
 @Controller('reservation')
 export class ReservationUserController {
-  Body;
   constructor(private readonly reservationService: ReservationUserService) {}
+
+  @Get(':id')
+  @Auth(API_USER)
+  findUniqueReservation(@Param('id') id: string) {
+    return this.reservationService.findUniqueReservation(+id);
+  }
 
   @Get()
   @Auth(API_USER)

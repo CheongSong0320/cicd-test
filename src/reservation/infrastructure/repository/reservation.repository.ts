@@ -215,4 +215,24 @@ export class ReservationRepository {
       },
     });
   }
+
+  findUniqueReservation(id: number) {
+    return this.prisma.reservation.findUnique({
+      where: {
+        id,
+      },
+      select: {
+        startDate: true,
+        endDate: true,
+        seatNumber: true,
+        CommunityClub: {
+          select: {
+            memo: true,
+            id: true,
+            name: true,
+          },
+        },
+      },
+    });
+  }
 }

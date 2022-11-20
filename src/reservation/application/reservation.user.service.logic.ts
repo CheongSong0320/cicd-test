@@ -34,6 +34,10 @@ export class ReservationUserServiceLogic {
     return this.reservationRepository.findMany();
   }
 
+  findUniqueReservation(id: number) {
+    return this.reservationRepository.findUniqueReservation(+id);
+  }
+
   async getTodayReservation(userId: string) {
     const todayReservations =
       await this.reservationRepository.findTodayReservation(
