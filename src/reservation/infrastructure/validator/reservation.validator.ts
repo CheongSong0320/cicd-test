@@ -84,15 +84,15 @@ export class ReservationValidator {
     });
   }
 
-  findTodayReservation(userId: string) {
+  findTodayReservation(userId: string, startDate: Date, endDate: Date) {
     return Prisma.validator<Prisma.ReservationFindManyArgs>()({
       where: {
         userId,
         startDate: {
-          gte: getDayCalculas(0),
+          gte: startDate,
         },
         endDate: {
-          lt: getDayCalculas(1),
+          lt: endDate,
         },
         status: {
           in: ['READY', 'PENDING'],
@@ -149,7 +149,7 @@ export class ReservationValidator {
           gte: date ? getDayCalculas(0, date) : getDayCalculas(-31),
         },
         endDate: {
-          lt: date ? getDayCalculas(1, date) : getDayCalculas(0),
+          lt: date ? getDayCalculas(1, date) : getDayCalculas(1),
         },
         communityClubId: {
           equals: communityId ? +communityId : undefined,

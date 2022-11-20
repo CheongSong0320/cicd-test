@@ -22,6 +22,7 @@ import {
   GetAvailableSeatQuery,
   GetReservationHistoryQuery,
   RegisterReservationBody,
+  GetReservationQuery,
 } from '../interface/reservation.interface';
 import { TodayReservationRespone } from '../interface/todayReservation.dto';
 
@@ -45,10 +46,15 @@ export class ReservationUserServiceLogic {
 
   async getTodayReservation(
     userId: string,
+    { startDate, endDate }: GetReservationQuery,
   ): Promise<TodayReservationRespone[]> {
     const todayReservations =
       await this.reservationRepository.findTodayReservation(
-        this.reservationValidator.findTodayReservation(userId),
+        this.reservationValidator.findTodayReservation(
+          userId,
+          startDate,
+          endDate,
+        ),
       );
 
     return todayReservations.map((value) => ({
@@ -105,26 +111,24 @@ export class ReservationUserServiceLogic {
       ),
       (args) =>
         searchType === 'date'
-          ? args.startDate.toISOString().split('T')[0]
-          : args.communityClubId,
+          ? args.communityClubId
+          : args.startDate.toISOString().split('T')[0],
     );
 
     return {
       reservation: Object.entries(groupByDateReservationHistory).map(
         ([key, value]) => ({
-          date: searchType === 'date' ? key : undefined,
-          communityClubId: searchType === 'community' ? key : undefined,
+          date: searchType === 'community' ? key : undefined,
+          communityClubId: searchType === 'date' ? key : undefined,
           communityName:
-            searchType === 'community'
-              ? value[0].CommunityClub.name
-              : undefined,
+            searchType === 'date' ? value[0].CommunityClub.name : undefined,
           reservation: value.flatMap((value) => ({
             id: value.id,
             startDate: value.startDate,
             endDate: value.endDate,
             seatNumber: value.seatNumber,
             communityName:
-              searchType === 'date' ? value.CommunityClub.name : undefined,
+              searchType === 'community' ? value.CommunityClub.name : undefined,
           })),
         }),
       ),

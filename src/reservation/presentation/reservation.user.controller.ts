@@ -29,6 +29,7 @@ import {
   GetAvailableSeatQuery,
   GetReservationHistoryQuery,
   RegisterReservationBody,
+  GetReservationQuery,
 } from '../interface/reservation.interface';
 import { RegisterCommunityBody } from '../interface/community.interface';
 import { ApiCreatedResponse, ApiResponse } from '@nestjs/swagger';
@@ -44,10 +45,13 @@ export class ReservationUserController {
     return this.reservationService.findReservationByCommunity(payload.id);
   }
 
-  @Get('/today')
+  @Get('search')
   @Auth(API_USER)
-  getTodayReservation(@JwtPayload() payload: UserTokenPayload) {
-    return this.reservationService.getTodayReservation(payload.id);
+  getTodayReservation(
+    @JwtPayload() payload: UserTokenPayload,
+    @Query() query: GetReservationQuery,
+  ) {
+    return this.reservationService.getTodayReservation(payload.id, query);
   }
 
   @Get('history')

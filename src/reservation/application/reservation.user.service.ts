@@ -11,6 +11,7 @@ import {
   GetAvailableSeatQuery,
   GetReservationHistoryQuery,
   RegisterReservationBody,
+  GetReservationQuery,
 } from '../interface/reservation.interface';
 import { ReservationUserServiceLogic } from './reservation.user.service.logic';
 
@@ -26,8 +27,8 @@ export class ReservationUserService {
     return this.reservationServiceLogic.helloReservation();
   }
 
-  getTodayReservation(userId: string) {
-    return this.reservationServiceLogic.getTodayReservation(userId);
+  getTodayReservation(userId: string, query: GetReservationQuery) {
+    return this.reservationServiceLogic.getTodayReservation(userId, query);
   }
 
   findReservationByCommunity(userId: string) {

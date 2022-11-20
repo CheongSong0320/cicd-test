@@ -67,3 +67,8 @@ export class GetAvailableSeatQuery {
   startDate?: string;
   slotCount?: string;
 }
+
+export class GetReservationQuery {
+  startDate: Date;
+  endDate: Date;
+}
