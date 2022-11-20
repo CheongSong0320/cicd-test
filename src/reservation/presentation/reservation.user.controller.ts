@@ -37,12 +37,6 @@ import {
 export class ReservationUserController {
   constructor(private readonly reservationService: ReservationUserService) {}
 
-  @Get(':id')
-  @Auth(API_USER)
-  findUniqueReservation(@Param('id') id: string) {
-    return this.reservationService.findUniqueReservation(+id);
-  }
-
   @Get()
   @Auth(API_USER)
   findReservationByCommunity(@JwtPayload() payload: UserTokenPayload) {
@@ -161,5 +155,11 @@ export class ReservationUserController {
     @Query() query: GetAvailableSeatQuery,
   ) {
     return this.reservationService.getAvailableSeat(+param.id, query);
+  }
+
+  @Get(':id')
+  @Auth(API_USER)
+  findUniqueReservation(@Param('id') id: string) {
+    return this.reservationService.findUniqueReservation(+id);
   }
 }
