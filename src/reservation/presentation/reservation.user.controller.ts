@@ -32,7 +32,9 @@ import {
   GetAvailableSlotQuery,
   GetAvailableSeatQuery,
   GetReservationHistoryQuery,
+  RegisterReservationBody,
 } from '../interface/reservation.interface';
+import { RegisterCommunityBody } from '../interface/community.interface';
 
 @Controller('reservation')
 export class ReservationUserController {
@@ -153,6 +155,16 @@ export class ReservationUserController {
     @Query() query: GetAvailableSeatQuery,
   ) {
     return this.reservationService.getAvailableSeat(+param.id, query);
+  }
+
+  @Post('community/:id')
+  @Auth(API_USER)
+  registerReservation(
+    @Param('id') id: string,
+    @Body() body: RegisterReservationBody,
+    @JwtPayload() payload: UserTokenPayload,
+  ) {
+    return this.reservationService.registerReservation(+id, body, payload);
   }
 
   @Get('community/:id')

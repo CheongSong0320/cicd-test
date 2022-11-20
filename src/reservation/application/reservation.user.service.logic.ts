@@ -20,6 +20,7 @@ import {
   GetAvailableDateParam,
   GetAvailableSeatQuery,
   GetReservationHistoryQuery,
+  RegisterReservationBody,
 } from '../interface/reservation.interface';
 
 dayjs.extend(isBetween);
@@ -505,7 +506,10 @@ export class ReservationUserServiceLogic {
     };
   }
 
-  async getAvailableSeat(id: number, { date, slot }: GetAvailableSeatQuery) {
+  async getAvailableSeat(
+    id: number,
+    { startDate: date, slot }: GetAvailableSeatQuery,
+  ) {
     const community = await this.communityRepository.findUniqueRelationType(id);
 
     const maxCount =
@@ -596,5 +600,50 @@ export class ReservationUserServiceLogic {
   async getCommunityById(id: number) {
     const community = await this.communityRepository.getCommunityById(id);
     return { ...community, ...getSeatAndTimeType(community?.type) };
+  }
+
+  async registerReservation(
+    id: number,
+    body: RegisterReservationBody,
+    payload: UserTokenPayload,
+  ) {
+    const community = await this.communityRepository.findUniqueRelationType(id);
+    const timeLimit = community?.CommunityClubTimeLimit;
+
+    console.log(community);
+
+    const maxCount =
+      community.CommunityClubPerson?.maxCount ??
+      community.CommunityClubSeat?.maxCount ??
+      community.CommunityClubTimeLimit?.maxCount ??
+      0;
+
+    const todayReservationCount = (
+      await this.reservationRepository.getTodayReservationCount(community.id)
+    ).reduce((prev, curr) => {
+      return prev + (curr.status === 'CANCELLED' ? 0 : 1);
+    }, 0);
+
+    const startDate = dayjs(body.startdate).toDate();
+
+    const endDate = body.slotCount
+      ? dayjs(body.startdate)
+          .add(+body.slotCount * timeLimit!.reservationTimeInterval, 'minute')
+          .toDate()
+      : dayjs(body.startdate).add(1, 'day').toDate();
+
+    return this.reservationRepository.makeReservation(
+      this.reservationValidator.makeReservation(
+        payload,
+        {
+          startDate,
+          endDate,
+          communityClubId: id,
+          seatNumber: body.seatId ? +body.seatId : undefined,
+        },
+        community,
+        community.signOffOn ? 'PENDING' : 'READY',
+      ),
+    );
   }
 }

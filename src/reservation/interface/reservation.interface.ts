@@ -9,6 +9,12 @@ export class GetReservationHistoryQuery {
   communityClubId?: string;
 }
 
+export class RegisterReservationBody {
+  startdate: Date;
+  slotCount?: string;
+  seatId?: string;
+}
+
 export interface MakeReservationBody {
   startDate: Date;
   endDate: Date;
@@ -71,6 +77,6 @@ export interface GetAvailableSlotQuery {
 }
 
 export interface GetAvailableSeatQuery {
-  date?: string;
+  startDate?: string;
   slot?: string;
 }

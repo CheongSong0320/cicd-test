@@ -13,6 +13,7 @@ import {
   GetAvailableSlotQuery,
   GetAvailableSeatQuery,
   GetReservationHistoryQuery,
+  RegisterReservationBody,
 } from '../interface/reservation.interface';
 import { ReservationUserServiceLogic } from './reservation.user.service.logic';
 
@@ -97,5 +98,13 @@ export class ReservationUserService {
 
   getCommunityById(id: number) {
     return this.reservationServiceLogic.getCommunityById(id);
+  }
+
+  registerReservation(
+    id: number,
+    body: RegisterReservationBody,
+    payload: UserTokenPayload,
+  ) {
+    return this.reservationServiceLogic.registerReservation(+id, body, payload);
   }
 }
