@@ -9,8 +9,10 @@
       {
         "name": "@nestjs/swagger",
         "options": {
+          "dtoFileNameSuffix": [".interface.ts"],
           "introspectComments": true,
-          "controllerKeyOfComment": "summary"
+          "controllerKeyOfComment": "summary",
+          "classValidatorShim": false
         }
       }
     ]

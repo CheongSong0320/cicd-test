@@ -1,4 +1,13 @@
+import { ApiProperty } from '@nestjs/swagger';
+
 export type GetHistoryBySearchType = 'date' | 'community';
+
+export class GetReservationHistoryQuery {
+  @ApiProperty({ enum: ['date', 'community'] })
+  searchType: 'date' | 'community';
+  date?: Date;
+  communityClubId?: string;
+}
 
 export interface MakeReservationBody {
   startDate: Date;

@@ -31,6 +31,7 @@ import {
   GetAvailableDateQuery,
   GetAvailableSlotQuery,
   GetAvailableSeatQuery,
+  GetReservationHistoryQuery,
 } from '../interface/reservation.interface';
 
 @Controller('reservation')
@@ -53,12 +54,9 @@ export class ReservationUserController {
   @Auth(API_USER)
   getHistoryByQueryType(
     @JwtPayload() payload: UserTokenPayload,
-    @Query('searchType') searchType: GetHistoryBySearchType,
+    @Query() query: GetReservationHistoryQuery,
   ) {
-    return this.reservationService.getHistoryByQueryType(
-      payload.id,
-      searchType,
-    );
+    return this.reservationService.getHistoryByQueryType(payload.id, query);
   }
 
   @Get('/community')
@@ -155,6 +153,12 @@ export class ReservationUserController {
     @Query() query: GetAvailableSeatQuery,
   ) {
     return this.reservationService.getAvailableSeat(+param.id, query);
+  }
+
+  @Get('community/:id')
+  @Auth(API_USER)
+  getCommunityById(@Param('id') id: string) {
+    return this.reservationService.getCommunityById(+id);
   }
 
   @Get(':id')

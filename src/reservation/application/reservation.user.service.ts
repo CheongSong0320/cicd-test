@@ -12,6 +12,7 @@ import {
   GetAvailableDateQuery,
   GetAvailableSlotQuery,
   GetAvailableSeatQuery,
+  GetReservationHistoryQuery,
 } from '../interface/reservation.interface';
 import { ReservationUserServiceLogic } from './reservation.user.service.logic';
 
@@ -35,11 +36,8 @@ export class ReservationUserService {
     return this.reservationServiceLogic.findReservationByCommunity(userId);
   }
 
-  getHistoryByQueryType(userId: string, searchType: GetHistoryBySearchType) {
-    return this.reservationServiceLogic.getHistoryByQueryType(
-      userId,
-      searchType,
-    );
+  getHistoryByQueryType(userId: string, query: GetReservationHistoryQuery) {
+    return this.reservationServiceLogic.getHistoryByQueryType(userId, query);
   }
 
   getCommunityClub(apartmentId: number) {
@@ -95,5 +93,9 @@ export class ReservationUserService {
 
   getAvailableSeat(id: number, query: GetAvailableSeatQuery) {
     return this.reservationServiceLogic.getAvailableSeat(id, query);
+  }
+
+  getCommunityById(id: number) {
+    return this.reservationServiceLogic.getCommunityById(id);
   }
 }

@@ -6,6 +6,7 @@ import { CommunityClubRepository } from '../infrastructure/repository/communityC
 import { ReservationRepository } from '../infrastructure/repository/reservation.repository';
 import { applicationGroupBy } from '../infrastructure/util/applicationGroupBy';
 import { setYearMonthDbDate } from '../infrastructure/util/dateUtil';
+import { getSeatAndTimeType } from '../infrastructure/util/typeUtil';
 import { ReservationValidator } from '../infrastructure/validator/reservation.validator';
 import {
   GetUnavailableDateQuery,
@@ -18,6 +19,7 @@ import {
   GetAvailableSlotQuery,
   GetAvailableDateParam,
   GetAvailableSeatQuery,
+  GetReservationHistoryQuery,
 } from '../interface/reservation.interface';
 
 dayjs.extend(isBetween);
@@ -80,11 +82,19 @@ export class ReservationUserServiceLogic {
 
   async getHistoryByQueryType(
     userId: string,
-    searchType: GetHistoryBySearchType,
+    {
+      searchType,
+      date,
+      communityClubId: communityId,
+    }: GetReservationHistoryQuery,
   ) {
     const groupByDateReservationHistory = applicationGroupBy(
       await this.reservationRepository.getHistoryByQueryType(
-        this.reservationValidator.getHistoryByQueryType(userId),
+        this.reservationValidator.getHistoryByQueryType(
+          userId,
+          date,
+          communityId,
+        ),
       ),
       (args) =>
         searchType === 'date'
@@ -122,12 +132,7 @@ export class ReservationUserServiceLogic {
         )
       ).map((value) => ({
         ...value,
-        timeType:
-          value.type === 'PERSON' || value.type === 'SEAT' ? 'ALLDAY' : 'SLOT',
-        seatType:
-          value.type === 'SEAT' || value.type === 'SEAT_TIME_LMIT'
-            ? 'SEAT'
-            : 'NUM_PERSON',
+        ...getSeatAndTimeType(value.type),
       })),
     };
   }
@@ -586,5 +591,10 @@ export class ReservationUserServiceLogic {
         }
       }
     }
+  }
+
+  async getCommunityById(id: number) {
+    const community = await this.communityRepository.getCommunityById(id);
+    return { ...community, ...getSeatAndTimeType(community?.type) };
   }
 }

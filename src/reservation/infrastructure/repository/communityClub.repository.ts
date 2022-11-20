@@ -124,4 +124,12 @@ export class CommunityClubRepository {
       },
     });
   }
+
+  getCommunityById(id: number) {
+    return this.prisma.communityClub.findUniqueOrThrow({
+      where: {
+        id,
+      },
+    });
+  }
 }
