@@ -21,6 +21,7 @@ export class RegisterReservationResponse {
 
   @ApiProperty()
   isMemberShip: boolean | null;
+
   @ApiProperty({ enum: ['PENDING', 'READY', 'CANCELLED'] })
   status: 'PENDING' | 'READY' | 'CANCELLED';
 

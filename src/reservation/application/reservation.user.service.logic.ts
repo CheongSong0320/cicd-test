@@ -518,6 +518,17 @@ export class ReservationUserServiceLogic {
             .toISOString();
 
           console.log({ date, endDate });
+          console.log(
+            await this.reservationRepository.getAvailableDate(
+              id,
+              setYearMonthDbDate(+year, +month, -1, +day),
+              setYearMonthDbDate(+year, +month, -1, +day + 1),
+            ),
+          );
+
+          const now = dayjs();
+
+          console.log(dayjs(now).isBetween(now, dayjs().add(10, 'minute')));
 
           const { openTime, closedTime, maxCount, reservationTimeInterval } =
             timeLimit;
@@ -539,8 +550,18 @@ export class ReservationUserServiceLogic {
                 isAvailable: value.some(
                   (value) =>
                     !(
-                      dayjs(date).isBetween(value.startDate, value.endDate) ||
-                      dayjs(endDate).isBetween(value.startDate, value.endDate)
+                      dayjs(date).isBetween(
+                        value.startDate,
+                        value.endDate,
+                        null,
+                        '[)',
+                      ) ||
+                      dayjs(endDate).isBetween(
+                        value.startDate,
+                        value.endDate,
+                        null,
+                        '[)',
+                      )
                     ),
                 ),
               },
