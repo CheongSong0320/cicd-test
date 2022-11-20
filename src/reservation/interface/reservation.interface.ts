@@ -15,14 +15,14 @@ export class RegisterReservationBody {
   seatId?: string;
 }
 
-export interface MakeReservationBody {
+export class MakeReservationBody {
   startDate: Date;
   endDate: Date;
   communityClubId: number;
   seatNumber?: number;
 }
 
-export interface DeleteReservationQuery {
+export class DeleteReservationQuery {
   id: string;
 }
 
@@ -36,28 +36,15 @@ export interface UpdateReservationQuery {
   id: string;
 }
 
-export interface GetAvailableDateParam {
+export class GetAvailableDateParam {
   id: string;
 }
 
-export interface GetUnavailableDateQuery {
-  year: string;
-  month: string;
-}
-
-export interface GetUnavailableDateByTimePriorityQuery {
-  year: string;
-  month: string;
-  day: string;
-  startTime: string;
-  endTime: string;
-}
-
-export interface GetTimeTableParam {
+export class GetTimeTableParam {
   id: string;
 }
 
-export interface GetTimeTableQuery {
+export class GetTimeTableQuery {
   year: string;
   month: string;
   day: string;
@@ -66,17 +53,17 @@ export interface GetTimeTableQuery {
 export type TimeType = 'SLOT' | 'ALLDAY';
 export type SeatType = 'SEAT' | 'NUM_PERSON';
 
-export interface GetAvailableDateQuery {
+export class GetAvailableDateQuery {
   month: number;
   seat?: number;
 }
 
-export interface GetAvailableSlotQuery {
+export class GetAvailableSlotQuery {
   date: string;
   seat?: number;
 }
 
-export interface GetAvailableSeatQuery {
+export class GetAvailableSeatQuery {
   startDate?: string;
   slot?: string;
 }

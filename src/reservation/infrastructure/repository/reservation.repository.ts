@@ -2,10 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Prisma, Reservation } from '@prisma/client';
 import * as dayjs from 'dayjs';
 import { PrismaService } from 'src/providers/prisma.service';
-import {
-  GetUnavailableDateQuery,
-  MakeReservationBody,
-} from 'src/reservation/interface/reservation.interface';
+import { MakeReservationBody } from 'src/reservation/interface/reservation.interface';
 import { getDayCalculas, setYearMonthDbDate } from '../util/dateUtil';
 import { ReservationValidator } from '../validator/reservation.validator';
 
@@ -81,76 +78,6 @@ export class ReservationRepository {
         startDate: body.startDate,
         endDate: body.endDate,
         seatNumber: body.seatNumber,
-      },
-    });
-  }
-
-  groupByAndCount(
-    communityClubId: number,
-    { year, month }: GetUnavailableDateQuery,
-  ) {
-    return this.prisma.reservation.groupBy({
-      by: ['startDate', 'seatNumber'],
-      where: {
-        communityClubId,
-        status: {
-          not: 'CANCELLED',
-        },
-        startDate: {
-          gte: setYearMonthDbDate(+year, +month, -1),
-        },
-        endDate: {
-          lt: setYearMonthDbDate(+year, +month, 0),
-        },
-      },
-      _count: {
-        _all: true,
-      },
-    });
-  }
-
-  getUnavailableDateByTimePriority(
-    communityClubId: number,
-    {
-      year,
-      month,
-      day,
-      startTime,
-      endTime,
-    }: {
-      year: number;
-      month: number;
-      day: number;
-      startTime: string;
-      endTime: string;
-    },
-  ) {
-    const [startHour, startMinute] = startTime.split(':');
-    const [endHour, endMinute] = endTime.split(':');
-
-    return this.prisma.reservation.groupBy({
-      by: ['seatNumber'],
-      where: {
-        communityClubId,
-        status: {
-          not: 'CANCELLED',
-        },
-        startDate: {
-          gte: setYearMonthDbDate(
-            year,
-            month - 1,
-            0,
-            day,
-            +startHour,
-            +startMinute,
-          ),
-        },
-        endDate: {
-          lt: setYearMonthDbDate(year, month - 1, 0, day, +endHour, +endMinute),
-        },
-      },
-      _count: {
-        _all: true,
       },
     });
   }

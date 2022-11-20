@@ -9,10 +9,8 @@ import { setYearMonthDbDate } from '../infrastructure/util/dateUtil';
 import { getSeatAndTimeType } from '../infrastructure/util/typeUtil';
 import { ReservationValidator } from '../infrastructure/validator/reservation.validator';
 import {
-  GetUnavailableDateQuery,
   GetHistoryBySearchType,
   MakeReservationBody,
-  UpdateReservationBody,
   UpdateReservationQuery,
   GetTimeTableQuery,
   GetAvailableDateQuery,
@@ -175,60 +173,6 @@ export class ReservationUserServiceLogic {
 
   updateReservation(id: number, body: MakeReservationBody) {
     return this.reservationRepository.updateReservation(id, body);
-  }
-
-  async getUnavailableDate(id: number, query: GetUnavailableDateQuery) {
-    const community = await this.communityRepository.findUniqueRelationType(id);
-
-    const maxCount =
-      community.CommunityClubPerson?.maxCount ??
-      community.CommunityClubSeat?.maxCount ??
-      community.CommunityClubTimeLimit?.maxCount ??
-      100000;
-
-    const reservationCount = await this.reservationRepository.groupByAndCount(
-      community.id,
-      query,
-    );
-
-    return {
-      unavailableDate: reservationCount
-        .filter((value) => value._count._all >= maxCount)
-        .map((value) => ({
-          date: value.startDate,
-          seatNumber: value.seatNumber,
-        })),
-    };
-  }
-
-  async getUnavailableDateByTimePriority(
-    id: number,
-    query: {
-      year: number;
-      month: number;
-      day: number;
-      startTime: string;
-      endTime: string;
-    },
-  ) {
-    const community = await this.communityRepository.findUniqueRelationType(id);
-
-    const maxCount = community.CommunityClubTimeLimit?.maxCount ?? 100000;
-
-    const reservationCount = applicationGroupBy(
-      await this.reservationRepository.getUnavailableDateByTimePriority(
-        id,
-        query,
-      ),
-      'seatNumber',
-    );
-
-    return {
-      isAvailableList: [...Array(maxCount)].map((value, index) => ({
-        seatNumber: index + 1,
-        isAvailable: reservationCount[index + 1] ? true : false,
-      })),
-    };
   }
 
   async getTimeTable(id: number, { year, month, day }: GetTimeTableQuery) {

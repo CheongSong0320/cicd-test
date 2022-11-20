@@ -18,14 +18,10 @@ import {
 } from '@hanwha-sbi/nestjs-authorization';
 import { ReservationUserService } from '../application/reservation.user.service';
 import {
-  DeleteReservationQuery,
   GetAvailableDateParam,
-  GetUnavailableDateQuery,
   GetHistoryBySearchType,
   MakeReservationBody,
-  UpdateReservationBody,
   UpdateReservationQuery,
-  GetUnavailableDateByTimePriorityQuery,
   GetTimeTableParam,
   GetTimeTableQuery,
   GetAvailableDateQuery,
@@ -95,30 +91,6 @@ export class ReservationUserController {
     @Body() body: MakeReservationBody,
   ) {
     return this.reservationService.updateReservation(+id, body);
-  }
-
-  @Get('/community/:id/unavailable-date')
-  @Auth(API_USER)
-  getUnavailableDate(
-    @Param() param: GetAvailableDateParam,
-    @Query() query: GetUnavailableDateQuery,
-  ) {
-    return this.reservationService.getunAvailableDate(
-      parseInt(param.id, 10),
-      query,
-    );
-  }
-
-  @Get('/community/:id/time-priority')
-  @Auth(API_USER)
-  getUnavailableDateByTimePriority(
-    @Param() param: GetAvailableDateParam,
-    @Query() query: GetUnavailableDateByTimePriorityQuery,
-  ) {
-    return this.reservationService.getUnavailableDateByTimePriority(
-      +param.id,
-      query,
-    );
   }
 
   @Get('community/:id/reservation-available/dates')
