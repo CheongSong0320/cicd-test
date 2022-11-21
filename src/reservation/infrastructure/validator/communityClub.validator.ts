@@ -35,6 +35,7 @@ export class CommunityClubValidator {
     return Prisma.validator<Prisma.CommunityClubFindManyArgs>()({
       where: {
         apartmentId: apartmentId,
+        active: true,
       },
       orderBy: {
         id: 'asc',
@@ -47,6 +48,7 @@ export class CommunityClubValidator {
       where: {
         apartmentId,
         type: 'SEAT_TIME_LMIT',
+        active: true,
       },
 
       select: {

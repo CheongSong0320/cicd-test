@@ -87,6 +87,9 @@ export class ReservationRepository {
       where: {
         communityClubId,
       },
+      orderBy: {
+        id: 'asc',
+      },
     });
   }
 

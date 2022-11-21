@@ -62,6 +62,7 @@ export class CommunityClubRepository {
     return this.prisma.communityClub.findMany({
       where: {
         apartmentId,
+        active: true,
       },
       include: {
         CommunityClubPerson: true,

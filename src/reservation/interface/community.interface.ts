@@ -12,19 +12,19 @@ export type RegisterCommunityBody =
   | IRegisterCommunityTimeLimitSeatType;
 
 export interface IRegisterCommunityPersonType {
-  communityClub: Omit<CommunityClub, 'id'>;
-  communityClubPerson: Omit<CommunityClubPerson, 'id' | 'community_club_id'>;
+  communityClub: Omit<CommunityClub, 'id' | 'apartmentId'>;
+  communityClubPerson: Omit<CommunityClubPerson, 'id' | 'communityClubId'>;
   type: typeof CommunityClubType['PERSON'];
 }
 
 export interface IRegisterCommunitySeatType {
-  communityClub: Omit<CommunityClub, 'id'>;
-  communityClubSeat: Omit<CommunityClubSeat, 'id' | 'community_club_id'>;
+  communityClub: Omit<CommunityClub, 'id' | 'apartmentId'>;
+  communityClubSeat: Omit<CommunityClubSeat, 'id' | 'communityClubId'>;
   type: typeof CommunityClubType['SEAT'];
 }
 
 export interface IRegisterCommunityTimeLimitSeatType {
-  communityClub: Omit<CommunityClub, 'id'>;
+  communityClub: Omit<CommunityClub, 'id' | 'apartmentId'>;
   communityClubTimeLimit: Omit<
     CommunityClubTimeLimit,
     'id' | 'community_club_id'
