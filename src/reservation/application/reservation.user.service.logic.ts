@@ -397,12 +397,19 @@ export class ReservationUserServiceLogic {
     const { openTime, closedTime, maxCount, reservationTimeInterval } =
       timeLimit;
 
+    console.log(
+      setYearMonthDbDate(+year, +month, -1, +day),
+      setYearMonthDbDate(+year, +month, -1, +day + 1),
+    );
+
     const reservations = await this.reservationRepository.getAvailableDate(
       id,
       setYearMonthDbDate(+year, +month, -1, +day),
       setYearMonthDbDate(+year, +month, -1, +day + 1),
       seat,
     );
+
+    console.log(reservations);
 
     const slotPerTime = 60 / reservationTimeInterval;
 
@@ -424,14 +431,11 @@ export class ReservationUserServiceLogic {
             { ...prev },
             (() => {
               const [thisTime, thisMinute] = curr.time.split(':');
-              console.log({ thisTime, openTime });
               return +thisTime >= openTime ? { [curr.time]: 0 } : {};
             })(),
           ),
         {} as { [key: string]: number },
       );
-
-    console.log({ slots });
 
     reservations.map((value) => {
       const [startHour] = value.startDate

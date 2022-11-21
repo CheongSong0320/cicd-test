@@ -131,17 +131,28 @@ export class ReservationRepository {
   ) {
     return this.prisma.reservation.findMany({
       where: {
-        communityClubId,
-        seatNumber: seat ? +seat : seat,
-        status: {
-          not: 'CANCELLED',
+        AND: {
+          communityClubId,
+          seatNumber: seat ? +seat : seat,
+          status: {
+            not: 'CANCELLED',
+          },
         },
-        startDate: {
-          gte: startDate,
-        },
-        endDate: {
-          lt: endDate,
-        },
+
+        OR: [
+          {
+            startDate: {
+              gte: startDate,
+              lt: endDate,
+            },
+          },
+          {
+            endDate: {
+              gte: startDate,
+              lt: endDate,
+            },
+          },
+        ],
       },
     });
   }
