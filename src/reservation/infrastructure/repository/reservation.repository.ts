@@ -125,8 +125,8 @@ export class ReservationRepository {
 
   getAvailableDate(
     communityClubId: number,
-    startDate: Date,
-    endDate: Date,
+    startDate: Date | string,
+    endDate: Date | string,
     seat?: number,
   ) {
     return this.prisma.reservation.findMany({

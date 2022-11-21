@@ -397,15 +397,10 @@ export class ReservationUserServiceLogic {
     const { openTime, closedTime, maxCount, reservationTimeInterval } =
       timeLimit;
 
-    console.log(
-      setYearMonthDbDate(+year, +month, -1, +day),
-      setYearMonthDbDate(+year, +month, -1, +day + 1),
-    );
-
     const reservations = await this.reservationRepository.getAvailableDate(
       id,
-      setYearMonthDbDate(+year, +month, -1, +day),
-      setYearMonthDbDate(+year, +month, -1, +day + 1),
+      setYearMonthDbDate(+year, +month, -1, +day).toISOString(),
+      setYearMonthDbDate(+year, +month, -1, +day + 1).toISOString(),
       seat,
     );
 
@@ -431,7 +426,9 @@ export class ReservationUserServiceLogic {
             { ...prev },
             (() => {
               const [thisTime, thisMinute] = curr.time.split(':');
-              return +thisTime >= openTime ? { [curr.time]: 0 } : {};
+              return +thisTime >= openTime && +thisTime < closedTime
+                ? { [curr.time]: 0 }
+                : {};
             })(),
           ),
         {} as { [key: string]: number },
@@ -459,13 +456,15 @@ export class ReservationUserServiceLogic {
     return {
       slots: Object.entries(slots).map(([key, value]) => {
         const [hour, minute] = key.split(':');
+        const nowMunite = dayjs().get('hour') * 60 + dayjs().get('minute');
+        const slotMinute = +hour * 60 + +minute;
         return {
           slotId: key,
           isAvailable:
-            +hour * 60 + +minute >
-              dayjs().get('hour') * 60 + dayjs().get('minute') &&
             value < (seat ? 1 : maxCount)
-              ? true
+              ? nowMunite < slotMinute
+                ? true
+                : false
               : false,
         };
       }),
