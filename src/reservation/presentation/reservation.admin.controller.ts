@@ -19,6 +19,7 @@ import {
   RegisterCommunityBody,
   UpdateCommunityBody,
 } from '../interface/community.interface';
+import { GetCommunityUsageStatusDetailQuery } from '../interface/getCommunityUsageStatusDetail.dto';
 
 @Controller('reservation')
 export class ReservationAdminController {
@@ -60,13 +61,11 @@ export class ReservationAdminController {
   @Auth(API_ADMIN)
   getCommunityUsageStatusDetail(
     @JwtPayload() payload: AdminTokenPayload,
-    @Query('dong') dong: string,
-    @Query('ho') ho: string,
+    @Query() query: GetCommunityUsageStatusDetailQuery,
   ) {
     return this.reservationService.getCommunityUsageStatusDetail(
       payload,
-      dong,
-      ho,
+      query,
     );
   }
 

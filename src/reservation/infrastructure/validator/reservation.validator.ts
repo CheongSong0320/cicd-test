@@ -52,7 +52,13 @@ export class ReservationValidator {
     });
   }
 
-  findWithCommunityClub(ids: number[], dong: string, ho: string) {
+  findWithCommunityClub(
+    ids: number[],
+    dong: string,
+    ho: string,
+    dateFrom?: string,
+    dateTo?: string,
+  ) {
     return Prisma.validator<Prisma.ReservationFindManyArgs>()({
       where: {
         communityClubId: {
@@ -60,6 +66,12 @@ export class ReservationValidator {
         },
         dong,
         ho,
+        startDate: {
+          gte: dateFrom,
+        },
+        endDate: {
+          lt: dateTo,
+        },
       },
       select: {
         id: true,

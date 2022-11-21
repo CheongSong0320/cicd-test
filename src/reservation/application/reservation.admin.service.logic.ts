@@ -15,6 +15,7 @@ import {
   RegisterCommunityBody,
   UpdateCommunityBody,
 } from '../interface/community.interface';
+import { GetCommunityUsageStatusDetailQuery } from '../interface/getCommunityUsageStatusDetail.dto';
 
 @Injectable()
 export class ReservationAdminServiceLogic {
@@ -117,8 +118,7 @@ export class ReservationAdminServiceLogic {
 
   async getCommunityUsageStatusDetail(
     payload: AdminTokenPayload,
-    dong: string,
-    ho: string,
+    { dong, ho, dateFrom, dateTo }: GetCommunityUsageStatusDetailQuery,
   ) {
     const communities = await this.communityClubRepository.findByApartmentId(
       this.communityClubValidator.findByApartmentIdValidator(
@@ -133,6 +133,8 @@ export class ReservationAdminServiceLogic {
         Object.keys(communityMap).map(Number),
         dong,
         ho,
+        dateFrom,
+        dateTo,
       ),
     );
 

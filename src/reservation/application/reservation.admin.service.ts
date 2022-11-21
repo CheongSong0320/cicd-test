@@ -4,6 +4,7 @@ import {
   RegisterCommunityBody,
   UpdateCommunityBody,
 } from '../interface/community.interface';
+import { GetCommunityUsageStatusDetailQuery } from '../interface/getCommunityUsageStatusDetail.dto';
 import { ReservationAdminServiceLogic } from './reservation.admin.service.logic';
 
 @Injectable()
@@ -24,13 +25,11 @@ export class ReservationAdminService {
 
   getCommunityUsageStatusDetail(
     payload: AdminTokenPayload,
-    dong: string,
-    ho: string,
+    query: GetCommunityUsageStatusDetailQuery,
   ) {
     return this.reservationServiceLogic.getCommunityUsageStatusDetail(
       payload,
-      dong,
-      ho,
+      query,
     );
   }
 
