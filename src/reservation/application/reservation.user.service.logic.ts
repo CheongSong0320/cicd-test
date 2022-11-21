@@ -453,16 +453,20 @@ export class ReservationUserServiceLogic {
         }
     });
 
+    const nowMinute = dayjs();
+
     return {
       slots: Object.entries(slots).map(([key, value]) => {
         const [hour, minute] = key.split(':');
-        const nowMunite = dayjs().get('hour') * 60 + dayjs().get('minute');
-        const slotMinute = +hour * 60 + +minute;
+        const slotTime = dayjs()
+          .hour(+hour)
+          .minute(+minute);
+
         return {
           slotId: key,
           isAvailable:
             value < (seat ? 1 : maxCount)
-              ? nowMunite < slotMinute
+              ? nowMinute.isBefore(slotTime)
                 ? true
                 : false
               : false,
