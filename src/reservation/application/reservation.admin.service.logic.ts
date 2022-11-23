@@ -1,8 +1,8 @@
 import { AdminTokenPayload } from '@hanwha-sbi/nestjs-authorization';
 import { Injectable } from '@nestjs/common';
-import { UserType } from '@prisma/client';
 import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+import { v4 as uuidv4 } from 'uuid';
 
 import { CommunityClubRepository } from '../infrastructure/repository/communityClub.repository';
 import { ReservationRepository } from '../infrastructure/repository/reservation.repository';
@@ -40,10 +40,10 @@ export class ReservationAdminServiceLogic {
     return this.reservationRepository.findMany();
   }
 
-  getImagePutUrl(id: string) {
+  getImagePutUrl() {
     const command = new PutObjectCommand({
       Bucket: process.env.AROUND_INFO_S3_BUCKET || 'dev-hanwha-around-info',
-      Key: `images/${id}`,
+      Key: `images/${uuidv4()}`,
     });
     return getSignedUrl(this.s3Client, command, {
       expiresIn: 5 * 60,
@@ -61,9 +61,7 @@ export class ReservationAdminServiceLogic {
           type: body.communityClub.type,
         } as RegisterCommunityBody,
         paylaoad.apartmentId,
-        body.communityClub.image
-          ? await this.getImagePutUrl(body.communityClub.image)
-          : undefined,
+        body.communityClub.image ? await this.getImagePutUrl() : undefined,
       ),
     );
   }
