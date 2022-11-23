@@ -1,6 +1,10 @@
 import { AdminTokenPayload } from '@hanwha-sbi/nestjs-authorization';
 import { Injectable } from '@nestjs/common';
-import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import {
+  ObjectCannedACL,
+  PutObjectCommand,
+  S3Client,
+} from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -40,30 +44,45 @@ export class ReservationAdminServiceLogic {
     return this.reservationRepository.findMany();
   }
 
-  getImagePutUrl() {
+  async getImagePutUrl() {
     const command = new PutObjectCommand({
+      ACL: ObjectCannedACL.public_read,
       Bucket: process.env.AROUND_INFO_S3_BUCKET || 'dev-hanwha-around-info',
       Key: `images/${uuidv4()}`,
     });
-    return getSignedUrl(this.s3Client, command, {
+    const presignedUrl = await getSignedUrl(this.s3Client, command, {
       expiresIn: 5 * 60,
     });
+
+    return {
+      presignedUrl,
+      databaseUrl: presignedUrl.split('?')[0],
+    };
   }
 
   async registerCommunity(
     body: RegisterCommunityBody,
     paylaoad: AdminTokenPayload,
   ) {
-    return this.communityClubRepository.create(
-      this.communityClubValidator.registerCommunityClubValidator(
-        {
-          ...body,
-          type: body.communityClub.type,
-        } as RegisterCommunityBody,
-        paylaoad.apartmentId,
-        body.communityClub.image ? await this.getImagePutUrl() : undefined,
-      ),
-    );
+    const imageUrl = body.communityClub.image
+      ? await this.getImagePutUrl()
+      : undefined;
+
+    this.communityClubRepository
+      .create(
+        this.communityClubValidator.registerCommunityClubValidator(
+          {
+            ...body,
+            type: body.communityClub.type,
+          } as RegisterCommunityBody,
+          paylaoad.apartmentId,
+          imageUrl?.databaseUrl,
+        ),
+      )
+      .then((value) => ({
+        ...value,
+        image: imageUrl?.presignedUrl,
+      }));
   }
 
   async getCommunityUsageStatus(payload: AdminTokenPayload) {
@@ -262,11 +281,14 @@ export class ReservationAdminServiceLogic {
   }
 
   async updateCommunity(id: number, body: UpdateCommunityBody) {
-    return this.communityClubRepository.updateCommunity(
-      id,
-      body,
-      body.image ? await this.getImagePutUrl() : undefined,
-    );
+    const imageUrl = body.image ? await this.getImagePutUrl() : undefined;
+
+    return this.communityClubRepository
+      .updateCommunity(id, body, imageUrl?.databaseUrl)
+      .then((value) => ({
+        ...value,
+        image: imageUrl?.presignedUrl,
+      }));
   }
 
   async approveReservation(id: number) {
