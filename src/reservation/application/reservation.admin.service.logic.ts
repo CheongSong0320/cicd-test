@@ -261,8 +261,12 @@ export class ReservationAdminServiceLogic {
     return this.communityClubRepository.deleteCommunity(id);
   }
 
-  updateCommunity(id: number, body: UpdateCommunityBody) {
-    return this.communityClubRepository.updateCommunity(id, body);
+  async updateCommunity(id: number, body: UpdateCommunityBody) {
+    return this.communityClubRepository.updateCommunity(
+      id,
+      body,
+      body.image ? await this.getImagePutUrl() : undefined,
+    );
   }
 
   async approveReservation(id: number) {

@@ -89,7 +89,7 @@ export class CommunityClubRepository {
     });
   }
 
-  updateCommunity(id: number, body: UpdateCommunityBody) {
+  updateCommunity(id: number, body: UpdateCommunityBody, imageUrl?: string) {
     console.log(body);
     return this.prisma.communityClub.update({
       where: {
@@ -97,6 +97,7 @@ export class CommunityClubRepository {
       },
       data: {
         ...body,
+        image: imageUrl,
       },
       include: {
         CommunityClubPerson: true,
