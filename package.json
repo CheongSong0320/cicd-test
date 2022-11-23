@@ -23,8 +23,8 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.171.0",
-    "@aws-sdk/s3-request-presigner": "^3.173.0",
+    "@aws-sdk/client-s3": "^3.216.0",
+    "@aws-sdk/s3-request-presigner": "^3.216.0",
     "@grpc/grpc-js": "^1.6.7",
     "@grpc/proto-loader": "^0.6.13",
     "@hanwha-sbi/nestjs-authorization": "^0.14.0",

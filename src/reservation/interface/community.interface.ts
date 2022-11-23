@@ -11,19 +11,19 @@ export type RegisterCommunityBody =
   | IRegisterCommunitySeatType
   | IRegisterCommunityTimeLimitSeatType;
 
-export interface IRegisterCommunityPersonType {
+export class IRegisterCommunityPersonType {
   communityClub: Omit<CommunityClub, 'id' | 'apartmentId'>;
   communityClubPerson: Omit<CommunityClubPerson, 'id' | 'communityClubId'>;
   type: typeof CommunityClubType['PERSON'];
 }
 
-export interface IRegisterCommunitySeatType {
+export class IRegisterCommunitySeatType {
   communityClub: Omit<CommunityClub, 'id' | 'apartmentId'>;
   communityClubSeat: Omit<CommunityClubSeat, 'id' | 'communityClubId'>;
   type: typeof CommunityClubType['SEAT'];
 }
 
-export interface IRegisterCommunityTimeLimitSeatType {
+export class IRegisterCommunityTimeLimitSeatType {
   communityClub: Omit<CommunityClub, 'id' | 'apartmentId'>;
   communityClubTimeLimit: Omit<
     CommunityClubTimeLimit,
@@ -34,7 +34,7 @@ export interface IRegisterCommunityTimeLimitSeatType {
     | typeof CommunityClubType['PERSON_TIME_LIMIT'];
 }
 
-export interface CommunityUsageStatusType {
+export class CommunityUsageStatusType {
   communityClubId: number;
   communityName: string;
   usageCount: number;

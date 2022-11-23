@@ -55,6 +55,7 @@ model CommunityClub {
   isWating                     Boolean
   memo                         String
   apartmentId                  Int
+  image                        String?
   CommunityClubPerson          CommunityClubPerson?
   CommunityClubSeat            CommunityClubSeat?
   CommunityClubTimeLimit       CommunityClubTimeLimit?

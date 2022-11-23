@@ -7,10 +7,12 @@ export class CommunityClubValidator {
   registerCommunityClubValidator(
     body: RegisterCommunityBody,
     apartmentId: number,
+    image: string | undefined,
   ) {
     return Prisma.validator<Prisma.CommunityClubCreateArgs>()({
       data: {
         ...body.communityClub,
+        image,
         apartmentId,
         CommunityClubPerson:
           body.type === 'PERSON'
@@ -55,6 +57,7 @@ export class CommunityClubValidator {
         id: true,
         name: true,
         Reservation: true,
+        image: true,
         CommunityClubTimeLimit: {
           select: {
             openTime: true,

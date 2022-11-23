@@ -1,6 +1,9 @@
 import { AdminTokenPayload } from '@hanwha-sbi/nestjs-authorization';
 import { Injectable } from '@nestjs/common';
 import { UserType } from '@prisma/client';
+import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+
 import { CommunityClubRepository } from '../infrastructure/repository/communityClub.repository';
 import { ReservationRepository } from '../infrastructure/repository/reservation.repository';
 import { applicationGroupBy } from '../infrastructure/util/applicationGroupBy';
@@ -8,30 +11,49 @@ import {
   calculateUsageMinute,
   createTimeString,
 } from '../infrastructure/util/dateUtil';
+
 import { CommunityClubValidator } from '../infrastructure/validator/communityClub.validator';
 import { ReservationValidator } from '../infrastructure/validator/reservation.validator';
+
 import {
   CommunityUsageStatusType,
   RegisterCommunityBody,
   UpdateCommunityBody,
 } from '../interface/community.interface';
+
 import { GetCommunityUsageStatusDetailQuery } from '../interface/getCommunityUsageStatusDetail.dto';
 
 @Injectable()
 export class ReservationAdminServiceLogic {
+  private s3Client: S3Client;
+
   constructor(
     private reservationValidator: ReservationValidator,
     private reservationRepository: ReservationRepository,
     private communityClubValidator: CommunityClubValidator,
     private communityClubRepository: CommunityClubRepository,
-  ) {}
+  ) {
+    this.s3Client = new S3Client({ region: 'ap-northeast-2' });
+  }
 
   helloReservation() {
     return this.reservationRepository.findMany();
   }
 
-  paylaoad: AdminTokenPayload;
-  registerCommunity(body: RegisterCommunityBody, paylaoad: AdminTokenPayload) {
+  getImagePutUrl(id: string) {
+    const command = new PutObjectCommand({
+      Bucket: process.env.AROUND_INFO_S3_BUCKET || 'dev-hanwha-around-info',
+      Key: `images/${id}`,
+    });
+    return getSignedUrl(this.s3Client, command, {
+      expiresIn: 5 * 60,
+    });
+  }
+
+  async registerCommunity(
+    body: RegisterCommunityBody,
+    paylaoad: AdminTokenPayload,
+  ) {
     return this.communityClubRepository.create(
       this.communityClubValidator.registerCommunityClubValidator(
         {
@@ -39,6 +61,9 @@ export class ReservationAdminServiceLogic {
           type: body.communityClub.type,
         } as RegisterCommunityBody,
         paylaoad.apartmentId,
+        body.communityClub.image
+          ? await this.getImagePutUrl(body.communityClub.image)
+          : undefined,
       ),
     );
   }
