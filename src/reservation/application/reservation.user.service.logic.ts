@@ -314,14 +314,14 @@ export class ReservationUserServiceLogic {
         return {
             slots: Object.entries(slots).map(([key, value]) => {
                 const [hour, minute] = key.split(':');
-                const slotDayjs = dayjs(date)
+                const slotDayjs: dayjs.Dayjs = dayjs(date)
                     .hour(+hour)
                     .minute(+minute);
 
                 return {
                     slotId: key,
-
-                    isAvailable: value < (seat ? 1 : maxCount) ? (nowMinute.isBefore(slotDayjs) ? true : false) : false,
+                    isAvailable: (nowMinute.isBefore(slotDayjs) ? true : false) && (value < (seat ? 1 : maxCount) ? true : false),
+                    // isAvailable: value < (seat ? 1 : maxCount) ? (nowMinute.isBefore(slotDayjs) ? true : false) : false,
                 };
             }),
         };
