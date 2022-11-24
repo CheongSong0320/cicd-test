@@ -1,72 +1,50 @@
 import { AdminTokenPayload } from '@hanwha-sbi/nestjs-authorization';
 import { Injectable } from '@nestjs/common';
-import {
-  RegisterCommunityBody,
-  UpdateCommunityBody,
-} from '../interface/community.interface';
+import { RegisterCommunityBody, UpdateCommunityBody } from '../interface/community.interface';
 import { GetCommunityUsageStatusDetailQuery } from '../interface/getCommunityUsageStatusDetail.dto';
 import { ReservationAdminServiceLogic } from './reservation.admin.service.logic';
 
 @Injectable()
 export class ReservationAdminService {
-  constructor(private reservationServiceLogic: ReservationAdminServiceLogic) {}
+    constructor(private reservationServiceLogic: ReservationAdminServiceLogic) {}
 
-  helloReservation() {
-    return this.reservationServiceLogic.helloReservation();
-  }
+    helloReservation() {
+        return this.reservationServiceLogic.helloReservation();
+    }
 
-  registerCommunity(body: RegisterCommunityBody, paylaoad: AdminTokenPayload) {
-    return this.reservationServiceLogic.registerCommunity(body, paylaoad);
-  }
+    registerCommunity(body: RegisterCommunityBody, paylaoad: AdminTokenPayload) {
+        return this.reservationServiceLogic.registerCommunity(body, paylaoad);
+    }
 
-  getCommunityUsageStatus(
-    payload: AdminTokenPayload,
-    year: number,
-    month: number,
-  ) {
-    return this.reservationServiceLogic.getCommunityUsageStatus(
-      payload,
-      year,
-      month,
-    );
-  }
+    getCommunityUsageStatus(payload: AdminTokenPayload, year: number, month: number) {
+        return this.reservationServiceLogic.getCommunityUsageStatus(payload, year, month);
+    }
 
-  getCommunityUsageStatusDetail(
-    payload: AdminTokenPayload,
-    query: GetCommunityUsageStatusDetailQuery,
-  ) {
-    return this.reservationServiceLogic.getCommunityUsageStatusDetail(
-      payload,
-      query,
-    );
-  }
+    getCommunityUsageStatusDetail(payload: AdminTokenPayload, query: GetCommunityUsageStatusDetailQuery) {
+        return this.reservationServiceLogic.getCommunityUsageStatusDetail(payload, query);
+    }
 
-  getTimeLimitReservationDetail(payload: AdminTokenPayload) {
-    return this.reservationServiceLogic.getTimeLimitReservationDetail(payload);
-  }
+    getTimeLimitReservationDetail(payload: AdminTokenPayload) {
+        return this.reservationServiceLogic.getTimeLimitReservationDetail(payload);
+    }
 
-  getCommunityClubs(payload: AdminTokenPayload) {
-    return this.reservationServiceLogic.getCommunityClubs(payload);
-  }
+    getCommunityClubs(payload: AdminTokenPayload) {
+        return this.reservationServiceLogic.getCommunityClubs(payload);
+    }
 
-  getReservationByCommunityClub(
-    payload: AdminTokenPayload,
-    communityClubId: number,
-  ) {
-    return this.reservationServiceLogic.getReservationByCommunityClub(
-      communityClubId,
-    );
-  }
+    getReservationByCommunityClub(payload: AdminTokenPayload, communityClubId: number) {
+        return this.reservationServiceLogic.getReservationByCommunityClub(communityClubId);
+    }
 
-  deleteCommunity(id: number) {
-    return this.reservationServiceLogic.deleteCommunity(id);
-  }
+    deleteCommunity(id: number) {
+        return this.reservationServiceLogic.deleteCommunity(id);
+    }
 
-  updateCommunity(id: number, body: UpdateCommunityBody) {
-    return this.reservationServiceLogic.updateCommunity(id, body);
-  }
+    updateCommunity(id: number, body: UpdateCommunityBody) {
+        return this.reservationServiceLogic.updateCommunity(id, body);
+    }
 
-  approveReservation(id: number) {
-    return this.reservationServiceLogic.approveReservation(id);
-  }
+    approveReservation(id: number) {
+        return this.reservationServiceLogic.approveReservation(id);
+    }
 }

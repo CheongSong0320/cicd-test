@@ -3,22 +3,22 @@ import { PrismaClient } from '@prisma/client';
 
 @Injectable()
 export class PrismaService extends PrismaClient implements OnModuleInit {
-  constructor() {
-    super({
-      log: [
-        { emit: 'stdout', level: 'query' },
-        { emit: 'stdout', level: 'error' },
-      ],
-    });
-  }
+    constructor() {
+        super({
+            log: [
+                { emit: 'stdout', level: 'query' },
+                { emit: 'stdout', level: 'error' },
+            ],
+        });
+    }
 
-  async onModuleInit() {
-    await this.$connect();
-  }
+    async onModuleInit() {
+        await this.$connect();
+    }
 
-  async enableShutdownHooks(app: INestApplication) {
-    this.$on('beforeExit', async () => {
-      await app.close();
-    });
-  }
+    async enableShutdownHooks(app: INestApplication) {
+        this.$on('beforeExit', async () => {
+            await app.close();
+        });
+    }
 }

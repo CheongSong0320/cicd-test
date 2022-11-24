@@ -1,48 +1,48 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 export class RegisterReservationResponse {
-  @ApiProperty()
-  id: number;
+    @ApiProperty()
+    id: number;
 
-  @ApiProperty()
-  createdAt: Date;
+    @ApiProperty()
+    createdAt: Date;
 
-  @ApiProperty()
-  startDate: Date;
+    @ApiProperty()
+    startDate: Date;
 
-  @ApiProperty()
-  endDate: Date;
+    @ApiProperty()
+    endDate: Date;
 
-  @ApiProperty()
-  dong: string;
+    @ApiProperty()
+    dong: string;
 
-  @ApiProperty()
-  ho: string;
+    @ApiProperty()
+    ho: string;
 
-  @ApiProperty()
-  isMemberShip: boolean | null;
+    @ApiProperty()
+    isMemberShip: boolean | null;
 
-  @ApiProperty({ enum: ['PENDING', 'READY', 'CANCELLED'] })
-  status: 'PENDING' | 'READY' | 'CANCELLED';
+    @ApiProperty({ enum: ['PENDING', 'READY', 'CANCELLED'] })
+    status: 'PENDING' | 'READY' | 'CANCELLED';
 
-  @ApiProperty()
-  communityClubId: number;
+    @ApiProperty()
+    communityClubId: number;
 
-  @ApiProperty()
-  userId: string;
+    @ApiProperty()
+    userId: string;
 
-  @ApiProperty()
-  membershipId: number | null;
+    @ApiProperty()
+    membershipId: number | null;
 
-  @ApiProperty()
-  userName: string;
+    @ApiProperty()
+    userName: string;
 
-  @ApiProperty({ enum: ['HOUSEHOLDER', 'MEMBER', 'ETC'] })
-  userType: 'HOUSEHOLDER' | 'MEMBER' | 'ETC';
+    @ApiProperty({ enum: ['HOUSEHOLDER', 'MEMBER', 'ETC'] })
+    userType: 'HOUSEHOLDER' | 'MEMBER' | 'ETC';
 
-  @ApiProperty()
-  userPhone: string;
+    @ApiProperty()
+    userPhone: string;
 
-  @ApiProperty()
-  seatNumber: number | null;
+    @ApiProperty()
+    seatNumber: number | null;
 }

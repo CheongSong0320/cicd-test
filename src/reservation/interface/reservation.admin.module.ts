@@ -10,15 +10,7 @@ import { CommunityClubRepository } from '../infrastructure/repository/communityC
 import { ReservationValidator } from '../infrastructure/validator/reservation.validator';
 
 @Module({
-  controllers: [ReservationAdminController],
-  providers: [
-    ReservationAdminService,
-    ReservationAdminServiceLogic,
-    PrismaService,
-    CommunityClubValidator,
-    ReservationValidator,
-    ReservationRepository,
-    CommunityClubRepository,
-  ],
+    controllers: [ReservationAdminController],
+    providers: [ReservationAdminService, ReservationAdminServiceLogic, PrismaService, CommunityClubValidator, ReservationValidator, ReservationRepository, CommunityClubRepository],
 })
 export class AdminReservationModule {}
