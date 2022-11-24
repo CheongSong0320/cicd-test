@@ -68,7 +68,7 @@ export class ReservationAdminServiceLogic {
       ? await this.getImagePutUrl()
       : undefined;
 
-    this.communityClubRepository
+    return this.communityClubRepository
       .create(
         this.communityClubValidator.registerCommunityClubValidator(
           {
