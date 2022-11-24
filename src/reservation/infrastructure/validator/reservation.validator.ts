@@ -114,7 +114,13 @@ export class ReservationValidator {
                 },
             },
             include: {
-                CommunityClub: true,
+                CommunityClub: {
+                    include: {
+                        CommunityClubPerson: true,
+                        CommunityClubSeat: true,
+                        CommunityClubTimeLimit: true,
+                    },
+                },
             },
             orderBy: {
                 id: 'asc',
@@ -137,7 +143,13 @@ export class ReservationValidator {
                 },
             },
             include: {
-                CommunityClub: true,
+                CommunityClub: {
+                    include: {
+                        CommunityClubPerson: true,
+                        CommunityClubSeat: true,
+                        CommunityClubTimeLimit: true,
+                    },
+                },
             },
         });
     }
@@ -163,7 +175,13 @@ export class ReservationValidator {
                 },
             },
             include: {
-                CommunityClub: true,
+                CommunityClub: {
+                    include: {
+                        CommunityClubPerson: true,
+                        CommunityClubSeat: true,
+                        CommunityClubTimeLimit: true,
+                    },
+                },
             },
         });
     }
