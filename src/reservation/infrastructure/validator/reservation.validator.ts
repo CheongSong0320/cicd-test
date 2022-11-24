@@ -113,17 +113,8 @@ export class ReservationValidator {
                     active: true,
                 },
             },
-            select: {
-                id: true,
-                startDate: true,
-                endDate: true,
-                seatNumber: true,
-                CommunityClub: {
-                    select: {
-                        name: true,
-                        active: true,
-                    },
-                },
+            include: {
+                CommunityClub: true,
             },
             orderBy: {
                 id: 'asc',
@@ -145,18 +136,8 @@ export class ReservationValidator {
                     active: true,
                 },
             },
-            select: {
-                id: true,
-                startDate: true,
-                endDate: true,
-                seatNumber: true,
-                communityClubId: true,
-                CommunityClub: {
-                    select: {
-                        name: true,
-                        active: true,
-                    },
-                },
+            include: {
+                CommunityClub: true,
             },
         });
     }
