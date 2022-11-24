@@ -20,6 +20,9 @@ export class ReservationValidator {
                 endDate: {
                     lt: new Date(year, month + 1, 1),
                 },
+                CommunityClub: {
+                    active: true,
+                },
             },
             orderBy: {
                 id: 'asc',
@@ -42,6 +45,9 @@ export class ReservationValidator {
                 endDate: {
                     lt: new Date(now.getFullYear(), now.getMonth() + 1, 1),
                 },
+                CommunityClub: {
+                    active: true,
+                },
             },
             _count: {
                 _all: true,
@@ -62,6 +68,9 @@ export class ReservationValidator {
                 },
                 endDate: {
                     lt: dateTo,
+                },
+                CommunityClub: {
+                    active: true,
                 },
             },
             select: {
@@ -100,6 +109,9 @@ export class ReservationValidator {
                 status: {
                     in: ['READY', 'PENDING'],
                 },
+                CommunityClub: {
+                    active: true,
+                },
             },
             select: {
                 id: true,
@@ -129,6 +141,9 @@ export class ReservationValidator {
                     not: 'CANCELLED',
                 },
                 userId,
+                CommunityClub: {
+                    active: true,
+                },
             },
             select: {
                 id: true,
@@ -139,6 +154,7 @@ export class ReservationValidator {
                 CommunityClub: {
                     select: {
                         name: true,
+                        active: true,
                     },
                 },
             },
@@ -160,6 +176,9 @@ export class ReservationValidator {
                 },
                 status: {
                     not: 'CANCELLED',
+                },
+                CommunityClub: {
+                    active: true,
                 },
             },
             include: {
