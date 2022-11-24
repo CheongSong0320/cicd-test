@@ -47,7 +47,7 @@ export class ReservationUserServiceLogic {
   async getTodayReservation(
     userId: string,
     { startDate, endDate }: GetReservationQuery,
-  ): Promise<TodayReservationRespone[]> {
+  ): Promise<(TodayReservationRespone | undefined)[]> {
     const todayReservations =
       await this.reservationRepository.findTodayReservation(
         this.reservationValidator.findTodayReservation(
@@ -57,13 +57,19 @@ export class ReservationUserServiceLogic {
         ),
       );
 
-    return todayReservations.map((value) => ({
-      id: value.id,
-      startDate: value.startDate,
-      endDate: value.endDate,
-      communityClubName: value.CommunityClub.name,
-      seatNumber: value.seatNumber,
-    }));
+    return todayReservations
+      .map((value) =>
+        value?.CommunityClub?.active
+          ? {
+              id: value.id,
+              startDate: value.startDate,
+              endDate: value.endDate,
+              communityClubName: value.CommunityClub.name,
+              seatNumber: value.seatNumber,
+            }
+          : undefined,
+      )
+      .filter((x) => x !== undefined);
   }
 
   async findReservationByCommunity(

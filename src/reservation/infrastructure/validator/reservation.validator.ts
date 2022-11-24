@@ -118,6 +118,7 @@ export class ReservationValidator {
         CommunityClub: {
           select: {
             name: true,
+            active: true,
           },
         },
       },
