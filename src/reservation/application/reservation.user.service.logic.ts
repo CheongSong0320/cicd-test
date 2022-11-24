@@ -289,11 +289,9 @@ export class ReservationUserServiceLogic {
             const nowMinute = ':0' + 60 * ((i / slotPerTime) % 1);
             return {
                 ...prev,
-                [`${nowTime}${nowMinute}`.replace(/\d(\d\d)/g, '$1')]: 0,
+                [`0${nowTime}${nowMinute}`.replace(/\d(\d\d)/g, '$1')]: 0,
             };
         }, {} as { [key: string]: number });
-
-        console.log(slots);
 
         reservations.map(value => {
             const [startHour] = value.startDate.toISOString().split('T')[1].split(':');
@@ -301,13 +299,15 @@ export class ReservationUserServiceLogic {
 
             console.log(value.startDate, value.endDate);
 
-            for (let i = +startHour; i < +endHour; i++)
-                for (let j = 0; j < slotPerTime; j++) {
+            for (let i = +startHour; i <= +endHour; i++)
+                for (let j = 0; j < slotPerTime - 1; j++) {
                     const textDate = `${i < 10 ? `0${i}` : i}:${j * reservationTimeInterval || '00'}`;
-
+                    console.log(textDate);
                     slots[textDate]++;
                 }
         });
+
+        console.log(slots);
 
         const nowMinute = dayjs();
 
