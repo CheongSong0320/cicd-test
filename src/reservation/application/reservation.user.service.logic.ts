@@ -47,8 +47,15 @@ export class ReservationUserServiceLogic {
             .map(value =>
                 value?.CommunityClub?.active
                     ? {
-                          ...value,
+                          id: value.id,
+                          startDate: value.startDate,
+                          endDate: value.endDate,
                           communityClubName: value.CommunityClub.name,
+                          seatNumber: value.seatNumber,
+                          communityClub: {
+                              ...value.CommunityClub,
+                              ...getSeatAndTimeType(value.CommunityClub.type),
+                          },
                       }
                     : undefined,
             )
@@ -70,7 +77,10 @@ export class ReservationUserServiceLogic {
                         startDate: value.startDate,
                         endDate: value.endDate,
                         seatNumber: value.seatNumber,
-                        communityClub: value.CommunityClub,
+                        communityClub: {
+                            ...value.CommunityClub,
+                            ...getSeatAndTimeType(value.CommunityClub.type),
+                        },
                     })),
                 };
             }),
@@ -94,7 +104,10 @@ export class ReservationUserServiceLogic {
                     endDate: value.endDate,
                     seatNumber: value.seatNumber,
                     communityName: searchType === 'community' ? value.CommunityClub.name : undefined,
-                    communityClub: value.CommunityClub,
+                    communityClub: {
+                        ...value.CommunityClub,
+                        ...getSeatAndTimeType(value.CommunityClub.type),
+                    },
                 })),
             })),
         };
