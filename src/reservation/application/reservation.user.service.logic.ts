@@ -36,8 +36,14 @@ export class ReservationUserServiceLogic {
         return this.reservationRepository.findMany();
     }
 
-    findUniqueReservation(id: number) {
-        return this.reservationRepository.findUniqueReservation(+id);
+    async findUniqueReservation(id: number) {
+        const reservation = await this.reservationRepository.findUniqueReservation(+id);
+
+        const returnValue = { ...reservation, communityClub: reservation?.CommunityClub };
+
+        returnValue.communityClub = undefined;
+
+        return returnValue;
     }
 
     async getTodayReservation(userId: string, { startDate, endDate }: GetReservationQuery): Promise<(TodayReservationRespone | undefined)[]> {
