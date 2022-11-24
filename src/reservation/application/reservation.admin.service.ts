@@ -19,8 +19,16 @@ export class ReservationAdminService {
     return this.reservationServiceLogic.registerCommunity(body, paylaoad);
   }
 
-  getCommunityUsageStatus(payload: AdminTokenPayload) {
-    return this.reservationServiceLogic.getCommunityUsageStatus(payload);
+  getCommunityUsageStatus(
+    payload: AdminTokenPayload,
+    year: number,
+    month: number,
+  ) {
+    return this.reservationServiceLogic.getCommunityUsageStatus(
+      payload,
+      year,
+      month,
+    );
   }
 
   getCommunityUsageStatusDetail(

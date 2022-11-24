@@ -85,7 +85,11 @@ export class ReservationAdminServiceLogic {
       }));
   }
 
-  async getCommunityUsageStatus(payload: AdminTokenPayload) {
+  async getCommunityUsageStatus(
+    payload: AdminTokenPayload,
+    year: number,
+    month: number,
+  ) {
     const communities = await this.communityClubRepository.findByApartmentId(
       this.communityClubValidator.findByApartmentIdValidator(
         payload.apartmentId,
@@ -97,6 +101,8 @@ export class ReservationAdminServiceLogic {
       await this.reservationRepository.findByCommunityClubIds(
         this.reservationValidator.findByCommunityClubIds(
           Object.keys(communityMap).map(Number),
+          year,
+          month,
         ),
       ),
       (args) => `${args.dong}_${args.ho}_${args.communityClubId}`,

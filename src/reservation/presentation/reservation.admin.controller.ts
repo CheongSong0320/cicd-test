@@ -53,8 +53,16 @@ export class ReservationAdminController {
 
   @Get('community/usage-status')
   @Auth(API_ADMIN)
-  getCommunityUsageStatus(@JwtPayload() payload: AdminTokenPayload) {
-    return this.reservationService.getCommunityUsageStatus(payload);
+  getCommunityUsageStatus(
+    @JwtPayload() payload: AdminTokenPayload,
+    @Query('year') year?: string,
+    @Query('month') month?: string,
+  ) {
+    return this.reservationService.getCommunityUsageStatus(
+      payload,
+      year ? +year : new Date().getFullYear(),
+      month ? +month - 1 : new Date().getMonth(),
+    );
   }
 
   @Get('community/usage-status/detail')

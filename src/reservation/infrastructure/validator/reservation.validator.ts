@@ -10,7 +10,7 @@ import { getDayCalculas } from '../util/dateUtil';
 
 @Injectable()
 export class ReservationValidator {
-  findByCommunityClubIds(ids: number[]) {
+  findByCommunityClubIds(ids: number[], year: number, month: number) {
     const now = new Date();
     return Prisma.validator<Prisma.ReservationFindManyArgs>()({
       where: {
@@ -18,10 +18,10 @@ export class ReservationValidator {
           in: ids,
         },
         startDate: {
-          gte: new Date(now.getFullYear(), now.getMonth(), 1),
+          gte: new Date(year, month, 1),
         },
         endDate: {
-          lt: new Date(now.getFullYear(), now.getMonth() + 1, 1),
+          lt: new Date(year, month + 1, 1),
         },
       },
       orderBy: {
@@ -180,6 +180,7 @@ export class ReservationValidator {
     return Prisma.validator<Prisma.CommunityClubFindManyArgs>()({
       where: {
         apartmentId,
+        active: true,
       },
       include: {
         CommunityClubPerson: true,
