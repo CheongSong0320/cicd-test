@@ -410,35 +410,27 @@ export class ReservationUserServiceLogic {
       seat,
     );
 
-    console.log(reservations);
-
     const slotPerTime = 60 / reservationTimeInterval;
 
-    const slots = Array(24 * slotPerTime)
+    const openingHour =
+      openTime > closedTime
+        ? 24 - openTime + closedTime
+        : closedTime - openTime;
+
+    const slots: { [key: string]: number } = new Array(
+      openingHour * slotPerTime,
+    )
       .fill(0)
-      .map((_, i) => {
+      .reduce((prev, curr, i) => {
+        const nowTime = (openTime + ~~(i / slotPerTime)) % 24;
+        const nowMinute = ':0' + 60 * ((i / slotPerTime) % 1);
         return {
-          time: (
-            '0' +
-            ~~(i / slotPerTime) +
-            ':0' +
-            60 * ((i / slotPerTime) % 1)
-          ).replace(/\d(\d\d)/g, '$1'),
+          ...prev,
+          [`${nowTime}${nowMinute}`.replace(/\d(\d\d)/g, '$1')]: 0,
         };
-      })
-      .reduce(
-        (prev, curr) =>
-          Object.assign(
-            { ...prev },
-            (() => {
-              const [thisTime, thisMinute] = curr.time.split(':');
-              return +thisTime >= openTime && +thisTime < closedTime
-                ? { [curr.time]: 0 }
-                : {};
-            })(),
-          ),
-        {} as { [key: string]: number },
-      );
+      }, {} as { [key: string]: number });
+
+    console.log(slots);
 
     reservations.map((value) => {
       const [startHour] = value.startDate
