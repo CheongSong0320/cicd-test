@@ -34,6 +34,7 @@ import {
 import { RegisterCommunityBody } from '../interface/community.interface';
 import { ApiCreatedResponse, ApiResponse } from '@nestjs/swagger';
 import { RegisterReservationResponse } from '../interface/registerReservation.dto';
+import { TodayReservationRespone } from '../interface/todayReservation.dto';
 
 @Controller('reservation')
 export class ReservationUserController {
@@ -47,6 +48,7 @@ export class ReservationUserController {
 
   @Get('search')
   @Auth(API_USER)
+  @ApiResponse({ type: [TodayReservationRespone] })
   getTodayReservation(
     @JwtPayload() payload: UserTokenPayload,
     @Query() query: GetReservationQuery,
