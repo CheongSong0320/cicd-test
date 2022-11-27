@@ -31,10 +31,6 @@ export class ReservationAdminServiceLogic {
         this.s3Client = new S3Client({ region: 'ap-northeast-2' });
     }
 
-    helloReservation() {
-        return this.reservationRepository.findMany();
-    }
-
     async getImagePutUrl() {
         const command = new PutObjectCommand({
             ACL: ObjectCannedACL.public_read,

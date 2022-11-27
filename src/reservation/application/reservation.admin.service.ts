@@ -8,10 +8,6 @@ import { ReservationAdminServiceLogic } from './reservation.admin.service.logic'
 export class ReservationAdminService {
     constructor(private reservationServiceLogic: ReservationAdminServiceLogic) {}
 
-    helloReservation() {
-        return this.reservationServiceLogic.helloReservation();
-    }
-
     registerCommunity(body: RegisterCommunityBody, paylaoad: AdminTokenPayload) {
         return this.reservationServiceLogic.registerCommunity(body, paylaoad);
     }
