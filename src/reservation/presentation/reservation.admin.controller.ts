@@ -1,5 +1,9 @@
 import { AdminTokenPayload, API_ADMIN, Auth, JwtPayload } from '@hanwha-sbi/nestjs-authorization';
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
+import { ApiOkResponse } from '@nestjs/swagger';
+
+import { RegisterCommunityDto } from '../application/dto/admin/registerCommunity.dto';
+
 import { ReservationAdminService } from '../application/reservation.admin.service';
 import { CommunityUsageStatusType, RegisterCommunityBody, UpdateCommunityBody } from '../interface/community.interface';
 import { GetCommunityUsageStatusDetailQuery } from '../interface/getCommunityUsageStatusDetail.dto';
@@ -8,12 +12,8 @@ import { GetCommunityUsageStatusDetailQuery } from '../interface/getCommunityUsa
 export class ReservationAdminController {
     constructor(private readonly reservationService: ReservationAdminService) {}
 
-    @Get()
-    find() {
-        return this.reservationService.helloReservation();
-    }
-
     @Post('community')
+    @ApiOkResponse({ type: RegisterCommunityDto })
     @Auth(API_ADMIN)
     registerCommunity(@Body() body: RegisterCommunityBody, @JwtPayload() payload: AdminTokenPayload) {
         return this.reservationService.registerCommunity(body, payload);

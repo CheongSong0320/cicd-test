@@ -17,6 +17,7 @@ import { CommunityUsageStatusType, RegisterCommunityBody, UpdateCommunityBody } 
 import { GetCommunityUsageStatusDetailQuery } from '../interface/getCommunityUsageStatusDetail.dto';
 import { CommunityClub } from '@prisma/client';
 import { calculateReservationUsageStatus } from '../infrastructure/util/reservation.util';
+import { RegisterCommunityDto } from './dto/admin/registerCommunity.dto';
 
 @Injectable()
 export class ReservationAdminServiceLogic {
@@ -61,10 +62,7 @@ export class ReservationAdminServiceLogic {
                     imageUrl?.databaseUrl,
                 ),
             )
-            .then(value => ({
-                ...value,
-                image: imageUrl?.presignedUrl,
-            }));
+            .then(value => RegisterCommunityDto.from({ ...value, image: imageUrl?.presignedUrl ?? null }));
     }
 
     async getCommunityUsageStatus(payload: AdminTokenPayload, year: number, month: number) {
