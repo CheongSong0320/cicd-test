@@ -67,12 +67,3 @@ export class ReservationAdminController {
         return this.reservationService.approveReservation(+id);
     }
 }
-
-class T implements Awaited<ReturnType<ReservationAdminController['getCommunityUsageStatus']>> {
-    communities: string[];
-    usageStatus: {
-        dong: string;
-        ho: string;
-        usageStatus: CommunityUsageStatusType[];
-    }[];
-}

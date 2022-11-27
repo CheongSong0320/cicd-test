@@ -74,47 +74,58 @@ export class ReservationAdminServiceLogic {
             args => `${args.dong}_${args.ho}_${args.communityClubId}`,
         );
 
+        const additionalHouseHold: { [key: number]: { communityName: string; count: number } } = {} as { [key: number]: { communityName: string; count: number } };
+
+        const usageStatus = Object.values(
+            Object.entries(reservationList).reduce(
+                (curr, [key, value]) => {
+                    const [dong, ho, communityClubId] = key.split('_');
+                    const now = curr[dong + ho] ?? { dong, ho, usageStatus: [] };
+                    const nowCommunity: CommunityClub = communityMap[communityClubId][0];
+
+                    const { usageCount, usageTime, additionalUsageCount, additionalUsageTime } = calculateReservationUsageStatus(nowCommunity)(value);
+
+                    const nowAdditional = additionalHouseHold[nowCommunity.id];
+
+                    additionalHouseHold[nowCommunity.id] = nowAdditional
+                        ? { ...nowAdditional, count: nowAdditional.count + (additionalUsageCount ? 1 : 0) }
+                        : { communityName: nowCommunity.name, count: additionalUsageCount ? 1 : 0 };
+
+                    console.log(additionalHouseHold[nowCommunity.id]);
+
+                    return {
+                        ...curr,
+                        [dong + ho]: {
+                            ...now,
+                            usageStatus: [
+                                ...now.usageStatus,
+                                {
+                                    communityClubId: Number(communityClubId),
+                                    communityName: nowCommunity.name,
+                                    usageCount,
+                                    usageTime: createTimeString(usageTime),
+                                    additionalUsageCount,
+                                    additionalUsageTime: createTimeString(additionalUsageTime),
+                                    viewProperty: nowCommunity.resetCycle === 'DAY' ? 'usageTime' : 'usageCount',
+                                },
+                            ],
+                        },
+                    };
+                },
+                {} as {
+                    [key: string]: {
+                        dong: string;
+                        ho: string;
+                        usageStatus: CommunityUsageStatusType[];
+                    };
+                },
+            ),
+        );
+
         return {
             communities: communities.map(value => value.name),
-            usageStatus: Object.values(
-                Object.entries(reservationList).reduce(
-                    (curr, [key, value]) => {
-                        const [dong, ho, communityClubId] = key.split('_');
-                        const now = curr[dong + ho] ?? { dong, ho, usageStatus: [] };
-                        const nowCommunity: CommunityClub = communityMap[communityClubId][0];
-
-                        const { usageCount, usageTime, additionalUsageCount, additionalUsageTime } = calculateReservationUsageStatus(nowCommunity)(value);
-
-                        console.log({ usageCount, usageTime, additionalUsageCount, additionalUsageTime });
-
-                        return {
-                            ...curr,
-                            [dong + ho]: {
-                                ...now,
-                                usageStatus: [
-                                    ...now.usageStatus,
-                                    {
-                                        communityClubId: Number(communityClubId),
-                                        communityName: nowCommunity.name,
-                                        usageCount,
-                                        usageTime: createTimeString(usageTime),
-                                        additionalUsageCount,
-                                        additionalUsageTime: createTimeString(additionalUsageTime),
-                                        viewProperty: nowCommunity.resetCycle === 'DAY' ? 'usageTime' : 'usageCount',
-                                    },
-                                ],
-                            },
-                        };
-                    },
-                    {} as {
-                        [key: string]: {
-                            dong: string;
-                            ho: string;
-                            usageStatus: CommunityUsageStatusType[];
-                        };
-                    },
-                ),
-            ),
+            usageStatus,
+            additionalHouseHold: Object.values(additionalHouseHold),
         };
     }
 
