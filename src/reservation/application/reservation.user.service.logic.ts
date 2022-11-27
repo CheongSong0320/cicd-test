@@ -325,20 +325,16 @@ export class ReservationUserServiceLogic {
                 }
         });
 
-        console.log(slots);
-
-        const nowMinute = dayjs();
+        const nowMinute = dayjs(date);
 
         return {
             slots: Object.entries(slots).map(([key, value]) => {
                 const [hour, minute] = key.split(':');
-                const slotDayjs: dayjs.Dayjs = dayjs(date)
-                    .hour(+hour)
-                    .minute(+minute);
+                const slotDayjs: dayjs.Dayjs = dayjs(date).hour(+hour).minute(+minute);
 
                 return {
                     slotId: key,
-                    isAvailable: (nowMinute.isBefore(slotDayjs) ? true : false) && (value < (seat ? 1 : maxCount) ? true : false),
+                    isAvailable: (nowMinute.isBefore(slotDayjs) ? false : true) && (value < (seat ? 1 : maxCount) ? true : false),
                     // isAvailable: value < (seat ? 1 : maxCount) ? (nowMinute.isBefore(slotDayjs) ? true : false) : false,
                 };
             }),

@@ -102,8 +102,6 @@ export class ReservationValidator {
                 userId,
                 startDate: {
                     gte: startDate,
-                },
-                endDate: {
                     lt: endDate,
                 },
                 status: {
