@@ -1,7 +1,7 @@
 import { AdminTokenPayload, API_ADMIN, Auth, JwtPayload } from '@hanwha-sbi/nestjs-authorization';
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
 import { ReservationAdminService } from '../application/reservation.admin.service';
-import { RegisterCommunityBody, UpdateCommunityBody } from '../interface/community.interface';
+import { CommunityUsageStatusType, RegisterCommunityBody, UpdateCommunityBody } from '../interface/community.interface';
 import { GetCommunityUsageStatusDetailQuery } from '../interface/getCommunityUsageStatusDetail.dto';
 
 @Controller('reservation')
@@ -66,4 +66,13 @@ export class ReservationAdminController {
     approveReservation(@Param('id') id: string) {
         return this.reservationService.approveReservation(+id);
     }
+}
+
+class T implements Awaited<ReturnType<ReservationAdminController['getCommunityUsageStatus']>> {
+    communities: string[];
+    usageStatus: {
+        dong: string;
+        ho: string;
+        usageStatus: CommunityUsageStatusType[];
+    }[];
 }

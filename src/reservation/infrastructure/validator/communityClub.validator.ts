@@ -31,6 +31,11 @@ export class CommunityClubValidator {
             orderBy: {
                 id: 'asc',
             },
+            include: {
+                CommunityClubPerson: true,
+                CommunityClubSeat: true,
+                CommunityClubTimeLimit: true,
+            },
         });
     }
 

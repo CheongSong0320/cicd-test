@@ -15,6 +15,8 @@ import { ReservationValidator } from '../infrastructure/validator/reservation.va
 import { CommunityUsageStatusType, RegisterCommunityBody, UpdateCommunityBody } from '../interface/community.interface';
 
 import { GetCommunityUsageStatusDetailQuery } from '../interface/getCommunityUsageStatusDetail.dto';
+import { CommunityClub } from '@prisma/client';
+import { calculateReservationUsageStatus } from '../infrastructure/util/reservation.util';
 
 @Injectable()
 export class ReservationAdminServiceLogic {
@@ -85,17 +87,11 @@ export class ReservationAdminServiceLogic {
                     (curr, [key, value]) => {
                         const [dong, ho, communityClubId] = key.split('_');
                         const now = curr[dong + ho] ?? { dong, ho, usageStatus: [] };
-                        const nowCommunity = communityMap[communityClubId][0];
+                        const nowCommunity: CommunityClub = communityMap[communityClubId][0];
 
-                        const { usageCount, usageTime } = value.reduce(
-                            (innerCurr, innerPrev) => {
-                                return {
-                                    usageCount: innerCurr.usageCount + 1,
-                                    usageTime: innerCurr.usageTime + calculateUsageMinute(innerPrev.startDate, innerPrev.endDate),
-                                };
-                            },
-                            { usageTime: 0, usageCount: 0 },
-                        );
+                        const { usageCount, usageTime, additionalUsageCount, additionalUsageTime } = calculateReservationUsageStatus(nowCommunity)(value);
+
+                        console.log({ usageCount, usageTime, additionalUsageCount, additionalUsageTime });
 
                         return {
                             ...curr,
@@ -108,6 +104,8 @@ export class ReservationAdminServiceLogic {
                                         communityName: nowCommunity.name,
                                         usageCount,
                                         usageTime: createTimeString(usageTime),
+                                        additionalUsageCount,
+                                        additionalUsageTime: createTimeString(additionalUsageTime),
                                         viewProperty: nowCommunity.resetCycle === 'DAY' ? 'usageTime' : 'usageCount',
                                     },
                                 ],
@@ -135,26 +133,34 @@ export class ReservationAdminServiceLogic {
 
         const groupBy1depth = Object.entries(applicationGroupBy(usageByUser, value => `${value.dong}-${value.ho}-${value.userId}-${value.communityClubId}`)).map(([key, value]) => {
             const { userName, userType, userPhone } = value[0];
-            const v = value.reduce(
-                (innerCurr, innerPrev) => {
-                    const nowCommunity = communityMap[innerPrev.communityClubId][0];
 
+            const { usageTime, usageCount, additionalUsageTime, additionalUsageCount, communityName } = value.reduce(
+                ({ usageTime, usageCount, additionalUsageTime, additionalUsageCount }, { startDate, endDate, communityClubId }) => {
+                    const { freeCountPerHouse, name } = communityMap[communityClubId][0];
+
+                    const nowUsageMinute = calculateUsageMinute(startDate, endDate);
                     return {
-                        communityName: nowCommunity.name,
-                        usageCount: innerCurr.usageCount + 1,
-                        usageTime: innerCurr.usageTime + calculateUsageMinute(innerPrev.startDate, innerPrev.endDate),
+                        usageCount: usageCount + 1,
+                        usageTime: usageTime + nowUsageMinute,
+                        additionalUsageCount: usageCount + 1 > freeCountPerHouse ? additionalUsageCount + 1 : 0,
+                        additionalUsageTime: usageCount + 1 > freeCountPerHouse ? additionalUsageTime + nowUsageMinute : 0,
+                        communityName: name,
                     };
                 },
-                { usageTime: 0, usageCount: 0, communityName: '' },
+                { usageTime: 0, usageCount: 0, additionalUsageTime: 0, additionalUsageCount: 0, communityName: '' },
             );
 
             return {
-                ...v,
+                communityName,
+                usageTime,
+                usageCount,
+                additionalUsageTime: createTimeString(additionalUsageTime),
+                additionalUsageCount,
                 key,
                 userName,
                 userType,
                 userPhone,
-                usageTimeString: createTimeString(v.usageTime),
+                usageTimeString: createTimeString(usageTime),
             };
         });
 
@@ -170,12 +176,14 @@ export class ReservationAdminServiceLogic {
                 userName,
                 userType,
                 userPhone,
-                usageStatus: value.map(({ communityName, usageCount, usageTime, usageTimeString }) => {
+                usageStatus: value.map(({ communityName, usageCount, usageTime, usageTimeString, additionalUsageCount, additionalUsageTime }) => {
                     return {
                         communityName,
                         usageCount,
                         usageTime,
                         usageTimeString,
+                        additionalUsageCount,
+                        additionalUsageTime,
                     };
                 }),
             };
