@@ -458,8 +458,9 @@ export class ReservationUserServiceLogic {
         const endDate = body.slotCount
             ? dayjs(body.startDate)
                   .add(+body.slotCount * timeLimit!.reservationTimeInterval, 'minute')
+                  .subtract(1, 'millisecond')
                   .toDate()
-            : dayjs(body.startDate).add(1, 'day').toDate();
+            : dayjs(body.startDate).add(1, 'day').subtract(1, 'millisecond').toDate();
 
         return this.reservationRepository.makeReservation(
             this.reservationValidator.makeReservation(
