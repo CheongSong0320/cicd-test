@@ -285,6 +285,7 @@ export class ReservationUserServiceLogic {
     async getAvailableSlot(id: number, { date, seat }: GetAvailableSlotQuery) {
         console.log({ date });
         const [year, month, day] = date.split('T')[0].split('-');
+        const [hour, minute, second] = date.split('T')[1].split(':');
         const community = await this.communityRepository.findUniqueRelationType(id);
 
         const timeLimit = community.CommunityClubTimeLimit!;
@@ -293,8 +294,8 @@ export class ReservationUserServiceLogic {
 
         const reservations = await this.reservationRepository.getAvailableDate(
             id,
-            setYearMonthDbDate(+year, +month, -1, +day).toISOString(),
-            setYearMonthDbDate(+year, +month, -1, +day + 1).toISOString(),
+            setYearMonthDbDate(+year, +month, -1, +day, +hour, +minute).toISOString(),
+            setYearMonthDbDate(+year, +month, -1, +day + 1, +hour, +minute).toISOString(),
             seat,
         );
 
@@ -325,16 +326,26 @@ export class ReservationUserServiceLogic {
                 }
         });
 
-        const nowMinute = dayjs(date);
+        const nowMinute = dayjs();
+
+        console.log(nowMinute.toISOString());
+        console.log('!@*@$&($!@&*($!@&89');
+
+        const startedTime = +hour > openTime ? dayjs(setYearMonthDbDate(+year, +month, -1, +day + 1, +openTime, 0)) : dayjs(setYearMonthDbDate(+year, +month, -1, +day, +openTime, 0));
+
+        console.log({ hour, openTime });
+        console.log(startedTime.toISOString());
 
         return {
-            slots: Object.entries(slots).map(([key, value]) => {
+            slots: Object.entries(slots).map(([key, value], idx) => {
                 const [hour, minute] = key.split(':');
-                const slotDayjs: dayjs.Dayjs = dayjs(date).hour(+hour).minute(+minute);
+                const slotDayjs: dayjs.Dayjs = dayjs(startedTime).add(idx * reservationTimeInterval, 'minute');
+
+                console.log(key, slotDayjs.toISOString());
 
                 return {
                     slotId: key,
-                    isAvailable: (nowMinute.isBefore(slotDayjs) ? false : true) && (value < (seat ? 1 : maxCount) ? true : false),
+                    isAvailable: (nowMinute.isBefore(slotDayjs) ? true : false) && (value < (seat ? 1 : maxCount) ? true : false),
                     // isAvailable: value < (seat ? 1 : maxCount) ? (nowMinute.isBefore(slotDayjs) ? true : false) : false,
                 };
             }),
