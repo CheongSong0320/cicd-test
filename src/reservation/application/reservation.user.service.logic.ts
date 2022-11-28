@@ -355,6 +355,8 @@ export class ReservationUserServiceLogic {
     async getAvailableSeat(id: number, { startDate: date, slotCount: slot }: GetAvailableSeatQuery) {
         const community = await this.communityRepository.findUniqueRelationType(id);
 
+        console.log(community);
+
         const maxCount =
             community.type === 'PERSON' ? community.CommunityClubPerson!.maxCount : community.type === 'SEAT' ? community.CommunityClubSeat!.maxCount : community.CommunityClubTimeLimit!.maxCount;
 
@@ -372,9 +374,15 @@ export class ReservationUserServiceLogic {
             switch (community.type) {
                 case 'SEAT': {
                     const reservations = applicationGroupBy(
-                        await this.reservationRepository.getAvailableDate(id, setYearMonthDbDate(+year, +month, -1, +day), setYearMonthDbDate(+year, +month, -1, +day + 1)),
+                        await this.reservationRepository.getAvailableDate(
+                            id,
+                            setYearMonthDbDate(+year, +month, -1, +day, +hour, +minute),
+                            setYearMonthDbDate(+year, +month, -1, +day + 1, +hour, +minute),
+                        ),
                         'seatNumber',
                     );
+
+                    console.log(reservations);
 
                     return {
                         seats: seats.map(value => ({
