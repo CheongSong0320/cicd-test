@@ -436,7 +436,7 @@ export class ReservationUserServiceLogic {
 
         const { startDate, endDate } = getReservationDate(body.startDate, timeLimit?.reservationTimeInterval, body.slotCount);
 
-        const todayReservationCount = await this.reservationRepository.getTodayReservationCount(community.id, startDate, endDate);
+        const todayReservationCount = await this.reservationRepository.getTodayReservationCount(community.id, startDate, endDate, body.seatId);
 
         return this.reservationRepository.makeReservation(
             this.reservationValidator.makeReservation(
@@ -448,7 +448,7 @@ export class ReservationUserServiceLogic {
                     seatNumber: body.seatId,
                 },
                 community,
-                !community.signOffOn || (!body.slotCount && community.isWating && todayReservationCount >= maxCount) ? 'PENDING' : 'READY',
+                !community.signOffOn || (community.isWating && todayReservationCount >= (body.seatId ? 1 : maxCount)) ? 'PENDING' : 'READY',
             ),
         );
     }

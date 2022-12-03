@@ -79,7 +79,7 @@ export class ReservationRepository {
         });
     }
 
-    getTodayReservationCount(communityClubId: number, startDate: Date, endDate: Date) {
+    getTodayReservationCount(communityClubId: number, startDate: Date, endDate: Date, seatId?: number) {
         return this.prisma.reservation.count({
             where: {
                 communityClubId,
@@ -92,6 +92,7 @@ export class ReservationRepository {
                 status: {
                     not: 'CANCELLED',
                 },
+                seatNumber: seatId,
             },
         });
     }
