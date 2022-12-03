@@ -472,7 +472,7 @@ export class ReservationUserServiceLogic {
                     seatNumber: body.seatId ? +body.seatId : undefined,
                 },
                 community,
-                community.signOffOn || getTimeType() ? 'PENDING' : 'READY',
+                community.signOffOn || (!body.slotCount && community.isWating && todayReservationCount >= maxCount) ? 'PENDING' : 'READY',
             ),
         );
     }
