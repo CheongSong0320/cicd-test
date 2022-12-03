@@ -49,12 +49,6 @@ export class ReservationUserController {
         return this.reservationService.getCommunityClub(payload?.apartment?.id ?? 1);
     }
 
-    @Post()
-    @Auth(API_USER)
-    makeReservation(@JwtPayload() payload: UserTokenPayload, @Body() body: MakeReservationBody) {
-        return this.reservationService.makeReservation(payload, body);
-    }
-
     @Delete(':id')
     @Auth(API_USER)
     deleteReservation(@JwtPayload() payload: UserTokenPayload, @Param('id') id: string) {

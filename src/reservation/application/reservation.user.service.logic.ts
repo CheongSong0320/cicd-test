@@ -5,8 +5,9 @@ import * as isBetween from 'dayjs/plugin/isBetween';
 import { CommunityClubRepository } from '../infrastructure/repository/communityClub.repository';
 import { ReservationRepository } from '../infrastructure/repository/reservation.repository';
 import { applicationGroupBy } from '../infrastructure/util/applicationGroupBy';
-import { setYearMonthDbDate } from '../infrastructure/util/dateUtil';
-import { getSeatAndTimeType, getTimeType } from '../infrastructure/util/typeUtil';
+import { getDayCalculas, getEndOfDay, getReservationDate, setYearMonthDbDate } from '../infrastructure/util/dateUtil';
+import { getReservationCount } from '../infrastructure/util/reservation.util';
+import { getSeatAndTimeType, getTimeType, toNumberOrUndefined } from '../infrastructure/util/typeUtil';
 import { ReservationValidator } from '../infrastructure/validator/reservation.validator';
 import { FindReservationByCommunityResponse } from '../interface/findReservationByCommunity.dto';
 import { GetReservationHistoryResponse } from '../interface/getReservationHistroy.dto';
@@ -126,20 +127,6 @@ export class ReservationUserServiceLogic {
                 ...getSeatAndTimeType(value.type),
             })),
         };
-    }
-
-    async makeReservation(payload: UserTokenPayload, body: MakeReservationBody) {
-        const community = await this.communityRepository.findUniqueOrThrow(body.communityClubId);
-
-        const maxCount = community.CommunityClubPerson?.maxCount ?? community.CommunityClubSeat?.maxCount ?? community.CommunityClubTimeLimit?.maxCount ?? 0;
-
-        const todayReservationCount = (await this.reservationRepository.getTodayReservationCount(community.id)).reduce((prev, curr) => {
-            return prev + (curr.status === 'CANCELLED' ? 0 : 1);
-        }, 0);
-
-        return this.reservationRepository.makeReservation(
-            this.reservationValidator.makeReservation(payload, body, community, community.signOffOn || maxCount <= todayReservationCount ? 'PENDING' : 'READY'),
-        );
     }
 
     deleteReservation(id: number) {
@@ -445,34 +432,23 @@ export class ReservationUserServiceLogic {
         const community = await this.communityRepository.findUniqueRelationType(id);
         const timeLimit = community?.CommunityClubTimeLimit;
 
-        console.log(community);
-
         const maxCount = community.CommunityClubPerson?.maxCount ?? community.CommunityClubSeat?.maxCount ?? community.CommunityClubTimeLimit?.maxCount ?? 0;
 
-        const todayReservationCount = (await this.reservationRepository.getTodayReservationCount(community.id)).reduce((prev, curr) => {
-            return prev + (curr.status === 'CANCELLED' ? 0 : 1);
-        }, 0);
+        const { startDate, endDate } = getReservationDate(body.startDate, timeLimit?.reservationTimeInterval, body.slotCount);
 
-        const startDate = dayjs(body.startDate).toDate();
-
-        const endDate = body.slotCount
-            ? dayjs(body.startDate)
-                  .add(+body.slotCount * timeLimit!.reservationTimeInterval, 'minute')
-                  .subtract(1, 'millisecond')
-                  .toDate()
-            : dayjs(body.startDate).add(1, 'day').subtract(1, 'millisecond').toDate();
+        const todayReservationCount = await this.reservationRepository.getTodayReservationCount(community.id, startDate, endDate);
 
         return this.reservationRepository.makeReservation(
             this.reservationValidator.makeReservation(
                 payload,
                 {
                     startDate,
-                    endDate,
+                    endDate: getEndOfDay(endDate),
                     communityClubId: id,
-                    seatNumber: body.seatId ? +body.seatId : undefined,
+                    seatNumber: body.seatId,
                 },
                 community,
-                community.signOffOn || (!body.slotCount && community.isWating && todayReservationCount >= maxCount) ? 'PENDING' : 'READY',
+                !community.signOffOn || (!body.slotCount && community.isWating && todayReservationCount >= maxCount) ? 'PENDING' : 'READY',
             ),
         );
     }

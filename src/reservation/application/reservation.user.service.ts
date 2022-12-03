@@ -43,10 +43,6 @@ export class ReservationUserService {
         return this.reservationServiceLogic.getCommunityClub(apartmentId);
     }
 
-    makeReservation(payload: UserTokenPayload, body: MakeReservationBody) {
-        return this.reservationServiceLogic.makeReservation(payload, body);
-    }
-
     deleteReservation(id: number) {
         return this.reservationServiceLogic.deleteReservation(id);
     }

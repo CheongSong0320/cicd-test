@@ -28,3 +28,14 @@ export const setYearMonthDbDate = (year: number, month: number, addMonth: number
         .millisecond(0)
         .add(addMonth, 'month')
         .toDate();
+
+export const getEndOfDay = (date: Date) => dayjs(date).subtract(1, 'millisecond').toDate();
+
+export const getReservationDate = (startDate: Date, timeInterval?: number, slotCount?: number) => ({
+    startDate: startDate,
+    endDate: slotCount
+        ? dayjs(startDate)
+              .add(slotCount * timeInterval!, 'minute')
+              .toDate()
+        : dayjs(startDate).add(1, 'day').toDate(),
+});

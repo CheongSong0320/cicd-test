@@ -79,15 +79,18 @@ export class ReservationRepository {
         });
     }
 
-    getTodayReservationCount(communityClubId: number) {
-        return this.prisma.reservation.findMany({
+    getTodayReservationCount(communityClubId: number, startDate: Date, endDate: Date) {
+        return this.prisma.reservation.count({
             where: {
                 communityClubId,
                 startDate: {
-                    gte: getDayCalculas(0),
+                    gte: startDate,
                 },
                 endDate: {
-                    lt: getDayCalculas(1),
+                    lt: endDate,
+                },
+                status: {
+                    not: 'CANCELLED',
                 },
             },
         });

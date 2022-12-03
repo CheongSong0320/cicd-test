@@ -17,3 +17,5 @@ export const calculateReservationUsageStatus =
             },
             { usageTime: 0, usageCount: 0, additionalUsageTime: 0, additionalUsageCount: 0, communityName: '' },
         );
+
+export const getReservationCount = (reservation: Reservation[]) => reservation.reduce((prev, curr) => prev + (curr.status === 'CANCELLED' ? 0 : 1), 0);

@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 
 export type GetHistoryBySearchType = 'date' | 'community';
 
@@ -11,8 +12,12 @@ export class GetReservationHistoryQuery {
 
 export class RegisterReservationBody {
     startDate: Date;
-    slotCount?: string;
-    seatId?: string;
+
+    @Type(() => Number)
+    slotCount?: number;
+
+    @Type(() => Number)
+    seatId?: number;
 }
 
 export class MakeReservationBody {

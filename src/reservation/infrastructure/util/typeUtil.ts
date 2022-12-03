@@ -8,3 +8,5 @@ export const getSeatAndTimeType = (type: CommunityClubType) => ({
     seatType: getSeatType(type),
     timeType: getTimeType(type),
 });
+
+export const toNumberOrUndefined = <T extends string | undefined>(value: T) => (value ? +value : undefined);
