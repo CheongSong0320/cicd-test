@@ -6,7 +6,7 @@ import { CommunityClubRepository } from '../infrastructure/repository/communityC
 import { ReservationRepository } from '../infrastructure/repository/reservation.repository';
 import { applicationGroupBy } from '../infrastructure/util/applicationGroupBy';
 import { setYearMonthDbDate } from '../infrastructure/util/dateUtil';
-import { getSeatAndTimeType } from '../infrastructure/util/typeUtil';
+import { getSeatAndTimeType, getTimeType } from '../infrastructure/util/typeUtil';
 import { ReservationValidator } from '../infrastructure/validator/reservation.validator';
 import { FindReservationByCommunityResponse } from '../interface/findReservationByCommunity.dto';
 import { GetReservationHistoryResponse } from '../interface/getReservationHistroy.dto';
@@ -472,7 +472,7 @@ export class ReservationUserServiceLogic {
                     seatNumber: body.seatId ? +body.seatId : undefined,
                 },
                 community,
-                community.signOffOn ? 'PENDING' : 'READY',
+                community.signOffOn || getTimeType() ? 'PENDING' : 'READY',
             ),
         );
     }
