@@ -61,6 +61,7 @@ export type SeatType = 'SEAT' | 'NUM_PERSON';
 export class GetAvailableDateQuery {
     month: number;
     seat?: number;
+    date: Date;
 }
 
 export class GetAvailableSlotQuery {

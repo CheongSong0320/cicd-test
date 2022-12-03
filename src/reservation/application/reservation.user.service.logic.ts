@@ -146,12 +146,27 @@ export class ReservationUserServiceLogic {
         return { startDate, endDate };
     }
 
-    async getAvailableDate(id: number, { month, seat }: GetAvailableDateQuery) {
+    async getAvailableDate(id: number, { month, seat, date }: GetAvailableDateQuery) {
         const nowYear = new Date().getFullYear();
+
+        const utcDiff = date ? dayjs(setYearMonthDbDate(nowYear, +month, -1)).diff(date, 'hour') : 0;
 
         const community = await this.communityRepository.findUniqueRelationType(id);
 
-        const reservations = await this.reservationRepository.getAvailableDate(id, setYearMonthDbDate(nowYear, +month, -1), setYearMonthDbDate(nowYear, +month + 1, -1), seat);
+        const reservations = (
+            await this.reservationRepository.getAvailableDate(
+                id,
+                date ?? setYearMonthDbDate(nowYear, +month, -1),
+                date ? dayjs(date).add(1, 'month').toDate() : setYearMonthDbDate(nowYear, +month + 1, -1),
+                seat,
+            )
+        ).map(value => ({
+            ...value,
+            startDate: dayjs(value.startDate).add(utcDiff, 'hour').toDate(),
+            endDate: dayjs(value.endDate).add(utcDiff, 'hour').toDate(),
+        }));
+
+        console.log(reservations);
 
         const val = (() => {
             switch (community.type) {
@@ -251,10 +266,10 @@ export class ReservationUserServiceLogic {
                 date: dayjs()
                     .month(month - 1)
                     .date(i + 1)
-                    .hour(9)
+                    .hour(0)
                     .minute(0)
-                    .second(0)
                     .millisecond(0)
+                    .second(0)
                     .toISOString(),
                 isAvailableDay: community.type === 'PERSON' ? true : undefined,
                 availableSlotsCount: val.nowSlotMaxCount,
