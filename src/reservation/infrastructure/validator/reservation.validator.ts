@@ -23,6 +23,9 @@ export class ReservationValidator {
                 CommunityClub: {
                     active: true,
                 },
+                status: {
+                    not: 'CANCELLED',
+                },
             },
             orderBy: {
                 id: 'asc',
@@ -71,6 +74,9 @@ export class ReservationValidator {
                 },
                 CommunityClub: {
                     active: true,
+                },
+                status: {
+                    not: 'CANCELLED',
                 },
             },
             select: {
