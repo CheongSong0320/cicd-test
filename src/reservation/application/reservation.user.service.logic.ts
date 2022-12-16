@@ -444,7 +444,8 @@ export class ReservationUserServiceLogic {
     }
 
     async registerReservation(id: number, body: RegisterReservationBody, payload: UserTokenPayload): Promise<RegisterReservationResponse> {
-        if (!payload.user.certified) throw new BadRequestException('미승인 유저는 예약할 수  없습니다.');
+        console.log(payload);
+        if (payload.apartment?.resident.accepted === false) throw new BadRequestException('미승인 유저는 예약할 수  없습니다.');
 
         const community = await this.communityRepository.findUniqueRelationType(id);
 
