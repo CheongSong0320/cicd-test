@@ -42,11 +42,10 @@ export const getReservationDate = (startDate: Date, timeInterval?: number, slotC
 });
 
 export const getResetCycleStartDate = (resetCycle: CommunityClubRestCycle) => {
-    const now = new Date();
     return {
         cycleStartDate: dayjs()
             .subtract(1, resetCycle === 'YEAR' ? 'year' : resetCycle === 'MONTH' ? 'month' : 'day')
             .toDate(),
-        cycleEndDate: now,
+        cycleEndDate: dayjs().add(1, 'day').toDate(),
     };
 };
