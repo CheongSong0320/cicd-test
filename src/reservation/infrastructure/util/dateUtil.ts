@@ -1,3 +1,4 @@
+import { CommunityClubRestCycle } from '@prisma/client';
 import * as dayjs from 'dayjs';
 import e from 'express';
 
@@ -39,3 +40,13 @@ export const getReservationDate = (startDate: Date, timeInterval?: number, slotC
               .toDate()
         : dayjs(startDate).add(1, 'day').toDate(),
 });
+
+export const getResetCycleStartDate = (resetCycle: CommunityClubRestCycle) => {
+    const now = new Date();
+    return {
+        cycleStartDate: dayjs()
+            .subtract(1, resetCycle === 'YEAR' ? 'year' : resetCycle === 'MONTH' ? 'month' : 'day')
+            .toDate(),
+        cycleEndDate: now,
+    };
+};

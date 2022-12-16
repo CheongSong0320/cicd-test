@@ -1,11 +1,11 @@
 import { UserTokenPayload } from '@hanwha-sbi/nestjs-authorization';
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, Injectable } from '@nestjs/common';
 import * as dayjs from 'dayjs';
 import * as isBetween from 'dayjs/plugin/isBetween';
 import { CommunityClubRepository } from '../infrastructure/repository/communityClub.repository';
 import { ReservationRepository } from '../infrastructure/repository/reservation.repository';
 import { applicationGroupBy } from '../infrastructure/util/applicationGroupBy';
-import { getDayCalculas, getEndOfDay, getReservationDate, setYearMonthDbDate } from '../infrastructure/util/dateUtil';
+import { getDayCalculas, getEndOfDay, getReservationDate, getResetCycleStartDate, setYearMonthDbDate } from '../infrastructure/util/dateUtil';
 import { getReservationCount } from '../infrastructure/util/reservation.util';
 import { getSeatAndTimeType, getTimeType, toNumberOrUndefined } from '../infrastructure/util/typeUtil';
 import { ReservationValidator } from '../infrastructure/validator/reservation.validator';
@@ -444,16 +444,31 @@ export class ReservationUserServiceLogic {
     }
 
     async registerReservation(id: number, body: RegisterReservationBody, payload: UserTokenPayload): Promise<RegisterReservationResponse> {
-        if (!payload.user.certified) throw new ForbiddenException('미승인 유저는 예약할 수  없습니다.');
+        if (!payload.user.certified) throw new BadRequestException('미승인 유저는 예약할 수  없습니다.');
 
         const community = await this.communityRepository.findUniqueRelationType(id);
+
+        const { cycleEndDate, cycleStartDate } = getResetCycleStartDate(community.resetCycle);
+
         const timeLimit = community?.CommunityClubTimeLimit;
 
         const maxCount = community.CommunityClubPerson?.maxCount ?? community.CommunityClubSeat?.maxCount ?? community.CommunityClubTimeLimit?.maxCount ?? 0;
 
         const { startDate, endDate } = getReservationDate(body.startDate, timeLimit?.reservationTimeInterval, body.slotCount);
 
-        const todayReservationCount = await this.reservationRepository.getTodayReservationCount(community.id, startDate, endDate, body.seatId);
+        const reservationCycleCount = await this.reservationRepository.getReservationCycleCount(
+            community.id,
+            cycleStartDate,
+            cycleEndDate,
+            payload.apartment?.resident.dong,
+            payload.apartment?.resident.ho,
+        );
+
+        const todayReservationCount = await this.reservationRepository.getReservationCountByDate(community.id, startDate, endDate, body.seatId);
+
+        if (todayReservationCount >= maxCount && !community.isWating) throw new BadRequestException('시설 사용인원 초과');
+
+        if (community.maxCountPerHouse && reservationCycleCount >= community.maxCountPerHouse) throw new BadRequestException('세대별 최대 이용수 초과');
 
         return this.reservationRepository.makeReservation(
             this.reservationValidator.makeReservation(

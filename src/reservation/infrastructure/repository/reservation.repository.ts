@@ -79,7 +79,7 @@ export class ReservationRepository {
         });
     }
 
-    getTodayReservationCount(communityClubId: number, startDate: Date, endDate: Date, seatId?: number) {
+    getReservationCountByDate(communityClubId: number, startDate: Date, endDate: Date, seatId?: number) {
         return this.prisma.reservation.count({
             where: {
                 communityClubId,
@@ -93,6 +93,25 @@ export class ReservationRepository {
                     not: 'CANCELLED',
                 },
                 seatNumber: seatId,
+            },
+        });
+    }
+
+    getReservationCycleCount(communityClubId: number, startDate: Date, endDate: Date, dong?: string, ho?: string) {
+        return this.prisma.reservation.count({
+            where: {
+                communityClubId,
+                startDate: {
+                    gte: startDate,
+                },
+                endDate: {
+                    lt: endDate,
+                },
+                status: {
+                    not: 'CANCELLED',
+                },
+                dong,
+                ho,
             },
         });
     }
