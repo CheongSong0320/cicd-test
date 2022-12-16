@@ -1,5 +1,5 @@
 import { UserTokenPayload } from '@hanwha-sbi/nestjs-authorization';
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import * as dayjs from 'dayjs';
 import * as isBetween from 'dayjs/plugin/isBetween';
 import { CommunityClubRepository } from '../infrastructure/repository/communityClub.repository';
@@ -444,6 +444,8 @@ export class ReservationUserServiceLogic {
     }
 
     async registerReservation(id: number, body: RegisterReservationBody, payload: UserTokenPayload): Promise<RegisterReservationResponse> {
+        if (!payload.user.certified) throw new ForbiddenException('미승인 유저는 예약할 수  없습니다.');
+
         const community = await this.communityRepository.findUniqueRelationType(id);
         const timeLimit = community?.CommunityClubTimeLimit;
 
