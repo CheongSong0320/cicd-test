@@ -1,11 +1,11 @@
-FROM node:16-alpine AS migrate
+FROM node:16-alpine3.16 AS migrate
 WORKDIR /usr/src/app
 
 COPY prisma ./prisma
 
 CMD ["npx", "prisma", "migrate", "deploy"]
 
-FROM node:16-alpine AS builder
+FROM node:16-alpine3.16 AS builder
 WORKDIR /usr/src/app
 
 ARG NPM_TOKEN
@@ -26,7 +26,7 @@ RUN rm -f .npmrc
 RUN yarn build
 
 # Start Server
-FROM node:16-alpine AS server
+FROM node:16-alpine3.16 AS server
 WORKDIR /usr/src/app
 
 COPY --from=builder /usr/src/app/prod_node_modules ./node_modules
