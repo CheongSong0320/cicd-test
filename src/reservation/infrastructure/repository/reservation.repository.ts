@@ -97,7 +97,7 @@ export class ReservationRepository {
         });
     }
 
-    getReservationCycleCount(communityClubId: number, startDate: Date, endDate: Date, dong?: string, ho?: string) {
+    getReservationCountByResident(communityClubId: number, startDate: Date, endDate: Date, dong?: string, ho?: string, userId?: string) {
         return this.prisma.reservation.count({
             where: {
                 communityClubId,
@@ -112,6 +112,7 @@ export class ReservationRepository {
                 },
                 dong,
                 ho,
+                userId,
             },
         });
     }

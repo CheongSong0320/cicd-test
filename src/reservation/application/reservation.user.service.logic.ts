@@ -456,7 +456,7 @@ export class ReservationUserServiceLogic {
 
         const { startDate, endDate } = getReservationDate(body.startDate, timeLimit?.reservationTimeInterval, body.slotCount);
 
-        const reservationCycleCount = await this.reservationRepository.getReservationCycleCount(
+        const reservationCycleCount = await this.reservationRepository.getReservationCountByResident(
             community.id,
             cycleStartDate,
             cycleEndDate,
@@ -464,11 +464,22 @@ export class ReservationUserServiceLogic {
             payload.apartment?.resident.ho,
         );
 
+        const myReservationCount = await this.reservationRepository.getReservationCountByResident(
+            community.id,
+            startDate,
+            endDate,
+            payload.apartment?.resident.dong,
+            payload.apartment?.resident.ho,
+            payload.id,
+        );
+
         const todayReservationCount = await this.reservationRepository.getReservationCountByDate(community.id, startDate, endDate, body.seatId);
 
         if (todayReservationCount >= maxCount && !community.isWating) throw new BadRequestException('시설 사용인원 초과');
 
         if (community.maxCountPerHouse && reservationCycleCount >= community.maxCountPerHouse) throw new BadRequestException('세대별 최대 이용수 초과');
+
+        if (myReservationCount) throw new BadRequestException('이용시간이 중복되었습니다.');
 
         return this.reservationRepository.makeReservation(
             this.reservationValidator.makeReservation(
