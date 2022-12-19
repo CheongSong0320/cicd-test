@@ -5,7 +5,7 @@ import { ApiOkResponse } from '@nestjs/swagger';
 import { RegisterCommunityDto } from '../application/dto/admin/registerCommunity.dto';
 
 import { ReservationAdminService } from '../application/reservation.admin.service';
-import { CommunityUsageStatusType, RegisterCommunityBody, UpdateCommunityBody } from '../interface/community.interface';
+import { RegisterCommunityBody, UpdateCommunityBody } from '../interface/community.interface';
 import { GetCommunityUsageStatusDetailQuery } from '../interface/getCommunityUsageStatusDetail.dto';
 
 @Controller('reservation')

@@ -1,13 +1,11 @@
-import { Body, Controller, Delete, Get, Param, Post, Query, Put, Patch } from '@nestjs/common';
-import { API_USER, Auth, JwtPayload, UserTokenPayload, AdminTokenPayload } from '@hanwha-sbi/nestjs-authorization';
+import { Body, Controller, Delete, Get, Param, Post, Query, Patch } from '@nestjs/common';
+import { API_USER, Auth, JwtPayload, UserTokenPayload } from '@hanwha-sbi/nestjs-authorization';
+import { ApiResponse } from '@nestjs/swagger';
+
 import { ReservationUserService } from '../application/reservation.user.service';
 import {
     GetAvailableDateParam,
-    GetHistoryBySearchType,
     MakeReservationBody,
-    UpdateReservationQuery,
-    GetTimeTableParam,
-    GetTimeTableQuery,
     GetAvailableDateQuery,
     GetAvailableSlotQuery,
     GetAvailableSeatQuery,
@@ -15,9 +13,6 @@ import {
     RegisterReservationBody,
     GetReservationQuery,
 } from '../interface/reservation.interface';
-import { RegisterCommunityBody } from '../interface/community.interface';
-import { ApiCreatedResponse, ApiResponse } from '@nestjs/swagger';
-import { RegisterReservationResponse } from '../interface/registerReservation.dto';
 import { TodayReservationRespone } from '../interface/todayReservation.dto';
 
 @Controller('reservation')
@@ -65,12 +60,6 @@ export class ReservationUserController {
     @Auth(API_USER)
     getAvailableDate(@Param() param: GetAvailableDateParam, @Query() query: GetAvailableDateQuery) {
         return this.reservationService.getAvailableDate(+param.id, query);
-    }
-
-    @Get('community/:id/time-priority/time-table')
-    @Auth(API_USER)
-    getTimeTable(@Param() param: GetTimeTableParam, @Query() query: GetTimeTableQuery) {
-        return this.reservationService.getTimeTable(+param.id, query);
     }
 
     @Get('community/:id/reservation-available/slots')

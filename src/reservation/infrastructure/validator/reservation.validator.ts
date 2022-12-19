@@ -3,7 +3,7 @@ import { UserTokenPayload } from '@hanwha-sbi/nestjs-authorization';
 import { Injectable } from '@nestjs/common';
 import { CommunityClub, Prisma, ReservationStatus } from '@prisma/client';
 import { MakeReservationBody, UpdateReservationBody } from 'src/reservation/interface/reservation.interface';
-import { getDayCalculas } from '../util/dateUtil';
+import { getDayCalculas } from '../util/date.util';
 
 @Injectable()
 export class ReservationValidator {

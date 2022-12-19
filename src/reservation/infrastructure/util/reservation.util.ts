@@ -1,5 +1,5 @@
 import { CommunityClub, Reservation } from '@prisma/client';
-import { calculateUsageMinute } from './dateUtil';
+import { calculateUsageMinute } from './date.util';
 
 export const calculateReservationUsageStatus =
     ({ freeCountPerHouse, name }: CommunityClub) =>

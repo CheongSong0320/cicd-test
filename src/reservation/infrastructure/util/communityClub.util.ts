@@ -1,6 +1,6 @@
 import { CommunityClub, CommunityClubPerson, CommunityClubSeat, CommunityClubTimeLimit } from '@prisma/client';
 
-const getCommunityMaxCount = (
+export const getCommunityMaxCount = (
     community: CommunityClub & {
         CommunityClubPerson: CommunityClubPerson;
         CommunityClubSeat: CommunityClubSeat;

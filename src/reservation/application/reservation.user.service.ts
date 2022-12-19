@@ -1,11 +1,7 @@
 import { UserTokenPayload } from '@hanwha-sbi/nestjs-authorization';
 import { Injectable } from '@nestjs/common';
 import {
-    GetHistoryBySearchType,
     MakeReservationBody,
-    UpdateReservationQuery,
-    GetAvailableDateParam,
-    GetTimeTableQuery,
     GetAvailableDateQuery,
     GetAvailableSlotQuery,
     GetAvailableSeatQuery,
@@ -49,10 +45,6 @@ export class ReservationUserService {
 
     updateReservation(id: number, body: MakeReservationBody) {
         return this.reservationServiceLogic.updateReservation(id, body);
-    }
-
-    getTimeTable(id: number, query: GetTimeTableQuery) {
-        return this.reservationServiceLogic.getTimeTable(id, query);
     }
 
     getAvailableDate(id: number, query: GetAvailableDateQuery) {

@@ -3,7 +3,7 @@ import { Prisma, Reservation } from '@prisma/client';
 import * as dayjs from 'dayjs';
 import { PrismaService } from 'src/providers/prisma.service';
 import { MakeReservationBody } from 'src/reservation/interface/reservation.interface';
-import { getDayCalculas, setYearMonthDbDate } from '../util/dateUtil';
+import { getDayCalculas, setYearMonthDbDate } from '../util/date.util';
 import { ReservationValidator } from '../validator/reservation.validator';
 
 @Injectable()

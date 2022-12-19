@@ -1,6 +1,5 @@
 import { CommunityClubRestCycle } from '@prisma/client';
 import * as dayjs from 'dayjs';
-import e from 'express';
 
 export const getDayCalculas = (day: number, date?: Date) => {
     return dayjs(date ?? dayjs())

@@ -1,13 +1,12 @@
 import { UserTokenPayload } from '@hanwha-sbi/nestjs-authorization';
-import { BadRequestException, ForbiddenException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import * as dayjs from 'dayjs';
 import * as isBetween from 'dayjs/plugin/isBetween';
 import { CommunityClubRepository } from '../infrastructure/repository/communityClub.repository';
 import { ReservationRepository } from '../infrastructure/repository/reservation.repository';
 import { applicationGroupBy } from '../infrastructure/util/applicationGroupBy';
-import { getDayCalculas, getEndOfDay, getReservationDate, getResetCycleStartDate, setYearMonthDbDate } from '../infrastructure/util/dateUtil';
-import { getReservationCount } from '../infrastructure/util/reservation.util';
-import { getSeatAndTimeType, getTimeType, toNumberOrUndefined } from '../infrastructure/util/typeUtil';
+import { getEndOfDay, getReservationDate, getResetCycleStartDate, setYearMonthDbDate } from '../infrastructure/util/date.util';
+import { getSeatAndTimeType } from '../infrastructure/util/type.util';
 import { ReservationValidator } from '../infrastructure/validator/reservation.validator';
 import { FindReservationByCommunityResponse } from '../interface/findReservationByCommunity.dto';
 import { GetReservationHistoryResponse } from '../interface/getReservationHistroy.dto';
@@ -15,8 +14,6 @@ import { RegisterReservationResponse } from '../interface/registerReservation.dt
 import {
     GetHistoryBySearchType,
     MakeReservationBody,
-    UpdateReservationQuery,
-    GetTimeTableQuery,
     GetAvailableDateQuery,
     GetAvailableSlotQuery,
     GetAvailableDateParam,
@@ -76,7 +73,7 @@ export class ReservationUserServiceLogic {
         );
 
         return {
-            reservation: Object.entries(reservationGroupByCommunity).map(([_, value]) => {
+            reservation: Object.entries(reservationGroupByCommunity).map(([, value]) => {
                 return {
                     communityName: value[0].CommunityClub.name,
                     reservation: value.flatMap(value => ({
@@ -135,15 +132,6 @@ export class ReservationUserServiceLogic {
 
     updateReservation(id: number, body: MakeReservationBody) {
         return this.reservationRepository.updateReservation(id, body);
-    }
-
-    async getTimeTable(id: number, { year, month, day }: GetTimeTableQuery) {
-        const community = await this.communityRepository.findUniqueRelationType(id);
-
-        const startDate = setYearMonthDbDate(+year, +month - 1, 0, +day);
-        const endDate = setYearMonthDbDate(+year, +month - 1, 0, +day + 1);
-
-        return { startDate, endDate };
     }
 
     async getAvailableDate(id: number, { month, seat, date }: GetAvailableDateQuery) {

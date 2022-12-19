@@ -3,11 +3,12 @@ import { Injectable } from '@nestjs/common';
 import { ObjectCannedACL, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { v4 as uuidv4 } from 'uuid';
+import { CommunityClub } from '@prisma/client';
 
 import { CommunityClubRepository } from '../infrastructure/repository/communityClub.repository';
 import { ReservationRepository } from '../infrastructure/repository/reservation.repository';
 import { applicationGroupBy } from '../infrastructure/util/applicationGroupBy';
-import { calculateUsageMinute, createTimeString } from '../infrastructure/util/dateUtil';
+import { calculateUsageMinute, createTimeString } from '../infrastructure/util/date.util';
 
 import { CommunityClubValidator } from '../infrastructure/validator/communityClub.validator';
 import { ReservationValidator } from '../infrastructure/validator/reservation.validator';
@@ -15,7 +16,6 @@ import { ReservationValidator } from '../infrastructure/validator/reservation.va
 import { CommunityUsageStatusType, RegisterCommunityBody, UpdateCommunityBody } from '../interface/community.interface';
 
 import { GetCommunityUsageStatusDetailQuery } from '../interface/getCommunityUsageStatusDetail.dto';
-import { CommunityClub } from '@prisma/client';
 import { calculateReservationUsageStatus } from '../infrastructure/util/reservation.util';
 import { RegisterCommunityDto } from './dto/admin/registerCommunity.dto';
 
