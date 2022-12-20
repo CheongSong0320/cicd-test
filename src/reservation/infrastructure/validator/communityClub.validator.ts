@@ -66,4 +66,17 @@ export class CommunityClubValidator {
             },
         });
     }
+
+    reservationAfterNowValidator(apartmentId: number) {
+        return Prisma.validator<Prisma.CommunityClubFindManyArgs>()({
+            where: {
+                apartmentId: apartmentId,
+                active: true,
+                signOffOn: false,
+            },
+            orderBy: {
+                id: 'asc',
+            },
+        });
+    }
 }

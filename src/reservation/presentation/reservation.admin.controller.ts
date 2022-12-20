@@ -5,6 +5,7 @@ import { ApiOkResponse } from '@nestjs/swagger';
 import { RegisterCommunityDto } from '../application/dto/admin/registerCommunity.dto';
 
 import { ReservationAdminService } from '../application/reservation.admin.service';
+import { ReservationDto } from '../domain/prisma/reservation.dto';
 import { RegisterCommunityBody, UpdateCommunityBody } from '../interface/community.interface';
 import { GetCommunityUsageStatusDetailQuery } from '../interface/getCommunityUsageStatusDetail.dto';
 
@@ -65,5 +66,12 @@ export class ReservationAdminController {
     @Auth(API_ADMIN)
     approveReservation(@Param('id') id: string) {
         return this.reservationService.approveReservation(+id);
+    }
+
+    @Get('community/reservation')
+    @ApiOkResponse({ type: [ReservationDto] })
+    @Auth(API_ADMIN)
+    reservationAfterNow(@JwtPayload() payload: AdminTokenPayload, @Query('now') now: string) {
+        return this.reservationService.reservationAfterNow(payload, now);
     }
 }

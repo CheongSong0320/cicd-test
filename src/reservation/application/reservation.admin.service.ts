@@ -43,4 +43,8 @@ export class ReservationAdminService {
     approveReservation(id: number) {
         return this.reservationServiceLogic.approveReservation(id);
     }
+
+    reservationAfterNow(payload: AdminTokenPayload, now: string) {
+        return this.reservationServiceLogic.reservationAfterNow(payload.apartmentId, now);
+    }
 }

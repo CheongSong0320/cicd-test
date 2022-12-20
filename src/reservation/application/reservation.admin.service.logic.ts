@@ -18,6 +18,7 @@ import { CommunityUsageStatusType, RegisterCommunityBody, UpdateCommunityBody } 
 import { GetCommunityUsageStatusDetailQuery } from '../interface/getCommunityUsageStatusDetail.dto';
 import { calculateReservationUsageStatus } from '../infrastructure/util/reservation.util';
 import { RegisterCommunityDto } from './dto/admin/registerCommunity.dto';
+import { ReservationDto } from '../domain/prisma/reservation.dto';
 
 @Injectable()
 export class ReservationAdminServiceLogic {
@@ -237,5 +238,16 @@ export class ReservationAdminServiceLogic {
         const { status } = await this.communityClubRepository.findUniqueOrFail(id);
 
         return this.communityClubRepository.approveReservation(id, status === 'READY' ? 'PENDING' : 'READY');
+    }
+
+    async reservationAfterNow(apartmentId: number, now: string) {
+        const communities = await this.communityClubRepository.reservationAfterNow(this.communityClubValidator.reservationAfterNowValidator(apartmentId));
+
+        return (
+            await this.reservationRepository.reservationAfterNow(
+                communities.map(v => v.id),
+                now,
+            )
+        ).map(ReservationDto.from);
     }
 }

@@ -182,4 +182,22 @@ export class ReservationRepository {
             },
         });
     }
+
+    reservationAfterNow(communityIds: number[], now: string) {
+        return this.prisma.reservation.findMany({
+            where: {
+                AND: {
+                    communityClubId: {
+                        in: communityIds,
+                    },
+                    endDate: {
+                        gt: now,
+                    },
+                },
+            },
+            include: {
+                CommunityClub: true,
+            },
+        });
+    }
 }
