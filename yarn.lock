@@ -1499,10 +1499,10 @@
   resolved "https://npm.pkg.github.com/download/@hanwha-sbi/jest-config-nestjs/0.6.18/974155860363c6c43c8173e4f3cbf5ebc1de0f15#974155860363c6c43c8173e4f3cbf5ebc1de0f15"
   integrity sha512-jpyDRmv91PYMPsU+ASvWGYMVi+VwwyCWzCbh37vMMx9KAfKMRA6YSseaJ5Zt5/SEwpveul+l2NAXUEIprQbikA==
 
-"@hanwha-sbi/nestjs-authorization@^0.14.0":
-  version "0.14.0"
-  resolved "https://npm.pkg.github.com/download/@hanwha-sbi/nestjs-authorization/0.14.0/285b51cb62df573e29f83557073d0454d3abe6a5#285b51cb62df573e29f83557073d0454d3abe6a5"
-  integrity sha512-t/LCs2Kakhs/kdZTOv0Xo+Hi31HWYW663cucN/l1FUyzKp1ulz8y3neyqi/UadJMOQjKfLIYvh9S3Qq7dSggpw==
+"@hanwha-sbi/nestjs-authorization@^0.19.2":
+  version "0.19.2"
+  resolved "https://npm.pkg.github.com/download/@hanwha-sbi/nestjs-authorization/0.19.2/42d9723686c89b8e7ab49e756791ff108645f8a5#42d9723686c89b8e7ab49e756791ff108645f8a5"
+  integrity sha512-/ZuTyzEjoxUXBD40V2Z1178gl9XrSCNTYW1dPd+HES5uPy22RpFYCrDBdOehtiV7igRHky8EDXE/HhAkfEBgqw==
   dependencies:
     axios "^0.27.2"
     jsonwebtoken "^8.5.1"
