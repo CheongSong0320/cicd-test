@@ -101,12 +101,20 @@ export class ReservationRepository {
         return this.prisma.reservation.count({
             where: {
                 communityClubId,
-                startDate: {
-                    gte: startDate,
-                },
-                endDate: {
-                    lt: endDate,
-                },
+                OR: [
+                    {
+                        startDate: {
+                            gte: startDate,
+                            lt: endDate,
+                        },
+                    },
+                    {
+                        endDate: {
+                            gte: startDate,
+                            lt: endDate,
+                        },
+                    },
+                ],
                 status: {
                     not: 'CANCELLED',
                 },
