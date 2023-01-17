@@ -91,9 +91,9 @@ export class ReservationUserServiceLogic {
         };
     }
 
-    async getHistoryByQueryType(userId: string, { searchType, date, communityClubId: communityId }: GetReservationHistoryQuery): Promise<GetReservationHistoryResponse> {
+    async getHistoryByQueryType(userId: string, { searchType, dateFrom, dateTo, communityClubId: communityId }: GetReservationHistoryQuery): Promise<GetReservationHistoryResponse> {
         const groupByDateReservationHistory = applicationGroupBy(
-            await this.reservationRepository.getHistoryByQueryType(this.reservationValidator.getHistoryByQueryType(userId, date, communityId)),
+            await this.reservationRepository.getHistoryByQueryType(this.reservationValidator.getHistoryByQueryType(userId, dateFrom, dateTo, communityId)),
             args => (searchType === 'date' ? args.communityClubId : args.startDate.toISOString().split('T')[0]),
         );
 

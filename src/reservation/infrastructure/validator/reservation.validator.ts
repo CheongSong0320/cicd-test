@@ -138,9 +138,7 @@ export class ReservationValidator {
                 startDate: {
                     gte: getDayCalculas(0),
                 },
-                status: {
-                    not: 'CANCELLED',
-                },
+                status: 'READY',
                 userId,
                 CommunityClub: {
                     active: true,
@@ -158,15 +156,15 @@ export class ReservationValidator {
         });
     }
 
-    getHistoryByQueryType(userId: string, date?: Date, communityId?: string) {
+    getHistoryByQueryType(userId: string, dateFrom?: string, dateTo?: string, communityId?: string) {
         return Prisma.validator<Prisma.ReservationFindManyArgs>()({
             where: {
                 userId,
                 startDate: {
-                    gte: date ? getDayCalculas(0, date) : getDayCalculas(-31),
+                    gte: dateFrom,
                 },
                 endDate: {
-                    lt: date ? getDayCalculas(1, date) : getDayCalculas(1),
+                    lt: dateTo,
                 },
                 communityClubId: {
                     equals: communityId ? +communityId : undefined,

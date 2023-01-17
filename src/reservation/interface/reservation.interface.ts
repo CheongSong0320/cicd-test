@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 
 export type GetHistoryBySearchType = 'date' | 'community';
@@ -6,7 +6,14 @@ export type GetHistoryBySearchType = 'date' | 'community';
 export class GetReservationHistoryQuery {
     @ApiProperty({ enum: ['date', 'community'] })
     searchType: 'date' | 'community';
-    date?: Date;
+
+    @ApiPropertyOptional()
+    dateFrom?: string;
+
+    @ApiPropertyOptional()
+    dateTo?: string;
+
+    @ApiPropertyOptional()
     communityClubId?: string;
 }
 
