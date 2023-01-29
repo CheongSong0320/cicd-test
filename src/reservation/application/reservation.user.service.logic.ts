@@ -44,7 +44,7 @@ export class ReservationUserServiceLogic {
         return returnValue;
     }
 
-    async getTodayReservation(userId: string, { startDate, endDate }: GetReservationQuery): Promise<(TodayReservationRespone | undefined)[]> {
+    async getTodayReservation(userId: string, { dateFrom: startDate, dateTo: endDate }: GetReservationQuery): Promise<(TodayReservationRespone | undefined)[]> {
         const todayReservations = await this.reservationRepository.findTodayReservation(this.reservationValidator.findTodayReservation(userId, startDate, endDate));
 
         return todayReservations

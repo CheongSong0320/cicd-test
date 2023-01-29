@@ -82,6 +82,6 @@ export class GetAvailableSeatQuery {
 }
 
 export class GetReservationQuery {
-    startDate: Date;
-    endDate: Date;
+    dateFrom: Date;
+    dateTo: Date;
 }

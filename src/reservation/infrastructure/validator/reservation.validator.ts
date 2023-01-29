@@ -108,7 +108,9 @@ export class ReservationValidator {
                 userId,
                 startDate: {
                     gte: startDate,
-                    lt: endDate,
+                },
+                endDate: {
+                    lte: endDate,
                 },
                 status: {
                     in: ['READY', 'PENDING'],
