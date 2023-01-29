@@ -18,8 +18,8 @@ class InnerReservation {
 }
 
 class GetHistory {
-    @ApiProperty({ type: 'string' })
-    date: string | undefined;
+    @ApiPropertyOptional({ type: 'date' })
+    date: Date | undefined;
 
     @ApiPropertyOptional({ type: 'string' })
     communityClubId: string | undefined;

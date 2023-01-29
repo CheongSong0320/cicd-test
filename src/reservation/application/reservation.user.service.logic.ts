@@ -99,7 +99,7 @@ export class ReservationUserServiceLogic {
 
         return {
             reservation: Object.entries(groupByDateReservationHistory).map(([key, value]) => ({
-                date: searchType === 'community' ? key : undefined,
+                date: searchType === 'community' ? dayjs(key).add(15, 'hour').toDate() : undefined,
                 communityClubId: searchType === 'date' ? key : undefined,
                 communityName: searchType === 'date' ? value[0].CommunityClub.name : undefined,
                 reservation: value.flatMap(value => ({
