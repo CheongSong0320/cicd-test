@@ -480,7 +480,7 @@ export class ReservationUserServiceLogic {
                     seatNumber: body.seatId,
                 },
                 community,
-                !community.signOffOn || (community.isWating && todayReservationCount >= (body.seatId ? 1 : maxCount)) ? 'READY' : 'PENDING',
+                !community.signOffOn || (community.isWating && todayReservationCount >= (body.seatId ? 1 : maxCount)) ? 'PENDING' : 'READY',
             ),
         );
     }
