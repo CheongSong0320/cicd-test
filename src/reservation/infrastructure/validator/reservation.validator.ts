@@ -112,9 +112,7 @@ export class ReservationValidator {
                 endDate: {
                     lte: endDate,
                 },
-                status: {
-                    in: ['READY', 'PENDING'],
-                },
+                status: 'READY',
                 CommunityClub: {
                     active: true,
                 },
