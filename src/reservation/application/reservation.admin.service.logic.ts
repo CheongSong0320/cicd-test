@@ -92,8 +92,6 @@ export class ReservationAdminServiceLogic {
                         ? { ...nowAdditional, count: nowAdditional.count + (additionalUsageCount ? 1 : 0) }
                         : { communityName: nowCommunity.name, count: additionalUsageCount ? 1 : 0 };
 
-                    console.log(additionalHouseHold[nowCommunity.id]);
-
                     return {
                         ...curr,
                         [dong + ho]: {
@@ -140,9 +138,9 @@ export class ReservationAdminServiceLogic {
         const groupBy1depth = Object.entries(applicationGroupBy(usageByUser, value => `${value.dong}-${value.ho}-${value.userId}-${value.communityClubId}`)).map(([key, value]) => {
             const { userName, userType, userPhone } = value[0];
 
-            const { usageTime, usageCount, additionalUsageTime, additionalUsageCount, communityName } = value.reduce(
+            const { usageTime, usageCount, additionalUsageTime, additionalUsageCount, communityName, viewProperty } = value.reduce(
                 ({ usageTime, usageCount, additionalUsageTime, additionalUsageCount }, { startDate, endDate, communityClubId }) => {
-                    const { freeCountPerHouse, name } = communityMap[communityClubId][0];
+                    const { freeCountPerHouse, name, resetCycle } = communityMap[communityClubId][0];
 
                     const nowUsageMinute = calculateUsageMinute(startDate, endDate);
                     return {
@@ -151,9 +149,10 @@ export class ReservationAdminServiceLogic {
                         additionalUsageCount: usageCount + 1 > freeCountPerHouse ? additionalUsageCount + 1 : 0,
                         additionalUsageTime: usageCount + 1 > freeCountPerHouse ? additionalUsageTime + nowUsageMinute : 0,
                         communityName: name,
+                        viewProperty: resetCycle === 'DAY' ? 'usageTime' : 'usageCount',
                     };
                 },
-                { usageTime: 0, usageCount: 0, additionalUsageTime: 0, additionalUsageCount: 0, communityName: '' },
+                { usageTime: 0, usageCount: 0, additionalUsageTime: 0, additionalUsageCount: 0, communityName: '', viewProperty: '' },
             );
 
             return {
@@ -167,6 +166,7 @@ export class ReservationAdminServiceLogic {
                 userType,
                 userPhone,
                 usageTimeString: createTimeString(usageTime),
+                viewProperty,
             };
         });
 
@@ -182,7 +182,7 @@ export class ReservationAdminServiceLogic {
                 userName,
                 userType,
                 userPhone,
-                usageStatus: value.map(({ communityName, usageCount, usageTime, usageTimeString, additionalUsageCount, additionalUsageTime }) => {
+                usageStatus: value.map(({ communityName, usageCount, usageTime, usageTimeString, additionalUsageCount, additionalUsageTime, viewProperty }) => {
                     return {
                         communityName,
                         usageCount,
@@ -190,6 +190,7 @@ export class ReservationAdminServiceLogic {
                         usageTimeString,
                         additionalUsageCount,
                         additionalUsageTime,
+                        viewProperty,
                     };
                 }),
             };
