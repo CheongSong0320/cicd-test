@@ -19,6 +19,7 @@ import { GetCommunityUsageStatusDetailQuery } from '../interface/getCommunityUsa
 import { calculateReservationUsageStatus } from '../infrastructure/util/reservation.util';
 import { RegisterCommunityDto } from './dto/admin/registerCommunity.dto';
 import { ReservationDto } from '../domain/prisma/reservation.dto';
+import { PatchReservationBody } from '../interface/patchReservation.admin.dto';
 
 @Injectable()
 export class ReservationAdminServiceLogic {
@@ -235,10 +236,8 @@ export class ReservationAdminServiceLogic {
         }));
     }
 
-    async approveReservation(id: number) {
-        const { status } = await this.communityClubRepository.findUniqueOrFail(id);
-
-        return this.communityClubRepository.approveReservation(id, status === 'ACCEPTED' ? 'PENDING' : 'ACCEPTED');
+    async approveReservation(id: number, { status }: PatchReservationBody) {
+        return this.communityClubRepository.approveReservation(id, status);
     }
 
     async reservationAfterNow(apartmentId: number, now: string) {

@@ -2,6 +2,7 @@ import { AdminTokenPayload } from '@hanwha-sbi/nestjs-authorization';
 import { Injectable } from '@nestjs/common';
 import { RegisterCommunityBody, UpdateCommunityBody } from '../interface/community.interface';
 import { GetCommunityUsageStatusDetailQuery } from '../interface/getCommunityUsageStatusDetail.dto';
+import { PatchReservationBody } from '../interface/patchReservation.admin.dto';
 import { ReservationAdminServiceLogic } from './reservation.admin.service.logic';
 
 @Injectable()
@@ -40,8 +41,8 @@ export class ReservationAdminService {
         return this.reservationServiceLogic.updateCommunity(id, body);
     }
 
-    approveReservation(id: number) {
-        return this.reservationServiceLogic.approveReservation(id);
+    approveReservation(id: number, body: PatchReservationBody) {
+        return this.reservationServiceLogic.approveReservation(id, body);
     }
 
     reservationAfterNow(payload: AdminTokenPayload, now: string) {

@@ -8,6 +8,7 @@ import { ReservationAdminService } from '../application/reservation.admin.servic
 import { ReservationDto } from '../domain/prisma/reservation.dto';
 import { RegisterCommunityBody, UpdateCommunityBody } from '../interface/community.interface';
 import { GetCommunityUsageStatusDetailQuery } from '../interface/getCommunityUsageStatusDetail.dto';
+import { PatchReservationBody } from '../interface/patchReservation.admin.dto';
 
 @Controller('reservation')
 export class ReservationAdminController {
@@ -62,10 +63,10 @@ export class ReservationAdminController {
         return this.reservationService.getReservationByCommunityClub(payload, +communityClubId);
     }
 
-    @Patch(':id/approve')
+    @Patch(':id')
     @Auth(API_ADMIN)
-    approveReservation(@Param('id') id: string) {
-        return this.reservationService.approveReservation(+id);
+    approveReservation(@Param('id') id: string, @Body() body: PatchReservationBody) {
+        return this.reservationService.approveReservation(+id, body);
     }
 
     @Get('community/reservation')
