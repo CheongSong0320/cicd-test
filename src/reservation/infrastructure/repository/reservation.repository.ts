@@ -1,9 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma, Reservation } from '@prisma/client';
-import * as dayjs from 'dayjs';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/providers/prisma.service';
 import { MakeReservationBody } from 'src/reservation/interface/reservation.interface';
-import { getDayCalculas, setYearMonthDbDate } from '../util/date.util';
 import { ReservationValidator } from '../validator/reservation.validator';
 
 @Injectable()
@@ -21,10 +19,6 @@ export class ReservationRepository {
 
     findByCommunityClubIds(args: ReturnType<ReservationValidator['findByCommunityClubIds']>) {
         return this.prisma.reservation.findMany(args);
-    }
-
-    findByCommunityClubIdsAndGroupBy(args: ReturnType<ReservationValidator['findByCommunityClubIdsAndGroupBy']>) {
-        return this.prisma.reservation.groupBy(args);
     }
 
     findWithCommunityClub(args: ReturnType<ReservationValidator['findWithCommunityClub']>) {
@@ -90,7 +84,7 @@ export class ReservationRepository {
                     lt: endDate,
                 },
                 status: {
-                    not: 'CANCELLED',
+                    in: ['ACCEPTED', 'PENDING'],
                 },
                 seatNumber: seatId,
             },
@@ -116,7 +110,7 @@ export class ReservationRepository {
                     },
                 ],
                 status: {
-                    not: 'CANCELLED',
+                    in: ['ACCEPTED', 'PENDING'],
                 },
                 dong,
                 ho,
@@ -129,7 +123,7 @@ export class ReservationRepository {
         return this.prisma.reservation.findMany({
             where: {
                 status: {
-                    not: 'CANCELLED',
+                    in: ['ACCEPTED', 'PENDING'],
                 },
                 startDate: {
                     gte: startDate,
@@ -148,7 +142,7 @@ export class ReservationRepository {
                     communityClubId,
                     seatNumber: seat ? +seat : seat,
                     status: {
-                        not: 'CANCELLED',
+                        in: ['ACCEPTED', 'PENDING'],
                     },
                 },
 

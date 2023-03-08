@@ -39,7 +39,8 @@ enum UserType {
 
 enum ReservationStatus {
   PENDING
-  READY
+  ACCEPTED
+  REJECTED
   CANCELLED
 }
 

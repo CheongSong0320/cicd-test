@@ -22,8 +22,8 @@ export class RegisterReservationResponse {
     @ApiProperty()
     isMemberShip: boolean | null;
 
-    @ApiProperty({ enum: ['PENDING', 'READY', 'CANCELLED'] })
-    status: 'PENDING' | 'READY' | 'CANCELLED';
+    @ApiProperty({ enum: ['PENDING', 'ACCEPTED', 'REJECTED', 'CANCELLED'] })
+    status: 'PENDING' | 'ACCEPTED' | 'REJECTED' | 'CANCELLED';
 
     @ApiProperty()
     communityClubId: number;

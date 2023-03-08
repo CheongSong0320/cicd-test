@@ -483,8 +483,7 @@ export class ReservationUserServiceLogic {
                     communityClubId: id,
                     seatNumber: body.seatId,
                 },
-                community,
-                !community.signOffOn || (community.isWating && todayReservationCount >= (body.seatId ? 1 : maxCount)) ? 'PENDING' : 'READY',
+                !community.signOffOn || (community.isWating && todayReservationCount >= (body.seatId ? 1 : maxCount)) ? 'PENDING' : 'ACCEPTED',
             ),
         );
     }

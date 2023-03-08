@@ -238,7 +238,7 @@ export class ReservationAdminServiceLogic {
     async approveReservation(id: number) {
         const { status } = await this.communityClubRepository.findUniqueOrFail(id);
 
-        return this.communityClubRepository.approveReservation(id, status === 'READY' ? 'PENDING' : 'READY');
+        return this.communityClubRepository.approveReservation(id, status === 'ACCEPTED' ? 'PENDING' : 'ACCEPTED');
     }
 
     async reservationAfterNow(apartmentId: number, now: string) {

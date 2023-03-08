@@ -24,36 +24,11 @@ export class ReservationValidator {
                     active: true,
                 },
                 status: {
-                    not: 'CANCELLED',
+                    in: ['ACCEPTED', 'PENDING'],
                 },
             },
             orderBy: {
                 id: 'asc',
-            },
-        });
-    }
-
-    findByCommunityClubIdsAndGroupBy(ids: number[]) {
-        const now = new Date();
-        return Prisma.validator<Prisma.ReservationGroupByArgs>()({
-            by: ['communityClubId'],
-            where: {
-                communityClubId: {
-                    in: ids,
-                },
-                status: 'READY',
-                startDate: {
-                    gte: new Date(now.getFullYear(), now.getMonth(), 1),
-                },
-                endDate: {
-                    lt: new Date(now.getFullYear(), now.getMonth() + 1, 1),
-                },
-                CommunityClub: {
-                    active: true,
-                },
-            },
-            _count: {
-                _all: true,
             },
         });
     }
@@ -76,7 +51,7 @@ export class ReservationValidator {
                     active: true,
                 },
                 status: {
-                    not: 'CANCELLED',
+                    in: ['ACCEPTED', 'PENDING'],
                 },
             },
             select: {
@@ -112,7 +87,9 @@ export class ReservationValidator {
                 endDate: {
                     lte: endDate,
                 },
-                status: 'READY',
+                status: {
+                    in: ['ACCEPTED', 'PENDING'],
+                },
                 CommunityClub: {
                     active: true,
                 },
@@ -138,7 +115,9 @@ export class ReservationValidator {
                 startDate: {
                     gte: getDayCalculas(0),
                 },
-                status: 'READY',
+                status: {
+                    in: ['ACCEPTED', 'PENDING'],
+                },
                 userId,
                 CommunityClub: {
                     active: true,
@@ -170,7 +149,7 @@ export class ReservationValidator {
                     equals: communityId ? +communityId : undefined,
                 },
                 status: {
-                    not: 'CANCELLED',
+                    in: ['ACCEPTED', 'PENDING'],
                 },
                 CommunityClub: {
                     active: true,
@@ -202,7 +181,7 @@ export class ReservationValidator {
         });
     }
 
-    makeReservation(payload: UserTokenPayload, { startDate, endDate, seatNumber, communityClubId }: MakeReservationBody, community: CommunityClub, status: ReservationStatus) {
+    makeReservation(payload: UserTokenPayload, { startDate, endDate, seatNumber, communityClubId }: MakeReservationBody, status: ReservationStatus) {
         return Prisma.validator<Prisma.ReservationCreateArgs>()({
             data: {
                 startDate,
