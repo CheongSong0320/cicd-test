@@ -468,6 +468,10 @@ export class ReservationUserServiceLogic {
 
         if (community.maxCountPerHouse && reservationCycleCount >= community.maxCountPerHouse) throw new BadRequestException('세대별 최대 이용수 초과');
 
+        if (community.CommunityClubTimeLimit && body.slotCount) {
+            if (community.CommunityClubTimeLimit.maxTimeInterval < community.CommunityClubTimeLimit.reservationTimeInterval * body.slotCount) throw new BadRequestException('최대 예약시간 초과');
+        }
+
         // if (myReservationCount) throw new BadRequestException('이용시간이 중복되었습니다.');
 
         return this.reservationRepository.makeReservation(
