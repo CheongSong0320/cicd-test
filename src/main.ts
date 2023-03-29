@@ -7,7 +7,6 @@ import { UserModule } from './user.module';
 import { InternalModule } from './internal.module';
 
 async function bootstrap() {
-    console.log('!!!');
     await bootstrapAdmin();
     await bootstrapUser();
     await bootstrapInternal();
@@ -29,15 +28,16 @@ async function bootstrapAdmin() {
     app.use(urlencoded({ extended: true, limit: '50mb' }));
 
     const options = new DocumentBuilder()
-        .setTitle('Apartment Service - Admin')
+        .setTitle('Reservation Service - Admin')
         .setVersion('1.0')
-        .setDescription('The apartment service api documentation for admin')
+        .setDescription('The reservation service api documentation for admin')
         .addBearerAuth()
         .addServer(process.env.ADMIN_BASE_PATH || '/')
         .build();
     const document = SwaggerModule.createDocument(app, options);
     SwaggerModule.setup('api', app, document);
 
+    process.env.ADMIN_GLOBAL_PREFIX && app.setGlobalPrefix(process.env.ADMIN_GLOBAL_PREFIX);
     await app.listen(process.env.ADMIN_HTTP_PORT ?? 3000);
 }
 
@@ -56,15 +56,16 @@ async function bootstrapUser() {
     app.use(urlencoded({ extended: true, limit: '50mb' }));
 
     const options = new DocumentBuilder()
-        .setTitle('Apartment Service - User')
+        .setTitle('Reservation Service - User')
         .setVersion('1.0')
-        .setDescription('The apartment service api documentation for admin')
+        .setDescription('The reservation service api documentation for admin')
         .addBearerAuth()
         .addServer(process.env.USER_BASE_PATH || '/')
         .build();
     const document = SwaggerModule.createDocument(app, options);
     SwaggerModule.setup('api', app, document);
 
+    process.env.USER_GLOBAL_PREFIX && app.setGlobalPrefix(process.env.USER_GLOBAL_PREFIX);
     await app.listen(process.env.USER_HTTP_PORT ?? 3001);
 }
 
@@ -83,9 +84,9 @@ async function bootstrapInternal() {
     app.use(urlencoded({ extended: true, limit: '50mb' }));
 
     const options = new DocumentBuilder()
-        .setTitle('Apartment Service - Internal')
+        .setTitle('Reservation Service - Internal')
         .setVersion('1.0')
-        .setDescription('The apartment service api documentation for admin')
+        .setDescription('The reservation service api documentation for admin')
         .addBearerAuth()
         .addServer(process.env.INTERNAL_BASE_PATH || '/')
         .build();
