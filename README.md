@@ -1,4 +1,5 @@
-# Apartment Service
+# 아파트 시설 예약 서비스
+  * PostgresSQL
 
 ## Installation
 
