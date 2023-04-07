@@ -37,7 +37,7 @@ export class ReservationAdminServiceLogic {
     async getImagePutUrl() {
         const command = new PutObjectCommand({
             ACL: ObjectCannedACL.public_read,
-            Bucket: process.env.AROUND_INFO_S3_BUCKET || 'dev-hanwha-around-info',
+            Bucket: process.env.S3_BUCKET_NAME,
             Key: `images/${uuidv4()}`,
         });
         const presignedUrl = await getSignedUrl(this.s3Client, command, {
