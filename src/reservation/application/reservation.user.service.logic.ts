@@ -91,28 +91,14 @@ export class ReservationUserServiceLogic {
         };
     }
 
-    async getHistoryByQueryType(userId: string, { searchType, dateFrom, dateTo, communityClubId: communityId }: GetReservationHistoryQuery): Promise<GetReservationHistoryResponse> {
-        const groupByDateReservationHistory = applicationGroupBy(
-            await this.reservationRepository.getHistoryByQueryType(this.reservationValidator.getHistoryByQueryType(userId, dateFrom, dateTo, communityId)),
-            args => (searchType === 'date' ? args.communityClubId : args.startDate.toISOString().split('T')[0]),
-        );
-
+    async getHistoryByQueryType(userId: string, { dateFrom, dateTo, communityClubId: communityId }: GetReservationHistoryQuery) /*: Promise<GetReservationHistoryResponse>*/ {
         return {
-            reservation: Object.entries(groupByDateReservationHistory).map(([key, value]) => ({
-                date: searchType === 'community' ? dayjs(key).add(15, 'hour').toDate() : undefined,
-                communityClubId: searchType === 'date' ? key : undefined,
-                communityName: searchType === 'date' ? value[0].CommunityClub.name : undefined,
-                reservation: value.flatMap(value => ({
-                    id: value.id,
-                    startDate: value.startDate,
-                    endDate: value.endDate,
-                    seatNumber: value.seatNumber,
-                    communityName: searchType === 'community' ? value.CommunityClub.name : undefined,
-                    communityClub: {
-                        ...value.CommunityClub,
-                        ...getSeatAndTimeType(value.CommunityClub.type),
-                    },
-                })),
+            reservation: (await this.reservationRepository.getHistoryByQueryType(this.reservationValidator.getHistoryByQueryType(userId, dateFrom, dateTo, communityId))).map(reservation => ({
+                ...reservation,
+                communityClub: {
+                    ...reservation.CommunityClub,
+                    ...getSeatAndTimeType(reservation.CommunityClub.type),
+                },
             })),
         };
     }

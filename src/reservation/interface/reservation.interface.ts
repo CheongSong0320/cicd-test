@@ -4,9 +4,6 @@ import { Type } from 'class-transformer';
 export type GetHistoryBySearchType = 'date' | 'community';
 
 export class GetReservationHistoryQuery {
-    @ApiProperty({ enum: ['date', 'community'] })
-    searchType: 'date' | 'community';
-
     @ApiPropertyOptional()
     dateFrom?: string;
 
