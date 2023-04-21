@@ -3,11 +3,11 @@ version: 0.2
 phases:
   install:
     commands:
-      - export IMAGE_TAG=prod-$(date +%Y%m%d%H%M%S)
+      - export IMAGE_TAG=$ENVPREFIX-$(date +%Y%m%d%H%M%S)
       - echo $IMAGE_TAG
   pre_build:
     commands:
-      - echo Retrieving GitHub Enterprise access token from AWS Secrets Manager..
+      - echo Retrieving GitHub Enterprise access token from AWS Secrets Manager...
       - export GITHUB_TOKEN=$(aws secretsmanager get-secret-value --secret-id GitHubEnterprise/SmartParking/Token --region $AWS_DEFAULT_REGION --output json | jq -r '.SecretString | fromjson | .GESPTonken')
       - echo Logging in to Amazon ECR...
       - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
@@ -15,12 +15,11 @@ phases:
     commands:
       - echo Build started on `date`
       - echo Building the Docker image...
-      - export LATEST_TAG=$(aws ecr describe-images --repository-name $IMAGE_REPO_NAME --query 'sort_by(imageDetails,& imagePushedAt)[-1].imageTags[0]' --output text)
-      - docker pull $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$LATEST_TAG
-      - docker build --cache-from=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$LATEST_TAG --build-arg NPM_TOKEN=${GITHUB_TOKEN} -t $IMAGE_REPO_NAME:$IMAGE_TAG .
+      - echo $IMAGE_TAG point
+      - docker build --build-arg NPM_TOKEN=${GITHUB_TOKEN} -t $IMAGE_REPO_NAME:$IMAGE_TAG .  || exit 1
       - docker tag $IMAGE_REPO_NAME:$IMAGE_TAG $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
       - echo Pushing the Docker image...
-      - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG || exit 1
+      - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
   post_build:
     commands:
       - echo Commit CD Repo files
