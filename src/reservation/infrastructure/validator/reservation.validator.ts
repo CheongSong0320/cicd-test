@@ -1,7 +1,7 @@
 // Prisma.validator<Prisma.ReservationGroupByArgs>;
 import { UserTokenPayload } from '@hanwha-sbi/nestjs-authorization';
 import { Injectable } from '@nestjs/common';
-import { CommunityClub, Prisma, ReservationStatus } from '@prisma/client';
+import { Prisma, ReservationStatus } from '@prisma/client';
 import { MakeReservationBody, UpdateReservationBody } from 'src/reservation/interface/reservation.interface';
 import { getDayCalculas } from '../util/date.util';
 

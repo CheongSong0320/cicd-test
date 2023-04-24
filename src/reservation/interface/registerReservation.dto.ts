@@ -1,48 +1,81 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { ReservationStatus, UserType } from '@prisma/client';
 
 export class RegisterReservationResponse {
-    @ApiProperty()
+    /**
+     * id
+     */
     id: number;
 
-    @ApiProperty()
+    /**
+     * 예약 생성 일시
+     */
     createdAt: Date;
 
-    @ApiProperty()
+    /**
+     * 예약 시작 일시
+     */
     startDate: Date;
 
-    @ApiProperty()
+    /**
+     * 예약 종료 일시
+     */
     endDate: Date;
 
-    @ApiProperty()
+    /**
+     * 동
+     */
     dong: string;
 
-    @ApiProperty()
+    /**
+     * 호
+     */
     ho: string;
 
-    @ApiProperty()
+    /**
+     * 멤버십 가입 여부
+     */
     isMemberShip: boolean | null;
 
-    @ApiProperty({ enum: ['PENDING', 'ACCEPTED', 'REJECTED', 'CANCELLED'] })
-    status: 'PENDING' | 'ACCEPTED' | 'REJECTED' | 'CANCELLED';
+    /**
+     * status
+     */
+    @ApiProperty({ enum: ReservationStatus })
+    status: ReservationStatus;
 
-    @ApiProperty()
+    /**
+     * 커뮤니티 클럽 Id
+     */
     communityClubId: number;
 
-    @ApiProperty()
+    /**
+     * 예약자 Id
+     */
     userId: string;
 
-    @ApiProperty()
+    /**
+     * 멤버십 Id
+     */
     membershipId: number | null;
 
-    @ApiProperty()
+    /**
+     * 예약자 이름
+     */
     userName: string;
 
-    @ApiProperty({ enum: ['HOUSEHOLDER', 'MEMBER', 'ETC'] })
-    userType: 'HOUSEHOLDER' | 'MEMBER' | 'ETC';
+    /**
+     * 사용자 유형
+     */
+    @ApiProperty({ enum: UserType })
+    userType: UserType;
 
-    @ApiProperty()
+    /**
+     * 예약자 연락처
+     */
     userPhone: string;
 
-    @ApiProperty()
+    /**
+     * seatNumber
+     */
     seatNumber: number | null;
 }

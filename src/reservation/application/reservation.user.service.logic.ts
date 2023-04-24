@@ -9,18 +9,15 @@ import { getEndOfDay, getReservationDate, getResetCycleStartDate, setYearMonthDb
 import { getSeatAndTimeType } from '../infrastructure/util/type.util';
 import { ReservationValidator } from '../infrastructure/validator/reservation.validator';
 import { FindReservationByCommunityResponse } from '../interface/findReservationByCommunity.dto';
-import { GetReservationHistoryResponse } from '../interface/getReservationHistroy.dto';
 import { RegisterReservationResponse } from '../interface/registerReservation.dto';
 import {
-    GetHistoryBySearchType,
-    MakeReservationBody,
     GetAvailableDateQuery,
-    GetAvailableSlotQuery,
-    GetAvailableDateParam,
     GetAvailableSeatQuery,
+    GetAvailableSlotQuery,
     GetReservationHistoryQuery,
-    RegisterReservationBody,
     GetReservationQuery,
+    MakeReservationBody,
+    RegisterReservationBody,
 } from '../interface/reservation.interface';
 import { TodayReservationRespone } from '../interface/todayReservation.dto';
 

@@ -1,10 +1,10 @@
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { urlencoded, json } from 'express';
+import { json, urlencoded } from 'express';
 import { AdminModule } from './admin.module';
-import { UserModule } from './user.module';
 import { InternalModule } from './internal.module';
+import { UserModule } from './user.module';
 
 async function bootstrap() {
     await bootstrapAdmin();
