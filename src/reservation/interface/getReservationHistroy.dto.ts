@@ -1,32 +1,51 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 
 class InnerReservation {
-    @ApiProperty()
+    /**
+     * id
+     */
     id: number;
 
-    @ApiProperty()
+    /**
+     * startDate
+     */
     startDate: Date;
 
-    @ApiProperty()
+    /**
+     * endDate
+     */
     endDate: Date;
 
-    @ApiPropertyOptional({ type: 'number' })
+    /**
+     * seatNumber
+     */
     seatNumber: number | null;
 
-    @ApiPropertyOptional({ type: 'string' })
+    /**
+     * 커뮤니티 이름
+     */
     communityName: string | undefined;
 }
 
 class GetHistory {
-    @ApiPropertyOptional({ type: 'date' })
+    /**
+     * date
+     */
     date: Date | undefined;
 
-    @ApiPropertyOptional({ type: 'string' })
+    /**
+     * communityClubId
+     */
     communityClubId: string | undefined;
 
-    @ApiPropertyOptional({ type: 'string' })
+    /**
+     * communityName
+     */
     communityName: string | undefined;
 
+    /**
+     * 예약 정보
+     */
     @ApiProperty({ type: [InnerReservation] })
     reservation: InnerReservation[];
 }

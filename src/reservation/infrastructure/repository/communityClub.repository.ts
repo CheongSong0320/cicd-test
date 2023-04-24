@@ -3,7 +3,6 @@ import { ReservationStatus } from '@prisma/client';
 import { PrismaService } from 'src/providers/prisma.service';
 import { UpdateCommunityBody } from 'src/reservation/interface/community.interface';
 import { CommunityClubValidator } from '../validator/communityClub.validator';
-import { ReservationValidator } from '../validator/reservation.validator';
 
 @Injectable()
 export class CommunityClubRepository {

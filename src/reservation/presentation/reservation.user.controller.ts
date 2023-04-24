@@ -1,17 +1,17 @@
-import { Body, Controller, Delete, Get, Param, Post, Query, Patch } from '@nestjs/common';
-import { API_USER, Auth, JwtPayload, UserTokenPayload, Resident } from '@hanwha-sbi/nestjs-authorization';
+import { API_USER, Auth, JwtPayload, Resident, UserTokenPayload } from '@hanwha-sbi/nestjs-authorization';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
 import { ApiResponse } from '@nestjs/swagger';
 
 import { ReservationUserService } from '../application/reservation.user.service';
 import {
     GetAvailableDateParam,
-    MakeReservationBody,
     GetAvailableDateQuery,
-    GetAvailableSlotQuery,
     GetAvailableSeatQuery,
+    GetAvailableSlotQuery,
     GetReservationHistoryQuery,
-    RegisterReservationBody,
     GetReservationQuery,
+    MakeReservationBody,
+    RegisterReservationBody,
 } from '../interface/reservation.interface';
 import { TodayReservationRespone } from '../interface/todayReservation.dto';
 

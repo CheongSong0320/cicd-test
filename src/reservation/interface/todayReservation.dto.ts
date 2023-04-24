@@ -1,12 +1,21 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-
 export class TodayReservationRespone {
-    @ApiProperty()
+    /**
+     * id
+     */
     id: number;
-    @ApiProperty()
+
+    /**
+     * startDate
+     */
     startDate: Date;
-    @ApiProperty()
+
+    /**
+     * endDate
+     */
     endDate: Date;
-    @ApiPropertyOptional({ type: 'number' })
+
+    /**
+     * seatNumber
+     */
     seatNumber: number | null;
 }
