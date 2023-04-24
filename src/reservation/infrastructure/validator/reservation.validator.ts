@@ -1,5 +1,5 @@
 // Prisma.validator<Prisma.ReservationGroupByArgs>;
-import { UserTokenPayload } from '@hanwha-sbi/nestjs-authorization';
+import { UserTokenPayload } from '@backend-sw-development-team4/nestjs-authorization';
 import { Injectable } from '@nestjs/common';
 import { Prisma, ReservationStatus } from '@prisma/client';
 import { MakeReservationBody, UpdateReservationBody } from 'src/reservation/interface/reservation.interface';

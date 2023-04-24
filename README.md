@@ -6,7 +6,7 @@
 You must login to GitHub registry in order to install company distributed packages. See more information in this [link](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-npm-registry#authenticating-with-a-personal-access-token).
 
 ```bash
-$ npm login --scope=@hanwha-sbi --registry=https://npm.pkg.github.com
+$ npm login --scope=@backend-sw-development-team4 --registry=https://npm.pkg.github.com
 ```
 
 ```bash

@@ -1,5 +1,5 @@
-import { API_USER, Auth, JwtPayload, Resident, UserTokenPayload } from '@hanwha-sbi/nestjs-authorization';
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Query, Patch } from '@nestjs/common';
+import { API_USER, Auth, JwtPayload, UserTokenPayload, Resident } from '@backend-sw-development-team4/nestjs-authorization';
 import { ApiResponse } from '@nestjs/swagger';
 
 import { ReservationUserService } from '../application/reservation.user.service';

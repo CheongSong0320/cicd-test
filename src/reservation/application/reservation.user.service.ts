@@ -1,4 +1,4 @@
-import { UserTokenPayload } from '@hanwha-sbi/nestjs-authorization';
+import { UserTokenPayload } from '@backend-sw-development-team4/nestjs-authorization';
 import { Injectable } from '@nestjs/common';
 import {
     MakeReservationBody,

@@ -1,5 +1,5 @@
 {
-  "name": "@hanwha-sbi/reservation-service",
+  "name": "@backend-sw-development-team4/reservation-service",
   "version": "0.0.4",
   "description": "",
   "author": "",
@@ -27,8 +27,7 @@
     "@aws-sdk/s3-request-presigner": "^3.216.0",
     "@grpc/grpc-js": "^1.6.7",
     "@grpc/proto-loader": "^0.6.13",
-    "@hanwha-sbi/nestjs-authorization": "^0.19.2",
-    "@hanwha-sbi/proto": "^0.9.0",
+    "@backend-sw-development-team4/nestjs-authorization": "^0.22.0",
     "@nestjs/common": "^9.1.4",
     "@nestjs/config": "^2.2.0",
     "@nestjs/core": "^9.1.4",
@@ -54,7 +53,7 @@
     "uuid": "^9.0.0"
   },
   "devDependencies": {
-    "@hanwha-sbi/jest-config-nestjs": "^0.6.6",
+    "@backend-sw-development-team4/jest-config-nestjs": "^0.8.0",
     "@nestjs/cli": "^8.0.0",
     "@nestjs/schematics": "^8.0.0",
     "@nestjs/testing": "^9.1.4",
@@ -84,6 +83,6 @@
   },
   "jest": {
     "rootDir": "src",
-    "preset": "@hanwha-sbi/jest-config-nestjs"
+    "preset": "@backend-sw-development-team4/jest-config-nestjs"
   }
 }

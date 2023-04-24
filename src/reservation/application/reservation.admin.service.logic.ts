@@ -1,7 +1,7 @@
+import { AdminTokenPayload } from '@backend-sw-development-team4/nestjs-authorization';
+import { Injectable } from '@nestjs/common';
 import { ObjectCannedACL, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
-import { AdminTokenPayload } from '@hanwha-sbi/nestjs-authorization';
-import { Injectable } from '@nestjs/common';
 import { CommunityClub } from '@prisma/client';
 import { v4 as uuidv4 } from 'uuid';
 

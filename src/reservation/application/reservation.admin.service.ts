@@ -1,4 +1,4 @@
-import { AdminTokenPayload } from '@hanwha-sbi/nestjs-authorization';
+import { AdminTokenPayload } from '@backend-sw-development-team4/nestjs-authorization';
 import { Injectable } from '@nestjs/common';
 import { RegisterCommunityBody, UpdateCommunityBody } from '../interface/community.interface';
 import { GetCommunityUsageStatusDetailQuery } from '../interface/getCommunityUsageStatusDetail.dto';
