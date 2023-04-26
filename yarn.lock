@@ -1407,6 +1407,19 @@
     "@babel/helper-validator-identifier" "^7.19.1"
     to-fast-properties "^2.0.0"
 
+"@backend-sw-development-team4/jest-config-nestjs@^0.8.0":
+  version "0.8.0"
+  resolved "https://npm.pkg.github.com/download/@backend-sw-development-team4/jest-config-nestjs/0.8.0/cdcd7d3f023fe7ae247a167985f63a495db24a54#cdcd7d3f023fe7ae247a167985f63a495db24a54"
+  integrity sha512-IHeDCbC3kFelb7edZ+rR7ktWxRThLmZgKv6yyEhI78Iatir6cIgZznOL3oCnCYWRHY+INBRPjxZtVMYoc81Oqw==
+
+"@backend-sw-development-team4/nestjs-authorization@^0.22.0":
+  version "0.22.0"
+  resolved "https://npm.pkg.github.com/download/@backend-sw-development-team4/nestjs-authorization/0.22.0/239290e9d338a2deab1c1831580fdff93e584eb7#239290e9d338a2deab1c1831580fdff93e584eb7"
+  integrity sha512-Yy6JdRkKwzcmlgxC8KAAQ+HOa7WXi3ZmsbEiy44ZkhcC09DyOvVeKfn4vax2NQZqNY2fGt33KTZt5nER9lhXsw==
+  dependencies:
+    axios "^0.27.2"
+    jsonwebtoken "^8.5.1"
+
 "@bcoe/v8-coverage@^0.2.3":
   version "0.2.3"
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
@@ -1493,24 +1506,6 @@
     long "^4.0.0"
     protobufjs "^7.0.0"
     yargs "^16.2.0"
-
-"@hanwha-sbi/jest-config-nestjs@^0.6.6":
-  version "0.6.18"
-  resolved "https://npm.pkg.github.com/download/@hanwha-sbi/jest-config-nestjs/0.6.18/974155860363c6c43c8173e4f3cbf5ebc1de0f15#974155860363c6c43c8173e4f3cbf5ebc1de0f15"
-  integrity sha512-jpyDRmv91PYMPsU+ASvWGYMVi+VwwyCWzCbh37vMMx9KAfKMRA6YSseaJ5Zt5/SEwpveul+l2NAXUEIprQbikA==
-
-"@hanwha-sbi/nestjs-authorization@^0.19.2":
-  version "0.19.2"
-  resolved "https://npm.pkg.github.com/download/@hanwha-sbi/nestjs-authorization/0.19.2/42d9723686c89b8e7ab49e756791ff108645f8a5#42d9723686c89b8e7ab49e756791ff108645f8a5"
-  integrity sha512-/ZuTyzEjoxUXBD40V2Z1178gl9XrSCNTYW1dPd+HES5uPy22RpFYCrDBdOehtiV7igRHky8EDXE/HhAkfEBgqw==
-  dependencies:
-    axios "^0.27.2"
-    jsonwebtoken "^8.5.1"
-
-"@hanwha-sbi/proto@^0.9.0":
-  version "0.9.0"
-  resolved "https://npm.pkg.github.com/download/@hanwha-sbi/proto/0.9.0/889a7c60fe5cdeab16bf22fd595a34a8ed6e1180#889a7c60fe5cdeab16bf22fd595a34a8ed6e1180"
-  integrity sha512-SyQow5HDT8pFg3l2B2aXOguQSDmPUKjzudd4ZHNH46I8PUbT5BXsohSFk8C9fThq80/TBJjqE2FMotyNUpONYg==
 
 "@humanwhocodes/config-array@^0.11.6":
   version "0.11.7"

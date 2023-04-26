@@ -1,4 +1,4 @@
-import { UserTokenPayload } from '@hanwha-sbi/nestjs-authorization';
+import { UserTokenPayload } from '@backend-sw-development-team4/nestjs-authorization';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import * as dayjs from 'dayjs';
 import * as isBetween from 'dayjs/plugin/isBetween';

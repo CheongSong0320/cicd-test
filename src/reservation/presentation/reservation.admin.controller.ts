@@ -1,4 +1,4 @@
-import { AdminTokenPayload, API_ADMIN, Auth, JwtPayload } from '@hanwha-sbi/nestjs-authorization';
+import { AdminTokenPayload, API_ADMIN, Auth, JwtPayload } from '@backend-sw-development-team4/nestjs-authorization';
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
 import { ApiOkResponse } from '@nestjs/swagger';
 

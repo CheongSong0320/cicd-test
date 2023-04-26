@@ -1,4 +1,4 @@
-import { AuthModule } from '@hanwha-sbi/nestjs-authorization';
+import { AuthModule } from '@backend-sw-development-team4/nestjs-authorization';
 import { Module } from '@nestjs/common';
 import { readFileSync } from 'fs';
 import { resolve } from 'path';

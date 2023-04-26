@@ -1,2 +1,2 @@
-@hanwha-sbi:registry=https://npm.pkg.github.com
+@backend-sw-development-team4:registry=https://npm.pkg.github.com
 //npm.pkg.github.com/:_authToken=${NPM_TOKEN}
