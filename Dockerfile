@@ -1,4 +1,4 @@
-FROM node:16-alpine3.16 AS migrate
+FROM public.ecr.aws/docker/library/node:16-alpine3.16 AS migrate
 WORKDIR /usr/src/app
 
 COPY prisma ./prisma
