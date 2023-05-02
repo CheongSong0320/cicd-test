@@ -3,6 +3,7 @@ import { Module } from '@nestjs/common';
 import { readFileSync } from 'fs';
 import { resolve } from 'path';
 import { AdminReservationModule } from './reservation/interface/reservation.admin.module';
+import { CommonModule } from './common/common.module';
 
 @Module({
     imports: [
@@ -12,6 +13,7 @@ import { AdminReservationModule } from './reservation/interface/reservation.admi
             }),
         }),
         AdminReservationModule,
+        CommonModule,
     ],
 })
 export class AdminModule {}
