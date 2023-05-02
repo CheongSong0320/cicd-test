@@ -13,7 +13,8 @@ datasource db {
 
 model Reservation {
   id              Int               @id @default(autoincrement())
-  createdAt     DateTime  @default(now())
+  createdAt       DateTime          @default(now())
+  statusUpdatedAt DateTime          @default(now())
   startDate       DateTime
   endDate         DateTime
   dong            String
@@ -45,24 +46,24 @@ enum ReservationStatus {
 }
 
 model CommunityClub {
-  id                           Int                           @id @default(autoincrement())
-  name                         String
-  target                       CommunityClubTarget
-  type                         CommunityClubType
-  freeCountPerHouse            Int                           @default(0)
-  maxCountPerHouse             Int?
-  resetCycle                   CommunityClubRestCycle
-  signOffOn                    Boolean
-  isWating                     Boolean
-  memo                         String
-  apartmentId                  Int
-  image                        String?
-  CommunityClubPerson          CommunityClubPerson?
-  CommunityClubSeat            CommunityClubSeat?
-  CommunityClubTimeLimit       CommunityClubTimeLimit?
-  Reservation                  Reservation[]
-  Membership                   Membership[]
-  active Boolean @default(true)
+  id                     Int                     @id @default(autoincrement())
+  name                   String
+  target                 CommunityClubTarget
+  type                   CommunityClubType
+  freeCountPerHouse      Int                     @default(0)
+  maxCountPerHouse       Int?
+  resetCycle             CommunityClubRestCycle
+  signOffOn              Boolean
+  isWating               Boolean
+  memo                   String
+  apartmentId            Int
+  image                  String?
+  CommunityClubPerson    CommunityClubPerson?
+  CommunityClubSeat      CommunityClubSeat?
+  CommunityClubTimeLimit CommunityClubTimeLimit?
+  Reservation            Reservation[]
+  Membership             Membership[]
+  active                 Boolean                 @default(true)
 }
 
 enum CommunityClubTarget {

@@ -1,5 +1,5 @@
-import { ApiPropertyOptional, ApiProperty } from '@nestjs/swagger';
-import { Reservation, ReservationStatus, UserType, CommunityClub } from '@prisma/client';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { CommunityClub, Reservation, ReservationStatus, UserType } from '@prisma/client';
 
 export class ReservationDto implements Reservation {
     @ApiProperty()
@@ -7,6 +7,9 @@ export class ReservationDto implements Reservation {
 
     @ApiProperty()
     createdAt: Date;
+
+    @ApiProperty()
+    statusUpdatedAt: Date;
 
     @ApiProperty()
     startDate: Date;

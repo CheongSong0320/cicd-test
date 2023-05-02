@@ -100,6 +100,7 @@ export class CommunityClubRepository {
             where: { id },
             data: {
                 status,
+                statusUpdatedAt: new Date(),
             },
         });
     }
