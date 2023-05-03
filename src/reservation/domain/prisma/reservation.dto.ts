@@ -9,7 +9,7 @@ export class ReservationDto implements Reservation {
     createdAt: Date;
 
     @ApiProperty()
-    statusUpdatedAt: Date;
+    statusUpdateDate: Date;
 
     @ApiProperty()
     startDate: Date;

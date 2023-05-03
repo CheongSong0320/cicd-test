@@ -12,24 +12,24 @@ datasource db {
 }
 
 model Reservation {
-  id              Int               @id @default(autoincrement())
-  createdAt       DateTime          @default(now())
-  statusUpdatedAt DateTime          @default(now())
-  startDate       DateTime
-  endDate         DateTime
-  dong            String
-  ho              String
-  isMemberShip    Boolean?
-  status          ReservationStatus
-  communityClubId Int
-  userId          String
-  membershipId    Int?
-  userName        String
-  userType        UserType
-  userPhone       String
-  seatNumber      Int?
-  CommunityClub   CommunityClub     @relation(fields: [communityClubId], references: [id])
-  Membership      Membership?       @relation(fields: [membershipId], references: [id])
+  id               Int               @id @default(autoincrement())
+  createdAt        DateTime          @default(now())
+  statusUpdateDate DateTime          @default(now())
+  startDate        DateTime
+  endDate          DateTime
+  dong             String
+  ho               String
+  isMemberShip     Boolean?
+  status           ReservationStatus
+  communityClubId  Int
+  userId           String
+  membershipId     Int?
+  userName         String
+  userType         UserType
+  userPhone        String
+  seatNumber       Int?
+  CommunityClub    CommunityClub     @relation(fields: [communityClubId], references: [id])
+  Membership       Membership?       @relation(fields: [membershipId], references: [id])
 }
 
 enum UserType {
