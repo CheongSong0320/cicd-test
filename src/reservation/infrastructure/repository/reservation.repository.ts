@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/providers/prisma.service';
+import { QueryDto } from 'src/reservation/application/dto/admin/searchReservation.dto';
 import { MakeReservationBody } from 'src/reservation/interface/reservation.interface';
 import { ReservationValidator } from '../validator/reservation.validator';
 
@@ -185,7 +186,19 @@ export class ReservationRepository {
         });
     }
 
-    reservationAfterNow(communityIds: number[], now: string) {
+    searchReservation(communityIds: number[], query: QueryDto) {
+        const statusUpdateFrom = query.fromStatusUpdateDate
+            ? {
+                  gt: query.fromStatusUpdateDate,
+              }
+            : undefined;
+
+        const statusUpdateTo = query.toStatusUpdateDate
+            ? {
+                  lte: query.toStatusUpdateDate,
+              }
+            : undefined;
+        const statusUpdateDate = Object.assign({}, statusUpdateFrom, statusUpdateTo);
         return this.prisma.reservation.findMany({
             where: {
                 AND: {
@@ -193,8 +206,9 @@ export class ReservationRepository {
                         in: communityIds,
                     },
                     endDate: {
-                        gt: now,
+                        gt: query.now,
                     },
+                    statusUpdateDate,
                 },
             },
             include: {

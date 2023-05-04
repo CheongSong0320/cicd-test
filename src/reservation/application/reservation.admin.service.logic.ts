@@ -1,7 +1,7 @@
-import { AdminTokenPayload } from '@backend-sw-development-team4/nestjs-authorization';
-import { Injectable } from '@nestjs/common';
 import { ObjectCannedACL, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+import { AdminTokenPayload } from '@backend-sw-development-team4/nestjs-authorization';
+import { Injectable } from '@nestjs/common';
 import { CommunityClub } from '@prisma/client';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -20,6 +20,7 @@ import { calculateReservationUsageStatus } from '../infrastructure/util/reservat
 import { GetCommunityUsageStatusDetailQuery } from '../interface/getCommunityUsageStatusDetail.dto';
 import { PatchReservationBody } from '../interface/patchReservation.admin.dto';
 import { RegisterCommunityDto } from './dto/admin/registerCommunity.dto';
+import { QueryDto } from './dto/admin/searchReservation.dto';
 
 @Injectable()
 export class ReservationAdminServiceLogic {
@@ -240,13 +241,13 @@ export class ReservationAdminServiceLogic {
         return this.communityClubRepository.approveReservation(id, status);
     }
 
-    async reservationAfterNow(apartmentId: number, now: string) {
+    async searchReservation(apartmentId: number, query: QueryDto) {
         const communities = await this.communityClubRepository.reservationAfterNow(this.communityClubValidator.reservationAfterNowValidator(apartmentId));
 
         return (
-            await this.reservationRepository.reservationAfterNow(
+            await this.reservationRepository.searchReservation(
                 communities.map(v => v.id),
-                now,
+                query,
             )
         ).map(ReservationDto.from);
     }

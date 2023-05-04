@@ -60,6 +60,7 @@ export class ReservationDto implements Reservation {
     constructor(reservation: Reservation & { CommunityClub: CommunityClub }) {
         this.id = reservation.id;
         this.createdAt = reservation.createdAt;
+        this.statusUpdateDate = reservation.statusUpdateDate;
         this.startDate = reservation.startDate;
         this.endDate = reservation.endDate;
         this.dong = reservation.dong;

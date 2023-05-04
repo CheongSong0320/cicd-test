@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { RegisterCommunityBody, UpdateCommunityBody } from '../interface/community.interface';
 import { GetCommunityUsageStatusDetailQuery } from '../interface/getCommunityUsageStatusDetail.dto';
 import { PatchReservationBody } from '../interface/patchReservation.admin.dto';
+import { QueryDto } from './dto/admin/searchReservation.dto';
 import { ReservationAdminServiceLogic } from './reservation.admin.service.logic';
 
 @Injectable()
@@ -45,7 +46,7 @@ export class ReservationAdminService {
         return this.reservationServiceLogic.approveReservation(id, body);
     }
 
-    reservationAfterNow(payload: AdminTokenPayload, now: string) {
-        return this.reservationServiceLogic.reservationAfterNow(payload.apartmentId, now);
+    searchReservation(payload: AdminTokenPayload, query: QueryDto) {
+        return this.reservationServiceLogic.searchReservation(payload.apartmentId, query);
     }
 }
