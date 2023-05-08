@@ -14,7 +14,7 @@ datasource db {
 model Reservation {
   id               Int               @id @default(autoincrement())
   createdAt        DateTime          @default(now())
-  statusUpdateDate DateTime          @default(now())
+  statusUpdateDate DateTime?
   startDate        DateTime
   endDate          DateTime
   dong             String
