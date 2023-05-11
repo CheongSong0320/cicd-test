@@ -3,6 +3,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import * as dayjs from 'dayjs';
 import * as isBetween from 'dayjs/plugin/isBetween';
 import { CommunityClubRepository } from '../infrastructure/repository/communityClub.repository';
+import { NotificationRepository } from '../infrastructure/repository/notification.repository';
 import { ReservationRepository } from '../infrastructure/repository/reservation.repository';
 import { applicationGroupBy } from '../infrastructure/util/applicationGroupBy';
 import { getEndOfDay, getReservationDate, getResetCycleStartDate, setYearMonthDbDate } from '../infrastructure/util/date.util';
@@ -25,7 +26,12 @@ dayjs.extend(isBetween);
 
 @Injectable()
 export class ReservationUserServiceLogic {
-    constructor(private reservationRepository: ReservationRepository, private reservationValidator: ReservationValidator, private communityRepository: CommunityClubRepository) {}
+    constructor(
+        private reservationRepository: ReservationRepository,
+        private reservationValidator: ReservationValidator,
+        private communityRepository: CommunityClubRepository,
+        private notificationRepository: NotificationRepository,
+    ) {}
 
     helloReservation() {
         return this.reservationRepository.findMany();
@@ -457,7 +463,8 @@ export class ReservationUserServiceLogic {
 
         // if (myReservationCount) throw new BadRequestException('이용시간이 중복되었습니다.');
 
-        return this.reservationRepository.makeReservation(
+        const isPending = !community.signOffOn || (community.isWating && todayReservationCount >= (body.seatId ? 1 : maxCount));
+        const reservation = await this.reservationRepository.makeReservation(
             this.reservationValidator.makeReservation(
                 payload,
                 {
@@ -466,8 +473,14 @@ export class ReservationUserServiceLogic {
                     communityClubId: id,
                     seatNumber: body.seatId,
                 },
-                !community.signOffOn || (community.isWating && todayReservationCount >= (body.seatId ? 1 : maxCount)) ? 'PENDING' : 'ACCEPTED',
+                isPending ? 'PENDING' : 'ACCEPTED',
             ),
         );
+
+        if (!isPending) {
+            await this.notificationRepository.notification(payload.id, `예약되었습니다.`);
+        }
+
+        return reservation;
     }
 }

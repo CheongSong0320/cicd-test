@@ -4,6 +4,7 @@ import { AdminTokenPayload } from '@backend-sw-development-team4/nestjs-authoriz
 import { Injectable } from '@nestjs/common';
 import { CommunityClub } from '@prisma/client';
 import { v4 as uuidv4 } from 'uuid';
+import { NotificationRepository } from './../infrastructure/repository/notification.repository';
 
 import { CommunityClubRepository } from '../infrastructure/repository/communityClub.repository';
 import { ReservationRepository } from '../infrastructure/repository/reservation.repository';
@@ -31,6 +32,7 @@ export class ReservationAdminServiceLogic {
         private reservationRepository: ReservationRepository,
         private communityClubValidator: CommunityClubValidator,
         private communityClubRepository: CommunityClubRepository,
+        private notificationRepository: NotificationRepository,
     ) {
         this.s3Client = new S3Client({ region: 'ap-northeast-2' });
     }
@@ -237,7 +239,13 @@ export class ReservationAdminServiceLogic {
         }));
     }
 
-    async approveReservation(id: number, { status }: PatchReservationBody) {
+    async approveReservation(id: number, userId: string, { status }: PatchReservationBody) {
+        const statusMessage = {
+            ACCEPTED: '승인',
+            REJECTED: '거절',
+        };
+
+        await this.notificationRepository.notification(userId, `예약이 ${statusMessage[status]}되었습니다.`);
         return this.communityClubRepository.approveReservation(id, status);
     }
 

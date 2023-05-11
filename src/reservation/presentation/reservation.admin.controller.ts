@@ -66,8 +66,8 @@ export class ReservationAdminController {
 
     @Patch(':id')
     @Auth(API_ADMIN)
-    approveReservation(@Param('id') id: string, @Body() body: PatchReservationBody) {
-        return this.reservationService.approveReservation(+id, body);
+    approveReservation(@JwtPayload() payload: AdminTokenPayload, @Param('id') id: string, @Body() body: PatchReservationBody) {
+        return this.reservationService.approveReservation(payload, +id, body);
     }
 
     @Get('community/reservation')
