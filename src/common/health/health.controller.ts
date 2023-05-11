@@ -15,14 +15,14 @@ export class HealthController {
             () =>
                 this.http.pingCheck(
                     'reservation-service-admin',
-                    `http://localhost:${process.env.ADMIN_HTTP_PORT}${process.env.ADMIN_GLOBAL_PREFIX ? `/${process.env.ADMIN_GLOBAL_PREFIX}` : ''}/health/pong`,
+                    `http://localhost:${process.env.ADMIN_HTTP_PORT}${process.env.ADMIN_GLOBAL_PREFIX ? `/${process.env.ADMIN_GLOBAL_PREFIX}` : ''}/common/health/pong`,
                 ),
             () =>
                 this.http.pingCheck(
                     'reservation-service-user',
-                    `http://localhost:${process.env.USER_HTTP_PORT}${process.env.USER_GLOBAL_PREFIX ? `/${process.env.USER_GLOBAL_PREFIX}` : ''}/health/pong`,
+                    `http://localhost:${process.env.USER_HTTP_PORT}${process.env.USER_GLOBAL_PREFIX ? `/${process.env.USER_GLOBAL_PREFIX}` : ''}/common/health/pong`,
                 ),
-            () => this.http.pingCheck('reservation-service-internal', `http://localhost:${process.env.INTERNAL_HTTP_PORT}/health/pong`),
+            () => this.http.pingCheck('reservation-service-internal', `http://localhost:${process.env.INTERNAL_HTTP_PORT}/common/health/pong`),
             () => this.prisma.isHealthy('prisma'),
         ]);
     }
