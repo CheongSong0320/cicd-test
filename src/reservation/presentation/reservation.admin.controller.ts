@@ -61,13 +61,13 @@ export class ReservationAdminController {
     @Get(':communityClubId')
     @Auth(API_ADMIN)
     getReservationByCommunityClub(@JwtPayload() payload: AdminTokenPayload, @Param('communityClubId') communityClubId: string) {
-        console.log('dev 확인용 로그:', communityClubId);
         return this.reservationService.getReservationByCommunityClub(payload, +communityClubId);
     }
 
     @Patch(':id')
     @Auth(API_ADMIN)
     approveReservation(@JwtPayload() payload: AdminTokenPayload, @Param('id') id: string, @Body() body: PatchReservationBody) {
+        console.log('오류 확인용 로그: ', payload, id, body);
         return this.reservationService.approveReservation(payload, +id, body);
     }
 
