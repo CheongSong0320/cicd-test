@@ -61,6 +61,7 @@ export class ReservationAdminController {
     @Get(':communityClubId')
     @Auth(API_ADMIN)
     getReservationByCommunityClub(@JwtPayload() payload: AdminTokenPayload, @Param('communityClubId') communityClubId: string) {
+        console.log('dev 확인용 로그:', communityClubId);
         return this.reservationService.getReservationByCommunityClub(payload, +communityClubId);
     }
 
