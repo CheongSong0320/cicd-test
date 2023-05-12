@@ -63,6 +63,14 @@ export class ReservationRepository {
         });
     }
 
+    getReservationById(id: number) {
+        return this.prisma.reservation.findUnique({
+            where: {
+                id,
+            },
+        });
+    }
+
     getReservationByCommunityClub(communityClubId: number) {
         return this.prisma.reservation.findMany({
             where: {

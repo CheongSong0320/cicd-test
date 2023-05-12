@@ -42,8 +42,8 @@ export class ReservationAdminService {
         return this.reservationServiceLogic.updateCommunity(id, body);
     }
 
-    approveReservation(payload: AdminTokenPayload, id: number, body: PatchReservationBody) {
-        return this.reservationServiceLogic.approveReservation(id, payload.id, body);
+    approveReservation(id: number, body: PatchReservationBody) {
+        return this.reservationServiceLogic.approveReservation(id, body);
     }
 
     searchReservation(payload: AdminTokenPayload, query: QueryDto) {

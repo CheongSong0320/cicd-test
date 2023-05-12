@@ -1,7 +1,7 @@
 import { ObjectCannedACL, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { AdminTokenPayload } from '@backend-sw-development-team4/nestjs-authorization';
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CommunityClub } from '@prisma/client';
 import { v4 as uuidv4 } from 'uuid';
 import { NotificationRepository } from './../infrastructure/repository/notification.repository';
@@ -239,13 +239,15 @@ export class ReservationAdminServiceLogic {
         }));
     }
 
-    async approveReservation(id: number, userId: string, { status }: PatchReservationBody) {
+    async approveReservation(id: number, { status }: PatchReservationBody) {
+        const reservation = await this.reservationRepository.getReservationById(id);
+        if (!reservation) throw new NotFoundException();
         const statusMessage = {
             ACCEPTED: '승인',
             REJECTED: '거절',
         };
 
-        await this.notificationRepository.notification(userId, `예약이 ${statusMessage[status]}되었습니다.`);
+        await this.notificationRepository.notification(reservation.userId, `예약이 ${statusMessage[status]}되었습니다.`);
         return this.communityClubRepository.approveReservation(id, status);
     }
 

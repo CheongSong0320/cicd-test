@@ -66,9 +66,9 @@ export class ReservationAdminController {
 
     @Patch(':id')
     @Auth(API_ADMIN)
-    approveReservation(@JwtPayload() payload: AdminTokenPayload, @Param('id') id: string, @Body() body: PatchReservationBody) {
-        console.log('오류 확인용 로그: ', payload, id, body);
-        return this.reservationService.approveReservation(payload, +id, body);
+    approveReservation(@Param('id') id: string, @Body() body: PatchReservationBody) {
+        console.log('오류 확인용 로그: ', id, body);
+        return this.reservationService.approveReservation(+id, body);
     }
 
     @Get('community/reservation')
