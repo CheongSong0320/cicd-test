@@ -239,7 +239,7 @@ export class ReservationAdminServiceLogic {
         }));
     }
 
-    async approveReservation(id: number, { status }: PatchReservationBody) {
+    async approveReservation(id: number, inputData: PatchReservationBody) {
         const reservation = await this.reservationRepository.getReservationById(id);
         if (!reservation) throw new NotFoundException();
         const statusMessage = {
@@ -247,8 +247,10 @@ export class ReservationAdminServiceLogic {
             REJECTED: '거절',
         };
 
-        await this.notificationRepository.notification(reservation.userId, `예약이 ${statusMessage[status]}되었습니다.`);
-        return this.communityClubRepository.approveReservation(id, status);
+        const result = await this.communityClubRepository.approveReservation(id, inputData);
+        await this.notificationRepository.notification(reservation.userId, `예약이 ${statusMessage[inputData.status]}되었습니다.`);
+
+        return result;
     }
 
     async searchReservation(apartmentId: number, query: QueryDto) {
