@@ -28,6 +28,7 @@ model Reservation {
   userType         UserType
   userPhone        String
   seatNumber       Int?
+  rejectReason     String?
   CommunityClub    CommunityClub     @relation(fields: [communityClubId], references: [id])
   Membership       Membership?       @relation(fields: [membershipId], references: [id])
 }

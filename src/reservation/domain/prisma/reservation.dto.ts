@@ -50,6 +50,9 @@ export class ReservationDto implements Reservation {
     @ApiPropertyOptional()
     seatNumber: number | null;
 
+    @ApiPropertyOptional()
+    rejectReason: string | null;
+
     @ApiProperty()
     communityName: string;
 
