@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { ReservationStatus } from '@prisma/client';
 import { PrismaService } from 'src/providers/prisma.service';
 import { UpdateCommunityBody } from 'src/reservation/interface/community.interface';
+import { PatchReservationBody } from 'src/reservation/interface/patchReservation.admin.dto';
 import { CommunityClubValidator } from '../validator/communityClub.validator';
 
 @Injectable()
@@ -95,11 +95,12 @@ export class CommunityClubRepository {
         });
     }
 
-    approveReservation(id: number, status: ReservationStatus) {
+    approveReservation(id: number, { status, rejectReason }: PatchReservationBody) {
         return this.prisma.reservation.update({
             where: { id },
             data: {
-                status,
+                status: status,
+                rejectReason: status === 'REJECTED' ? rejectReason : undefined,
                 statusUpdateDate: new Date(),
             },
         });
