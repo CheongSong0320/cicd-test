@@ -67,7 +67,6 @@ export class ReservationAdminController {
     @Patch(':id')
     @Auth(API_ADMIN)
     approveReservation(@Param('id') id: string, @Body() body: PatchReservationBody) {
-        console.log('오류 확인용 로그: ', id, body);
         return this.reservationService.approveReservation(+id, body);
     }
 
