@@ -34,16 +34,16 @@ export class ReservationAdminService {
         return this.reservationServiceLogic.getReservationByCommunityClub(communityClubId);
     }
 
-    deleteCommunity(id: number) {
-        return this.reservationServiceLogic.deleteCommunity(id);
+    deleteCommunity(payload: AdminTokenPayload, id: number) {
+        return this.reservationServiceLogic.deleteCommunity(payload, id);
     }
 
-    updateCommunity(id: number, body: UpdateCommunityBody) {
-        return this.reservationServiceLogic.updateCommunity(id, body);
+    updateCommunity(payload: AdminTokenPayload, id: number, body: UpdateCommunityBody) {
+        return this.reservationServiceLogic.updateCommunity(payload, id, body);
     }
 
-    approveReservation(id: number, body: PatchReservationBody) {
-        return this.reservationServiceLogic.approveReservation(id, body);
+    approveReservation(payload: AdminTokenPayload, id: number, body: PatchReservationBody) {
+        return this.reservationServiceLogic.approveReservation(payload, id, body);
     }
 
     searchReservation(payload: AdminTokenPayload, query: QueryDto) {
