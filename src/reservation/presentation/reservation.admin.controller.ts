@@ -15,6 +15,9 @@ import { PatchReservationBody } from '../interface/patchReservation.admin.dto';
 export class ReservationAdminController {
     constructor(private readonly reservationService: ReservationAdminService) {}
 
+    /**
+     * 관리자가 시설을 등록합니다.
+     */
     @Post('community')
     @ApiOkResponse({ type: RegisterCommunityDto })
     @Auth(API_ADMIN)
@@ -22,16 +25,22 @@ export class ReservationAdminController {
         return this.reservationService.registerCommunity(body, payload);
     }
 
+    /**
+     * 관리자가 특정 ID의 시설을 제거합니다.
+     */
     @Delete('community/:id')
     @Auth(API_ADMIN)
-    deleteCommunity(@Param('id') id: string) {
-        return this.reservationService.deleteCommunity(+id);
+    deleteCommunity(@Param('id') id: string, @JwtPayload() payload: AdminTokenPayload) {
+        return this.reservationService.deleteCommunity(payload, +id);
     }
 
+    /**
+     * 관리자가 특정 ID의 시설을 편집합니다.
+     */
     @Patch('community/:id')
     @Auth(API_ADMIN)
-    updateCommunity(@Param('id') id: string, @Body() body: UpdateCommunityBody) {
-        return this.reservationService.updateCommunity(+id, body);
+    updateCommunity(@Param('id') id: string, @Body() body: UpdateCommunityBody, @JwtPayload() payload: AdminTokenPayload) {
+        return this.reservationService.updateCommunity(payload, +id, body);
     }
 
     @Get('community/usage-status')
@@ -58,16 +67,22 @@ export class ReservationAdminController {
         return this.reservationService.getCommunityClubs(payload);
     }
 
+    /**
+     * 관리자가 특정 ID의 시설의 정보를 가져옵니다.
+     */
     @Get(':communityClubId')
     @Auth(API_ADMIN)
     getReservationByCommunityClub(@JwtPayload() payload: AdminTokenPayload, @Param('communityClubId') communityClubId: string) {
         return this.reservationService.getReservationByCommunityClub(payload, +communityClubId);
     }
 
+    /**
+     * 관리자가 특정 ID의 예약을 승인/반려 처리합니다.
+     */
     @Patch(':id')
     @Auth(API_ADMIN)
-    approveReservation(@Param('id') id: string, @Body() body: PatchReservationBody) {
-        return this.reservationService.approveReservation(+id, body);
+    approveReservation(@JwtPayload() payload: AdminTokenPayload, @Param('id') id: string, @Body() body: PatchReservationBody) {
+        return this.reservationService.approveReservation(payload, +id, body);
     }
 
     @Get('community/reservation')
