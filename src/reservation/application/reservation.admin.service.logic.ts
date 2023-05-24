@@ -269,6 +269,7 @@ export class ReservationAdminServiceLogic {
     }
 
     async approveReservation(payload: AdminTokenPayload, id: number, inputData: PatchReservationBody) {
+
         const reservation = await this.reservationRepository.getReservationById(id);
         if (!reservation) throw new NotFoundException();
         const statusMessage = {
