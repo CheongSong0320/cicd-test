@@ -17,6 +17,7 @@ import { ReservationValidator } from '../infrastructure/validator/reservation.va
 import { CommunityUsageStatusType, RegisterCommunityBody, UpdateCommunityBody } from '../interface/community.interface';
 
 import { ReservationDto } from '../domain/prisma/reservation.dto';
+import { ApiService } from '../infrastructure/repository/notification.repository copy';
 import { calculateReservationUsageStatus } from '../infrastructure/util/reservation.util';
 import { GetCommunityUsageStatusDetailQuery } from '../interface/getCommunityUsageStatusDetail.dto';
 import { PatchReservationBody } from '../interface/patchReservation.admin.dto';
@@ -33,6 +34,7 @@ export class ReservationAdminServiceLogic {
         private communityClubValidator: CommunityClubValidator,
         private communityClubRepository: CommunityClubRepository,
         private notificationRepository: NotificationRepository,
+        private apiService: ApiService,
     ) {
         this.s3Client = new S3Client({ region: 'ap-northeast-2' });
     }
@@ -53,21 +55,31 @@ export class ReservationAdminServiceLogic {
         };
     }
 
-    async registerCommunity(body: RegisterCommunityBody, paylaoad: AdminTokenPayload) {
+    async registerCommunity(body: RegisterCommunityBody, payload: AdminTokenPayload) {
         const imageUrl = body.communityClub.image ? await this.getImagePutUrl() : undefined;
 
-        return this.communityClubRepository
+        const community = await this.communityClubRepository
             .create(
                 this.communityClubValidator.registerCommunityClubValidator(
                     {
                         ...body,
                         type: body.communityClub.type,
                     } as RegisterCommunityBody,
-                    paylaoad.apartmentId,
+                    payload.apartmentId,
                     imageUrl?.databaseUrl,
                 ),
             )
             .then(value => RegisterCommunityDto.from({ ...value, image: imageUrl?.presignedUrl ?? null }));
+
+        await this.apiService.createAuditLog(payload.apartmentId, {
+            action: 'CREATE',
+            menu: '시설 예약',
+            content: JSON.stringify(community),
+            timestamp: new Date(),
+            issuer: payload.id,
+        });
+
+        return community;
     }
 
     async getCommunityUsageStatus(payload: AdminTokenPayload, year: number, month: number) {
@@ -226,20 +238,38 @@ export class ReservationAdminServiceLogic {
         return this.reservationRepository.getReservationByCommunityClub(communityClubId);
     }
 
-    deleteCommunity(id: number) {
-        return this.communityClubRepository.deleteCommunity(id);
+    async deleteCommunity(payload: AdminTokenPayload, id: number) {
+        const community = await this.communityClubRepository.deleteCommunity(id);
+
+        await this.apiService.createAuditLog(payload.apartmentId, {
+            action: 'DELETE',
+            menu: '시설 예약',
+            content: JSON.stringify(community),
+            timestamp: new Date(),
+            issuer: payload.id,
+        });
+        return community;
     }
 
-    async updateCommunity(id: number, body: UpdateCommunityBody) {
+    async updateCommunity(payload: AdminTokenPayload, id: number, body: UpdateCommunityBody) {
         const imageUrl = body.image ? await this.getImagePutUrl() : undefined;
-
-        return this.communityClubRepository.updateCommunity(id, body, imageUrl?.databaseUrl).then(value => ({
+        const community = await this.communityClubRepository.updateCommunity(id, body, imageUrl?.databaseUrl).then(value => ({
             ...value,
             image: imageUrl?.presignedUrl,
         }));
+
+        await this.apiService.createAuditLog(payload.apartmentId, {
+            action: 'DELETE',
+            menu: '시설 예약',
+            content: JSON.stringify(community),
+            timestamp: new Date(),
+            issuer: payload.id,
+        });
+        return community;
     }
 
-    async approveReservation(id: number, inputData: PatchReservationBody) {
+    async approveReservation(payload: AdminTokenPayload, id: number, inputData: PatchReservationBody) {
+
         const reservation = await this.reservationRepository.getReservationById(id);
         if (!reservation) throw new NotFoundException();
         const statusMessage = {
@@ -250,6 +280,13 @@ export class ReservationAdminServiceLogic {
         const result = await this.communityClubRepository.approveReservation(id, inputData);
         await this.notificationRepository.notification(reservation.userId, `예약이 ${statusMessage[inputData.status]}되었습니다.`);
 
+        await this.apiService.createAuditLog(payload.apartmentId, {
+            action: 'UPDATE',
+            menu: '시설 예약',
+            content: JSON.stringify(result),
+            timestamp: new Date(),
+            issuer: payload.id,
+        });
         return result;
     }
 
