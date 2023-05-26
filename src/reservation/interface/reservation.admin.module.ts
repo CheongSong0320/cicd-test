@@ -4,6 +4,7 @@ import { HttpModule } from '@nestjs/axios';
 import { PrismaService } from 'src/providers/prisma.service';
 import { ReservationAdminService } from '../application/reservation.admin.service';
 import { ReservationAdminServiceLogic } from '../application/reservation.admin.service.logic';
+import { ApiService } from '../infrastructure/repository/api.repository';
 import { CommunityClubRepository } from '../infrastructure/repository/communityClub.repository';
 import { NotificationRepository } from '../infrastructure/repository/notification.repository';
 import { ApiService } from '../infrastructure/repository/notification.repository copy';

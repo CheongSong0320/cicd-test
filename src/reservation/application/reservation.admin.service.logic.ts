@@ -17,7 +17,7 @@ import { ReservationValidator } from '../infrastructure/validator/reservation.va
 import { CommunityUsageStatusType, RegisterCommunityBody, UpdateCommunityBody } from '../interface/community.interface';
 
 import { ReservationDto } from '../domain/prisma/reservation.dto';
-import { ApiService } from '../infrastructure/repository/notification.repository copy';
+import { ApiService } from '../infrastructure/repository/api.repository';
 import { calculateReservationUsageStatus } from '../infrastructure/util/reservation.util';
 import { GetCommunityUsageStatusDetailQuery } from '../interface/getCommunityUsageStatusDetail.dto';
 import { PatchReservationBody } from '../interface/patchReservation.admin.dto';
@@ -269,7 +269,6 @@ export class ReservationAdminServiceLogic {
     }
 
     async approveReservation(payload: AdminTokenPayload, id: number, inputData: PatchReservationBody) {
-
         const reservation = await this.reservationRepository.getReservationById(id);
         if (!reservation) throw new NotFoundException();
         const statusMessage = {
