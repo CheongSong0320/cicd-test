@@ -6,6 +6,7 @@ import * as basicAuth from 'express-basic-auth';
 import { AdminModule } from './admin.module';
 import { InternalModule } from './internal.module';
 import { UserModule } from './user.module';
+import { Logger, LoggerErrorInterceptor } from 'nestjs-pino';
 
 type SwaggerOptions = {
     title: string;
@@ -24,6 +25,8 @@ async function appFactory(module: any, options?: NestApplicationOptions) {
         ...options,
     });
     app.enableCors();
+    app.useGlobalInterceptors(new LoggerErrorInterceptor());
+    app.useLogger(app.get(Logger));
     app.useGlobalPipes(
         new ValidationPipe({
             transform: true,
