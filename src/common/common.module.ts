@@ -16,9 +16,13 @@ import { LoggerModule } from 'nestjs-pino';
         }),
         LoggerModule.forRoot({
             pinoHttp: {
-                transport: {
-                    target: 'pino-pretty',
-                },
+                transport:
+                    process.env.NODE_ENV == 'local'
+                        ? {
+                              target: 'pino-pretty',
+                          }
+                        : undefined,
+                timestamp: () => `,"time":"${new Date().toISOString()}"`,
             },
         }),
     ],
