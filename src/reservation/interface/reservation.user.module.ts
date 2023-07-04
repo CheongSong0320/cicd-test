@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 
 import { HttpModule } from '@nestjs/axios';
-import { PrismaService } from 'src/providers/prisma.service';
+import { PrismaService, ReadOnlyPrismaService } from 'src/providers/prisma.service';
 import { ReservationUserService } from '../application/reservation.user.service';
 import { ReservationUserServiceLogic } from '../application/reservation.user.service.logic';
 import { CommunityClubRepository } from '../infrastructure/repository/communityClub.repository';
@@ -18,6 +18,7 @@ import { ReservationUserController } from '../presentation/reservation.user.cont
         ReservationUserService,
         ReservationUserServiceLogic,
         PrismaService,
+        ReadOnlyPrismaService,
         ReservationRepository,
         ReservationValidator,
         CommunityClubRepository,
