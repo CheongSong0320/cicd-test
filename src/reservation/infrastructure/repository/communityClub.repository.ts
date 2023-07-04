@@ -1,27 +1,27 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from 'src/providers/prisma.service';
+import { PrismaService, ReadOnlyPrismaService } from 'src/providers/prisma.service';
 import { UpdateCommunityBody } from 'src/reservation/interface/community.interface';
 import { PatchReservationBody } from 'src/reservation/interface/patchReservation.admin.dto';
 import { CommunityClubValidator } from '../validator/communityClub.validator';
 
 @Injectable()
 export class CommunityClubRepository {
-    constructor(private prisma: PrismaService) {}
+    constructor(private prisma: PrismaService, private readOnlyPrismaService: ReadOnlyPrismaService) {}
 
     create(communityClubCreateInput: ReturnType<CommunityClubValidator['registerCommunityClubValidator']>) {
         return this.prisma.communityClub.create(communityClubCreateInput);
     }
 
     findByApartmentId(communityClubFindManyInput: ReturnType<CommunityClubValidator['findByApartmentIdValidator']>) {
-        return this.prisma.communityClub.findMany(communityClubFindManyInput);
+        return this.readOnlyPrismaService.communityClub.findMany(communityClubFindManyInput);
     }
 
     findCommunityClubWithReservation(args: ReturnType<CommunityClubValidator['findCommunityClubWithReservation']>) {
-        return this.prisma.communityClub.findMany(args);
+        return this.readOnlyPrismaService.communityClub.findMany(args);
     }
 
     findUniqueOrThrow(id: number) {
-        return this.prisma.communityClub.findUniqueOrThrow({
+        return this.readOnlyPrismaService.communityClub.findUniqueOrThrow({
             where: {
                 id,
             },
@@ -34,7 +34,7 @@ export class CommunityClubRepository {
     }
 
     findUniqueRelationType(id: number) {
-        return this.prisma.communityClub.findUniqueOrThrow({
+        return this.readOnlyPrismaService.communityClub.findUniqueOrThrow({
             where: {
                 id,
             },
@@ -47,7 +47,7 @@ export class CommunityClubRepository {
     }
 
     getCommunityClubsAdmin(apartmentId: number) {
-        return this.prisma.communityClub.findMany({
+        return this.readOnlyPrismaService.communityClub.findMany({
             where: {
                 apartmentId,
                 active: true,
@@ -107,7 +107,7 @@ export class CommunityClubRepository {
     }
 
     findUniqueOrFail(id: number) {
-        return this.prisma.reservation.findUniqueOrThrow({
+        return this.readOnlyPrismaService.reservation.findUniqueOrThrow({
             where: {
                 id,
             },
@@ -118,7 +118,7 @@ export class CommunityClubRepository {
     }
 
     getCommunityById(id: number) {
-        return this.prisma.communityClub.findUniqueOrThrow({
+        return this.readOnlyPrismaService.communityClub.findUniqueOrThrow({
             where: {
                 id,
             },
@@ -126,6 +126,6 @@ export class CommunityClubRepository {
     }
 
     reservationAfterNow(args: ReturnType<CommunityClubValidator['reservationAfterNowValidator']>) {
-        return this.prisma.communityClub.findMany(args);
+        return this.readOnlyPrismaService.communityClub.findMany(args);
     }
 }

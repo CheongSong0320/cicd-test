@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 
 import { HttpModule } from '@nestjs/axios';
-import { PrismaService } from 'src/providers/prisma.service';
+import { PrismaService, ReadOnlyPrismaService } from 'src/providers/prisma.service';
 import { ReservationAdminService } from '../application/reservation.admin.service';
 import { ReservationAdminServiceLogic } from '../application/reservation.admin.service.logic';
 import { ApiService } from '../infrastructure/repository/api.repository';
@@ -19,6 +19,7 @@ import { ReservationAdminController } from '../presentation/reservation.admin.co
         ReservationAdminService,
         ReservationAdminServiceLogic,
         PrismaService,
+        ReadOnlyPrismaService,
         CommunityClubValidator,
         ReservationValidator,
         ReservationRepository,
