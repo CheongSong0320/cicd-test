@@ -3,11 +3,11 @@ import { HealthController } from './health/health.controller';
 import { TerminusModule } from '@nestjs/terminus';
 import { HttpModule } from '@nestjs/axios';
 import { PrismaHealthIndicator } from './health/prisma.health.Indicator';
-import { PrismaService } from '../providers/prisma.service';
+import { PrismaService, ReadOnlyPrismaService } from '../providers/prisma.service';
 import { LoggerModule } from 'nestjs-pino';
 
 @Module({
-    providers: [PrismaHealthIndicator, PrismaService],
+    providers: [PrismaHealthIndicator, PrismaService, ReadOnlyPrismaService],
     imports: [
         TerminusModule,
         HttpModule.register({
