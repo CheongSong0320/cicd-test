@@ -1,45 +1,50 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-import { PrismaService } from 'src/providers/prisma.service';
+import { PrismaService, ReadOnlyPrismaService } from 'src/providers/prisma.service';
 import { QueryDto } from 'src/reservation/application/dto/admin/searchReservation.dto';
 import { MakeReservationBody } from 'src/reservation/interface/reservation.interface';
 import { ReservationValidator } from '../validator/reservation.validator';
 
 @Injectable()
 export class ReservationRepository {
-    constructor(private prisma: PrismaService) {
+    constructor(private prisma: PrismaService, private readOnlyPrismaService: ReadOnlyPrismaService) {
         prisma.$on<any>('query', (event: Prisma.QueryEvent) => {
+            console.log('Query: ' + event.params);
+            console.log('Duration: ' + event.duration + 'ms');
+        });
+
+        this.readOnlyPrismaService.$on<any>('query', (event: Prisma.QueryEvent) => {
             console.log('Query: ' + event.params);
             console.log('Duration: ' + event.duration + 'ms');
         });
     }
 
     findMany() {
-        return this.prisma.reservation.findMany();
+        return this.readOnlyPrismaService.reservation.findMany();
     }
 
     findByCommunityClubIds(args: ReturnType<ReservationValidator['findByCommunityClubIds']>) {
-        return this.prisma.reservation.findMany(args);
+        return this.readOnlyPrismaService.reservation.findMany(args);
     }
 
     findWithCommunityClub(args: ReturnType<ReservationValidator['findWithCommunityClub']>) {
-        return this.prisma.reservation.findMany(args);
+        return this.readOnlyPrismaService.reservation.findMany(args);
     }
 
     findTodayReservation(args: ReturnType<ReservationValidator['findTodayReservation']>) {
-        return this.prisma.reservation.findMany(args);
+        return this.readOnlyPrismaService.reservation.findMany(args);
     }
 
     findReservationByCommunity(args: ReturnType<ReservationValidator['findReservationByCommunity']>) {
-        return this.prisma.reservation.findMany(args);
+        return this.readOnlyPrismaService.reservation.findMany(args);
     }
 
     getHistoryByQueryType(args: ReturnType<ReservationValidator['getHistoryByQueryType']>) {
-        return this.prisma.reservation.findMany(args);
+        return this.readOnlyPrismaService.reservation.findMany(args);
     }
 
     getCommunityClub(args: ReturnType<ReservationValidator['getCommunityClub']>) {
-        return this.prisma.communityClub.findMany(args);
+        return this.readOnlyPrismaService.communityClub.findMany(args);
     }
 
     makeReservation(args: ReturnType<ReservationValidator['makeReservation']>) {
@@ -64,7 +69,7 @@ export class ReservationRepository {
     }
 
     getReservationById(id: number) {
-        return this.prisma.reservation.findUnique({
+        return this.readOnlyPrismaService.reservation.findUnique({
             where: {
                 id,
             },
@@ -72,7 +77,7 @@ export class ReservationRepository {
     }
 
     getReservationByCommunityClub(communityClubId: number) {
-        return this.prisma.reservation.findMany({
+        return this.readOnlyPrismaService.reservation.findMany({
             where: {
                 communityClubId,
             },
@@ -83,7 +88,7 @@ export class ReservationRepository {
     }
 
     getReservationCountByDate(communityClubId: number, startDate: Date, endDate: Date, seatId?: number) {
-        return this.prisma.reservation.count({
+        return this.readOnlyPrismaService.reservation.count({
             where: {
                 communityClubId,
                 startDate: {
@@ -101,7 +106,7 @@ export class ReservationRepository {
     }
 
     getReservationCountByResident(communityClubId: number, startDate: Date, endDate: Date, dong?: string, ho?: string, userId?: string) {
-        return this.prisma.reservation.count({
+        return this.readOnlyPrismaService.reservation.count({
             where: {
                 communityClubId,
                 OR: [
@@ -129,7 +134,7 @@ export class ReservationRepository {
     }
 
     findReservationByDate(startDate: Date, endDate: Date) {
-        return this.prisma.reservation.findMany({
+        return this.readOnlyPrismaService.reservation.findMany({
             where: {
                 status: {
                     in: ['ACCEPTED', 'PENDING'],
@@ -145,7 +150,7 @@ export class ReservationRepository {
     }
 
     getAvailableDate(communityClubId: number, startDate: Date | string, endDate: Date | string, seat?: number) {
-        return this.prisma.reservation.findMany({
+        return this.readOnlyPrismaService.reservation.findMany({
             where: {
                 AND: {
                     communityClubId,
@@ -174,7 +179,7 @@ export class ReservationRepository {
     }
 
     findUniqueReservation(id: number) {
-        return this.prisma.reservation.findUnique({
+        return this.readOnlyPrismaService.reservation.findUnique({
             where: {
                 id,
             },
@@ -207,7 +212,7 @@ export class ReservationRepository {
               }
             : undefined;
         const statusUpdateDate = Object.assign({}, statusUpdateFrom, statusUpdateTo);
-        return this.prisma.reservation.findMany({
+        return this.readOnlyPrismaService.reservation.findMany({
             where: {
                 AND: {
                     communityClubId: {

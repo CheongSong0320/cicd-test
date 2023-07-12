@@ -13,6 +13,9 @@ export class NotificationRepository {
                 content,
                 title: '커뮤니티',
                 subCategory: 'communityAlert',
+                data: {
+                    target: 'FacilityBookingList',
+                },
             }),
         );
     }
