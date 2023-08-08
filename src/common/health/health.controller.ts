@@ -1,6 +1,6 @@
 import { Controller, Get } from '@nestjs/common';
-import { HealthCheck, HealthCheckService, HttpHealthIndicator } from '@nestjs/terminus';
 import { ApiTags } from '@nestjs/swagger';
+import { HealthCheck, HealthCheckService, HttpHealthIndicator } from '@nestjs/terminus';
 import { PrismaHealthIndicator } from './prisma.health.Indicator';
 
 @ApiTags('common')
@@ -8,6 +8,9 @@ import { PrismaHealthIndicator } from './prisma.health.Indicator';
 export class HealthController {
     constructor(private health: HealthCheckService, private http: HttpHealthIndicator, private prisma: PrismaHealthIndicator) {}
 
+    /**
+     * 서버에 대한 헬스 체크를 수행합니다.
+     */
     @Get('health/ping')
     @HealthCheck()
     check() {
@@ -27,6 +30,9 @@ export class HealthController {
         ]);
     }
 
+    /**
+     * 헬스 체크에 대한 응답을 수행합니다.
+     */
     @Get('health/pong')
     pong() {
         return {

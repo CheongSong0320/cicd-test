@@ -1,5 +1,5 @@
-import { Body, Controller, Delete, Get, Param, Post, Query, Patch } from '@nestjs/common';
-import { API_USER, Auth, JwtPayload, UserTokenPayload, Resident } from '@backend-sw-development-team4/nestjs-authorization';
+import { API_USER, Auth, JwtPayload, Resident, UserTokenPayload } from '@backend-sw-development-team4/nestjs-authorization';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
 import { ApiResponse } from '@nestjs/swagger';
 
 import { ReservationUserService } from '../application/reservation.user.service';
@@ -19,6 +19,9 @@ import { TodayReservationRespone } from '../interface/todayReservation.dto';
 export class ReservationUserController {
     constructor(private readonly reservationService: ReservationUserService) {}
 
+    /**
+     * 사용자가 시설별 예약을 조회합니다.
+     */
     @Get()
     @Auth(API_USER)
     @Resident()
@@ -27,6 +30,9 @@ export class ReservationUserController {
         return this.reservationService.findReservationByCommunity(payload.id);
     }
 
+    /**
+     * 사용자가 검색을 통하여 오늘 내의 예약 목록을 조회합니다.
+     */
     @Get('search')
     @Auth(API_USER)
     @Resident()
@@ -35,6 +41,9 @@ export class ReservationUserController {
         return this.reservationService.getTodayReservation(payload.id, query);
     }
 
+    /**
+     * 사용자가 검색을 통하여 자신의 예약 내역 목록을 조회합니다.
+     */
     @Get('history')
     @Auth(API_USER)
     @Resident()
@@ -42,6 +51,9 @@ export class ReservationUserController {
         return this.reservationService.getHistoryByQueryType(payload.id, query);
     }
 
+    /**
+     * 사용자가 시설 목록을 조회합니다.
+     */
     @Get('/community')
     @Auth(API_USER)
     @Resident()
@@ -49,6 +61,9 @@ export class ReservationUserController {
         return this.reservationService.getCommunityClub(payload?.apartment?.id ?? 1);
     }
 
+    /**
+     * 사용자가 자신의 특정 예약을 제거합니다.
+     */
     @Delete(':id')
     @Auth(API_USER)
     @Resident()
@@ -56,6 +71,9 @@ export class ReservationUserController {
         return this.reservationService.deleteReservation(+id);
     }
 
+    /**
+     * 사용자가 자신의 특정 예약을 업데이트합니다.
+     */
     @Patch(':id')
     @Auth(API_USER)
     @Resident()
@@ -63,6 +81,9 @@ export class ReservationUserController {
         return this.reservationService.updateReservation(+id, body);
     }
 
+    /**
+     * 사용자가 특정 시설의 예약 가능한 날짜를 조회합니다.
+     */
     @Get('community/:id/reservation-available/dates')
     @Auth(API_USER)
     @Resident()
@@ -70,6 +91,9 @@ export class ReservationUserController {
         return this.reservationService.getAvailableDate(+param.id, query);
     }
 
+    /**
+     * 사용자가 특정 시설의 예약 가능한 시간 현황을 조회합니다.
+     */
     @Get('community/:id/reservation-available/slots')
     @Auth(API_USER)
     @Resident()
@@ -77,6 +101,9 @@ export class ReservationUserController {
         return this.reservationService.getAvailableSlot(+param.id, query);
     }
 
+    /**
+     * 사용자가 특정 시설의 예약 가능한 좌석 현황을 조회합니다.
+     */
     @Get('community/:id/reservation-available/seats')
     @Auth(API_USER)
     @Resident()
@@ -84,6 +111,9 @@ export class ReservationUserController {
         return this.reservationService.getAvailableSeat(+param.id, query);
     }
 
+    /**
+     * 사용자가 특정 시설에 대한 예약을 등록합니다.
+     */
     @Post('community/:id')
     @Auth(API_USER)
     @Resident()
@@ -91,6 +121,9 @@ export class ReservationUserController {
         return this.reservationService.registerReservation(+id, body, payload);
     }
 
+    /**
+     * 사용자가 특정 시설에 대한 정보를 조회합니다.
+     */
     @Get('community/:id')
     @Auth(API_USER)
     @Resident()
@@ -98,6 +131,9 @@ export class ReservationUserController {
         return this.reservationService.getCommunityById(+id);
     }
 
+    /**
+     * 사용자가 특정 예약을 조회합니다.
+     */
     @Get(':id')
     @Auth(API_USER)
     @Resident()
