@@ -11,6 +11,10 @@ on:
         required: false
         description: "Name of docker registry to publish. Does not need ghcr.io/cloud-development-team/ in front."
         type: string
+      build_args:
+        required: false
+        description: "Name of docker registry to publish. Does not need ghcr.io/cloud-development-team/ in front."
+        type: string
       image_tag:
         required: false
         description: "Additional tag for cretead image"
@@ -123,6 +127,7 @@ jobs:
         with:
           context: .
           file: ${{ inputs.dockerfile_name }}
+          build-args: ${{ inputs.build_args }}
           push: true
           provenance: false
           cache-from: type=gha
