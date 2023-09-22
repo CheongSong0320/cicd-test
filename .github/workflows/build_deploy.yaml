@@ -23,13 +23,12 @@ jobs:
 
   build-image:
     needs: set-env
-    environemnt: { env.ENVIRONMENT }
+    environment: ${{ env.ENVIRONMENT }}
     uses: ./.github/workflows/build-and-push-image-to-ecr.yaml
     with:
       ecr_region: ap-northeast-2
       ecr_registry: 184738677759.dkr.ecr.ap-northeast-2.amazonaws.com
-      ecr_repository: ecr-dmpro013-prod-config-user-an2
-      role_to_assume: arn:aws:iam::184738677759:role/GitHubActionTest
+      ecr_repository: ecr-mopl015-apartment-an2
     secrets:
       GH_USERNAME: ${{ vars.GH_USERNAME }}
       GH_MANAGEPACKAGE_TOKEN: ${{ secrets.GH_MANAGEPACKAGE_TOKEN }}
