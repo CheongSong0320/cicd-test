@@ -4,7 +4,7 @@ on:
   workflow_call:
     outputs:
       version:
-        description: "Version number from deployment"
+        description: "Version number from  deployment"
         value: ${{ jobs.create-tag.outputs.version }}
     inputs:
       image_name:
