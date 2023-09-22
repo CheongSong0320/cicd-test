@@ -8,7 +8,7 @@ on:
         value: ${{ jobs.create-tag.outputs.version }}
     inputs:
       image_name:
-        required: true
+        required: false
         description: "Name of docker registry to publish. Does not need ghcr.io/cloud-development-team/ in front."
         type: string
       image_tag:
