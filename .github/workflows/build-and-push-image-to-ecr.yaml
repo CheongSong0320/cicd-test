@@ -1,0 +1,133 @@
+name: Build and Push container image to aws ecr using dockerfile
+
+on:
+  workflow_call:
+    outputs:
+      version:
+        description: "Version number from deployment"
+        value: ${{ jobs.create-tag.outputs.version }}
+    inputs:
+      image_name:
+        required: true
+        description: "Name of docker registry to publish. Does not need ghcr.io/cloud-development-team/ in front."
+        type: string
+      image_tag:
+        required: false
+        description: "Additional tag for cretead image"
+        type: string
+      dockerfile_name:
+        required: false
+        description: "dockerfile's name if it's different than the conventional name"
+        type: string
+        default: "Dockerfile"
+      working_dir:
+        required: false
+        description: "Operating path for path dependent steps"
+        type: string
+        default: .
+      ecr_region:
+        required: true
+        description: "AWS region to upload container image to ECR"
+        type: string
+      ecr_registry:
+        required: true
+        type: string
+      ecr_repository:
+        required: true
+        description: "Name of ECR repository"
+        type: string
+      environment:
+        required: false
+        description: "Environment name for tagging"
+        type: string
+        default: "dev"
+    secrets:
+      GH_USERNAME:
+        required: true
+      GH_MANAGEPACKAGE_TOKEN:
+        required: true
+      CODEFREEZE:
+        required: true
+      AWS_ACCESS_KEY_ID:
+        required: true
+      AWS_SECRET_ACCESS_KEY:
+        required: true
+      DOCKER_BUILD_ARGS:
+        required: false
+
+jobs:
+  create-tag:
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      datetime: ${{ steps.datetime.outputs.datetime }}
+      sha_short: ${{ steps.sha_short.outputs.sha_short }}
+    name: Create tag for new image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Version
+        id: version
+        run: |
+          if [[ "${{ inputs.image_tag }}" != '' ]]; then
+            echo "version=${{ inputs.image_tag }}" >> $GITHUB_OUTPUT
+          else
+            echo "version=dev-$(date +'%Y%m%dT%H%M%S')" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Datetime
+        id: datetime
+        run: echo "datetime=$(date +'%Y%m%dT%H%M%S')" >> $GITHUB_OUTPUT
+
+      - name: SHA short
+        id: sha_short
+        run: echo "sha_short=$(git rev-parse --short HEAD)-$(date +'%Y%m%dT%H%M%S')" >> $GITHUB_OUTPUT
+
+      - name: Result
+        run: |
+          echo "version=${{ steps.version.outputs.version }}"
+          echo "datetime=${{ steps.datetime.outputs.datetime }}"
+          echo "sha_short=${{ steps.sha_short.outputs.sha_short }}"
+
+  build-and-push-ecr:
+    name: Container image build and push to ecr
+    runs-on: ubuntu-latest
+    needs: create-tag
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ${{ inputs.ecr_region }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+        with:
+          mask-password: 'true'
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build, tag, and push image to Amazon ECR
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ${{ inputs.dockerfile_name }}
+          push: true
+          provenance: false
+          cache-from: type=gha
+          cache-to: type=gha, mode=max
+          tags: |
+            "${{ inputs.ecr_registry }}/${{ inputs.ecr_repository }}:${{ needs.create-tag.outputs.version }}"
+            "${{ inputs.ecr_registry }}/${{ inputs.ecr_repository }}:${{ needs.create-tag.outputs.datetime }}"
+            "${{ inputs.ecr_registry }}/${{ inputs.ecr_repository }}:${{ needs.create-tag.outputs.sha_short }}"

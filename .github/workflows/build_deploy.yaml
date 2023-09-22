@@ -1,0 +1,51 @@
+name: Build and Release container image and Deploy to dev environment
+
+on:
+  push:
+    branches:
+      - main
+      - release
+      - develop
+
+jobs:
+  set-env:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Set Environment Variable
+      run: |
+        if [ "${{ github.ref }}" == "refs/heads/main" ]; then
+          echo "ENVIRONMENT=prod" >> $GITHUB_ENV
+        elif [ "${{ github.ref }}" == "refs/heads/release" ]; then
+          echo "ENVIRONMENT=qa" >> $GITHUB_ENV
+        elif [ "${{ github.ref }}" == "refs/heads/develop" ]; then
+          echo "ENVIRONMENT=dev" >> $GITHUB_ENV
+        fi
+
+  build-image:
+    needs: set-env
+    environemnt: { env.ENVIRONMENT }
+    uses: ./.github/workflows/build-and-push-image-to-ecr.yaml
+    with:
+      ecr_region: ap-northeast-2
+      ecr_registry: 184738677759.dkr.ecr.ap-northeast-2.amazonaws.com
+      ecr_repository: ecr-dmpro013-prod-config-user-an2
+      role_to_assume: arn:aws:iam::184738677759:role/GitHubActionTest
+    secrets:
+      GH_USERNAME: ${{ vars.GH_USERNAME }}
+      GH_MANAGEPACKAGE_TOKEN: ${{ secrets.GH_MANAGEPACKAGE_TOKEN }}
+      CODEFREEZE: ${{ vars.CODEFREEZE }}
+      AWS_ACCESS_KEY_ID: ${{ vars.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      DOCKER_BUILD_ARGS: "PRIVATE_NPM_TOKEN=${{ secrets.GH_MANAGEPACKAGE_TOKEN }}"
+
+  #release-gitops:
+  #  needs: build-image
+  #  environemnt: { env.ENVIRONMENT }
+  #  uses: ./.github/workflows/gitops-release.yaml
+  #  with:
+  #   repository_name: "cloud-development-team/dmpro-gitops-dev"
+  #    image_name: "184738677759.dkr.ecr.ap-northeast-2.amazonaws.com/ecr-dmpro013-prod-config-user-an2"
+  #    image_tag: ${{ needs.build-image.outputs.version }}
+  #    yaml_path: "dmpro-config-user/env/{var.YAML_PATH}/dev.yaml"
+  #    application_name: "dmpro-config-user"
+  #  secrets: inherit

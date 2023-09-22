@@ -34,4 +34,6 @@ COPY --from=builder /usr/src/app/dist ./dist
 COPY --from=builder /usr/src/app/package.json ./package.json
 COPY --from=builder /usr/src/app/prisma ./prisma
 
+RUN echo "dev"
+
 CMD ["yarn", "start:prod"]
