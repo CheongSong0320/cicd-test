@@ -23,7 +23,8 @@ jobs:
 
   build-image:
     needs: set-env
-    environment: dev
+    env: 
+      environment: dev
     uses: ./.github/workflows/build-and-push-image-to-ecr.yaml
     with:
       ecr_region: ap-northeast-2
