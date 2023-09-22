@@ -132,7 +132,7 @@ jobs:
           provenance: false
           cache-from: type=gha
           cache-to: type=gha, mode=max
-          secrets: |
+          build-args: |
             NPM_TOKEN = $ {{ secrets.GH_MANAGEPACKAGE_TOKEN }}
           tags: |
             "${{ inputs.ecr_registry }}/${{ inputs.ecr_repository }}:${{ needs.create-tag.outputs.version }}"
