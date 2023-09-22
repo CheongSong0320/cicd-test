@@ -127,7 +127,6 @@ jobs:
         with:
           context: .
           file: ${{ inputs.dockerfile_name }}
-          build-args: ${{ secrets.build_args }}
           push: true
           provenance: false
           cache-from: type=gha
