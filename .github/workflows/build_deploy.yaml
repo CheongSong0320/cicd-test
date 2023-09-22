@@ -25,6 +25,7 @@ jobs:
     needs: set-env
     uses: ./.github/workflows/build-and-push-image-to-ecr.yaml
     with:
+      environment: qa
       ecr_region: ap-northeast-2
       ecr_registry: 184738677759.dkr.ecr.ap-northeast-2.amazonaws.com
       ecr_repository: ecr-mopl015-apartment-an2
