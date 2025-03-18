@@ -1,0 +1,3 @@
+[submodule "KeeperMediaSDK"]
+	path = KeeperMediaSDK
+	url = https://github.com/hanwhavision/keeper-media-sdk.git
