@@ -1,0 +1,4 @@
+[submodule "mopl-common-proto"]
+	path = mopl-common-proto
+	url = https://github.com/backend-sw-development-team4/mopl-common-proto.git
+	branch = develop
