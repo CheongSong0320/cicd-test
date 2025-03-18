@@ -1,4 +1,3 @@
-[submodule "mopl-common-proto"]
-	path = mopl-common-proto
-	url = https://github.com/backend-sw-development-team4/mopl-common-proto.git
-	branch = develop
+[submodule "KeeperMediaSDK"]
+	path = KeeperMediaSDK
+	url = https://github.com/hanwhavision/keeper-media-sdk.git
